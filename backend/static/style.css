@@ -2040,3 +2040,84 @@ textarea:focus-visible {
   border-color: var(--purple);
   box-shadow: 0 0 0 3px rgba(108,79,255,0.2);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   DESKTOP LAYOUT — 2-column grids for screens ≥ 900 px
+   ═══════════════════════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+
+  /* Wider container */
+  .container { max-width: 1280px; padding: 28px 40px; }
+
+  /* ── Dashboard: balance + stats full-width; charts side-by-side ── */
+  #tab-dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    align-items: start;
+  }
+  #tab-dashboard > .balance-card,
+  #tab-dashboard > .stats-row,
+  #tab-dashboard > #card-budget-dash,
+  #tab-dashboard > #dashboard-empty { grid-column: 1 / -1; }
+
+  /* ── Add Expense: form left, tips sidebar right ── */
+  #tab-add {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    column-gap: 20px;
+    align-items: start;
+  }
+  .add-sidebar { display: block; }
+
+  /* ── Budget: overview left, set-budget right ── */
+  #tab-budget {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    column-gap: 20px;
+    align-items: start;
+  }
+
+  /* ── Insights: anomaly + prediction side-by-side; forecast full ── */
+  #tab-insights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    align-items: start;
+  }
+  #tab-insights > .card-forecast { grid-column: 1 / -1; }
+
+  /* ── Advice: health score left, tips right ── */
+  #tab-advice {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    column-gap: 20px;
+    align-items: start;
+  }
+}
+
+/* Sidebar hidden on mobile by default */
+.add-sidebar { display: none; }
+
+/* ── Add sidebar internals ────────────────────────────────────────── */
+.tip-list { display: flex; flex-direction: column; gap: 14px; }
+.tip-item { display: flex; gap: 12px; align-items: flex-start; }
+.tip-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 1px; }
+.tip-title {
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.tip-body { font-size: 0.78rem; color: var(--text-muted); line-height: 1.45; }
+
+.cat-chip-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.cat-chip {
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 11px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}

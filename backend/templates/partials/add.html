@@ -1,6 +1,6 @@
  <!-- ── ADD EXPENSE TAB ───────────────────────── -->
     <div id="tab-add" class="tab-content">
-      <div class="card">
+      <div class="card"><!-- form card -->
         <h2>Log an Expense</h2>
         <div class="form-grid">
 
@@ -79,4 +79,57 @@
 
         </div>
       </div>
+
+      <!-- Desktop-only sidebar (hidden on mobile via CSS) -->
+      <aside class="add-sidebar">
+        <div class="card">
+          <h2>Quick Tips</h2>
+          <div class="tip-list">
+            <div class="tip-item">
+              <span class="tip-icon">🤖</span>
+              <div>
+                <div class="tip-title">AI Auto-Category</div>
+                <div class="tip-body">Type a title like "Jollibee" and the AI will suggest the right category automatically.</div>
+              </div>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">📷</span>
+              <div>
+                <div class="tip-title">Scan a Receipt</div>
+                <div class="tip-body">Use Scan Receipt to auto-fill amount and title from a photo.</div>
+              </div>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">📡</span>
+              <div>
+                <div class="tip-title">Works Offline</div>
+                <div class="tip-body">Expenses are saved locally first and synced to the cloud when you're back online.</div>
+              </div>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">🔔</span>
+              <div>
+                <div class="tip-title">Anomaly Alerts</div>
+                <div class="tip-body">Unusually large amounts are flagged before saving so you can catch mistakes early.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Categories</h2>
+          <div class="cat-chip-grid">
+            <span class="cat-chip">🍔 Food &amp; Dining</span>
+            <span class="cat-chip">🚗 Transportation</span>
+            <span class="cat-chip">💡 Utilities</span>
+            <span class="cat-chip">🛍️ Shopping</span>
+            <span class="cat-chip">🏥 Healthcare</span>
+            <span class="cat-chip">🎬 Entertainment</span>
+            <span class="cat-chip">📚 Education</span>
+            <span class="cat-chip">💰 Savings</span>
+            <span class="cat-chip">🏠 Housing &amp; Rent</span>
+            <span class="cat-chip">📦 Others</span>
+          </div>
+        </div>
+      </aside>
+
     </div>
