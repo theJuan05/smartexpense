@@ -1,5 +1,6 @@
-const CACHE_NAME = 'smartexpense-v2';
+const CACHE_NAME = 'smartexpense-v3';
 const STATIC_ASSETS = [
+  '/',
   '/frontend/index.html',
   '/frontend/css/style.css',
   '/frontend/js/db.js',
@@ -13,7 +14,6 @@ const STATIC_ASSETS = [
   '/frontend/manifest.json'
 ];
 
-// Install — cache all static files
 self.addEventListener('install', function(event) {
   console.log('[SW] Installing...');
   event.waitUntil(
@@ -27,7 +27,6 @@ self.addEventListener('install', function(event) {
   self.skipWaiting();
 });
 
-// Activate — clean old caches
 self.addEventListener('activate', function(event) {
   console.log('[SW] Activating...');
   event.waitUntil(
@@ -45,25 +44,18 @@ self.addEventListener('activate', function(event) {
   self.clients.claim();
 });
 
-// Fetch strategy:
-// API calls — network only (never cache)
-// Static files — cache first, network fallback
 self.addEventListener('fetch', function(event) {
   const url = event.request.url;
 
-  // Skip API calls — always go to network
-  if (url.includes('127.0.0.1:5000') ||
-      url.includes('localhost:5000') ||
-      url.includes('cdnjs.cloudflare.com')) {
+  if (url.includes('smartexpense-hco9.onrender.com/api') ||
+      url.includes('cdnjs.cloudflare.com') ||
+      url.includes('generativelanguage.googleapis.com')) {
     return;
   }
 
-  // Static files — cache first
   event.respondWith(
     caches.match(event.request).then(function(cached) {
       if (cached) {
-        // Return cached version
-        // Also update cache in background
         fetch(event.request).then(function(response) {
           if (response && response.status === 200) {
             caches.open(CACHE_NAME).then(function(cache) {
@@ -74,7 +66,6 @@ self.addEventListener('fetch', function(event) {
         return cached;
       }
 
-      // Not in cache — fetch from network
       return fetch(event.request).then(function(response) {
         if (!response || response.status !== 200) {
           return response;
@@ -85,7 +76,6 @@ self.addEventListener('fetch', function(event) {
         });
         return response;
       }).catch(function() {
-        // Offline fallback for HTML pages
         if (event.request.destination === 'document') {
           return caches.match('/frontend/index.html');
         }
@@ -94,7 +84,6 @@ self.addEventListener('fetch', function(event) {
   );
 });
 
-// Background sync
 self.addEventListener('sync', function(event) {
   if (event.tag === 'sync-expenses') {
     console.log('[SW] Background sync triggered');
