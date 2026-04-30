@@ -1,37 +1,41 @@
 # db.py — MySQL connection + helper functions
 
+import logging
 import mysql.connector
 from config import Config
+
+logger = logging.getLogger(__name__)
 
 def get_connection():
     """Returns a live MySQL connection."""
     try:
-        conn = mysql.connector.connect(
+        kwargs = dict(
             host     = Config.DB_HOST,
             user     = Config.DB_USER,
             password = Config.DB_PASSWORD,
-            database = Config.DB_NAME
+            database = Config.DB_NAME,
         )
+        if Config.DB_PORT:
+            kwargs['port'] = int(Config.DB_PORT)
+        if Config.DB_SSL:
+            kwargs['ssl_disabled'] = False
+        conn = mysql.connector.connect(**kwargs)
         return conn
     except mysql.connector.Error as err:
-        print(f"[DB ERROR] {err}")
+        logger.error("[DB CONNECTION ERROR] host=%s db=%s error=%s", Config.DB_HOST, Config.DB_NAME, err)
         return None
 
 
 def query_all(sql, params=None):
-    """
-    Run a SELECT and return all rows as a list of dicts.
-    Example: query_all("SELECT * FROM expenses WHERE user_id = %s", (1,))
-    """
     conn = get_connection()
     if not conn:
         return []
     try:
-        cursor = conn.cursor(dictionary=True)  # dict = column names as keys
+        cursor = conn.cursor(dictionary=True)
         cursor.execute(sql, params or ())
         return cursor.fetchall()
     except mysql.connector.Error as err:
-        print(f"[QUERY ERROR] {err}")
+        logger.error("[QUERY ERROR] %s", err)
         return []
     finally:
         cursor.close()
@@ -39,7 +43,6 @@ def query_all(sql, params=None):
 
 
 def query_one(sql, params=None):
-    """Run a SELECT and return a single row as a dict."""
     conn = get_connection()
     if not conn:
         return None
@@ -48,7 +51,7 @@ def query_one(sql, params=None):
         cursor.execute(sql, params or ())
         return cursor.fetchone()
     except mysql.connector.Error as err:
-        print(f"[QUERY ERROR] {err}")
+        logger.error("[QUERY ERROR] %s", err)
         return None
     finally:
         cursor.close()
@@ -56,10 +59,7 @@ def query_one(sql, params=None):
 
 
 def execute(sql, params=None):
-    """
-    Run INSERT / UPDATE / DELETE.
-    Returns the last inserted row ID (for INSERT), or True on success.
-    """
+    """Run INSERT / UPDATE / DELETE. Returns lastrowid for INSERT, else None."""
     conn = get_connection()
     if not conn:
         return None
@@ -69,7 +69,7 @@ def execute(sql, params=None):
         conn.commit()
         return cursor.lastrowid
     except mysql.connector.Error as err:
-        print(f"[EXECUTE ERROR] {err}")
+        logger.error("[EXECUTE ERROR] %s", err)
         conn.rollback()
         return None
     finally:

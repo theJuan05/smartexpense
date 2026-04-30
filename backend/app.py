@@ -1,8 +1,14 @@
 import os
+import logging
 from datetime import timedelta
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 from config import Config
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s'
+)
 
 # Blueprints
 from routes.auth import auth_bp, login_required

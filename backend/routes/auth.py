@@ -1,7 +1,10 @@
+import logging
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
 from models.user import create_user, get_user_by_email, get_user_by_id, check_password
 from security.jwt_auth import generate_token
 from functools import wraps
+
+logger = logging.getLogger(__name__)
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -92,9 +95,12 @@ def register():
         if user_id:
             session['user_id']   = user_id
             session['user_name'] = name
+            session['jwt']       = generate_token(user_id, name)
+            session.permanent    = True
             flash(f'Welcome, {name}! Your account has been created.', 'success')
             return redirect(url_for('index'))
         else:
+            logger.error("create_user returned None for email=%s — check DB connection and credentials", email)
             flash('Something went wrong. Please try again.', 'error')
 
     return render_template('auth/register.html')

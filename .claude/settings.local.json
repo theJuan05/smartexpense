@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node .agents/skills/impeccable/scripts/load-context.mjs)"
+      "Bash(node .agents/skills/impeccable/scripts/load-context.mjs)",
+      "Bash(mysql -u root -e \"SHOW DATABASES;\")",
+      "PowerShell(mysql -u root -e \"SHOW DATABASES; USE smartexpense; SHOW TABLES;\" 2>&1)",
+      "Bash(python -c \"from models.db import get_connection; conn = get_connection\\(\\); print\\('Connected:', conn is not None\\); conn and conn.close\\(\\)\")",
+      "Bash(python -c ' *)"
     ]
   }
 }

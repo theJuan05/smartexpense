@@ -4,9 +4,11 @@ load_dotenv()
 
 class Config:
     DB_HOST     = os.getenv('DB_HOST', '127.0.0.1')
+    DB_PORT     = os.getenv('DB_PORT', '')        # e.g. 3306 or Aiven's port
     DB_USER     = os.getenv('DB_USER', 'root')
     DB_PASSWORD = os.getenv('DB_PASSWORD', '')
     DB_NAME     = os.getenv('DB_NAME', 'smartexpense')
+    DB_SSL      = os.getenv('DB_SSL', 'false').lower() == 'true'
 
     SECRET_KEY     = os.getenv('SECRET_KEY')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
