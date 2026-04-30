@@ -295,7 +295,62 @@ async function syncToServer() {
 }
 
 // ============================================================
-// 6. STATS — Quick summary for dashboard
+// 6. PULL SYNC — Download server expenses into IndexedDB
+// ============================================================
+
+/**
+ * Pull expenses from the server and import any that aren't
+ * already in IndexedDB (identified by server_id).
+ * Call this once on startup when online.
+ */
+async function pullExpensesFromServer() {
+  if (!navigator.onLine) return 0;
+
+  let serverData;
+  try {
+    const res = await fetch('/api/expenses');
+    if (!res.ok) return 0;
+    const json = await res.json();
+    serverData = json.data;
+    if (!Array.isArray(serverData) || serverData.length === 0) return 0;
+  } catch (_) { return 0; }
+
+  // Collect server_ids already stored locally
+  const local     = await getAllExpensesLocal();
+  const localIds  = new Set(local.map(e => e.server_id).filter(Boolean));
+
+  // Only import expenses the local DB doesn't know about
+  const toImport = serverData.filter(e => !localIds.has(e.id));
+  if (toImport.length === 0) return 0;
+
+  const tx    = db.transaction('expenses', 'readwrite');
+  const store = tx.objectStore('expenses');
+
+  for (const exp of toImport) {
+    store.add({
+      title:          exp.title,
+      amount:         parseFloat(exp.amount),
+      category:       exp.category || 'Others',
+      expense_date:   exp.expense_date,
+      notes:          exp.notes || '',
+      payment_method: exp.payment_method || 'cash',
+      synced:         1,
+      server_id:      exp.id,
+      created_at:     exp.created_at || new Date().toISOString(),
+    });
+  }
+
+  await new Promise((resolve, reject) => {
+    tx.oncomplete = resolve;
+    tx.onerror    = () => reject(tx.error);
+  });
+
+  console.log(`[Sync] Pulled ${toImport.length} expense(s) from server ✅`);
+  return toImport.length;
+}
+
+// ============================================================
+// 7. STATS — Quick summary for dashboard
 // ============================================================
 
 /**

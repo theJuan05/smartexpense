@@ -12,14 +12,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Initialize DB
     await initDB();
 
-    // 3. Set today's date in form
+    // 3. Pull server expenses into IndexedDB (fills dashboard on first load / new device)
+    await pullExpensesFromServer();
+
+    // 4. Set today's date in form
     const dateEl = document.getElementById('exp-date');
     if (dateEl) dateEl.value = today();
 
-    // 4. Setup tabs
+    // 5. Setup tabs
     setupTabs();
 
-    // 5. Load UI data in parallel (faster)
+    // 6. Load UI data in parallel (faster)
     await Promise.all([
       loadExpenseList(),
       refreshStats()
@@ -102,8 +105,7 @@ function setupTabs() {
       if (target === 'budget')    await loadBudgetSummary();
       if (target === 'advice')    await loadAdvice();
       if (target === 'insights') {
-        await loadPrediction();
-        await loadAnomalies();
+        await Promise.all([loadPrediction(), loadAnomalies()]);
       }
     });
   });
@@ -339,7 +341,14 @@ async function checkBackendConnection() {
   const el = document.getElementById('backend-status');
   if (result && result.status === 'ok') {
     if (el) el.textContent = 'connected';
+    // Push any local-only expenses to server
     await runSync();
+    // Pull any server expenses not yet in local DB, then refresh UI
+    const pulled = await pullExpensesFromServer();
+    if (pulled > 0) {
+      await loadExpenseList();
+      await refreshStats();
+    }
   }
 }
 
