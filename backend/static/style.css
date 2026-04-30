@@ -1401,19 +1401,148 @@ body {
   line-height: 1.5;
 }
 
+/* ── Bottom Nav ──────────────────────────────────────────────── */
+.bottom-nav {
+  display: none; /* hidden on desktop */
+}
+
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 640px) {
+  /* Layout */
   .stats-row { grid-template-columns: 1fr 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .form-group.full-width { grid-column: 1; }
   .stat-box .value { font-size: 1.4rem; }
-  .navbar { padding: 0 16px; }
-  .container { padding: 16px 12px; }
+  .container { padding: 16px 12px 100px; /* extra bottom for nav */ }
   .card { padding: 16px; }
+
+  /* Top navbar — slim & hide non-essential items */
+  .navbar {
+    padding: 0 14px;
+    height: 52px;
+  }
+  .navbar .logo { font-size: 0.88rem; }
+  .status-badge,
+  .btn-logout,
+  .btn-install { display: none; }
+
+  /* Hide the top tab bar on mobile */
+  .tab-bar { display: none; }
+
+  /* Toast moves above bottom nav */
+  #toast {
+    bottom: 80px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+    text-align: center;
+  }
+
+  /* Show the logout card only on mobile */
+  .mobile-logout-card { display: block; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--card-bg);
+    border-top: 0.5px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(108,79,255,0.08);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 2px 10px;
+    height: 60px;
+    border: none;
+    border-radius: 0;
+    background: none;
+    font-family: inherit;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    text-transform: none;
+    text-transform: uppercase;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .bottom-nav-item svg {
+    flex-shrink: 0;
+    transition: stroke 0.15s;
+  }
+
+  .bottom-nav-item:hover {
+    color: var(--purple);
+    background: var(--purple-light);
+  }
+
+  .bottom-nav-item.active {
+    color: var(--purple);
+    background: none;
+  }
+
+  .bottom-nav-item.active svg {
+    stroke: var(--purple);
+  }
+
+  /* Active indicator dot above icon */
+  .bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 24px;
+    height: 2.5px;
+    background: var(--purple);
+    border-radius: 0 0 3px 3px;
+  }
+
+  .bottom-nav-item { position: relative; }
+
+  /* Add button — accent circle style */
+  .bottom-nav-add {
+    color: var(--purple);
+  }
+
+  .bottom-nav-add svg {
+    background: var(--purple);
+    stroke: white;
+    border-radius: 50%;
+    padding: 2px;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 1px;
+    box-shadow: 0 3px 10px rgba(108,79,255,0.4);
+    flex-shrink: 0;
+  }
+
+  .bottom-nav-add.active svg,
+  .bottom-nav-add:hover svg {
+    background: var(--purple-dark);
+    stroke: white;
+  }
 }
+
+/* Hide logout card on desktop */
+.mobile-logout-card { display: none; }
 
 @media (max-width: 380px) {
   .stats-row { grid-template-columns: 1fr; }
+  .bottom-nav-item { font-size: 0.58rem; }
+  .bottom-nav-item span { display: none; } /* icon-only on very small screens */
 }
 
 /* ── Navbar: logout + install buttons ───────────────────────────── */

@@ -366,6 +366,13 @@
   </div>
 </div>
 
+<!-- Sign Out (visible on mobile where top navbar logout is hidden) -->
+<div class="card mobile-logout-card">
+  <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" style="width:100%;justify-content:center;">
+    Sign Out
+  </a>
+</div>
+
 <!-- Confirm Danger Modal -->
 <div id="modal-confirm-danger" class="modal-overlay">
   <div class="modal-box">
