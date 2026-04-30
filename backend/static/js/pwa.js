@@ -80,13 +80,11 @@ async function registerBackgroundSync() {
 
 // Initialize PWA features
 function initPWA() {
-  // Check if already installed
   if (isInstalledPWA()) {
     console.log('[PWA] Running as installed app');
     document.body.classList.add('pwa-mode');
   }
 
-  // Register background sync when online
   if (navigator.onLine) {
     registerBackgroundSync();
   }
@@ -100,3 +98,19 @@ function initPWA() {
     updateOfflineUI(true);
   });
 }
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/frontend/service-worker.js')
+      .then(function(reg) {
+        console.log('[PWA] Service Worker registered:', reg.scope);
+      })
+      .catch(function(err) {
+        console.warn('[PWA] Service Worker registration failed:', err);
+      });
+  });
+}
+
+// Initialize
+initPWA();
