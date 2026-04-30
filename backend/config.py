@@ -10,8 +10,8 @@ class Config:
     DB_NAME     = os.getenv('DB_NAME', 'smartexpense')
     DB_SSL      = os.getenv('DB_SSL', 'false').lower() == 'true'
 
-    SECRET_KEY     = os.getenv('SECRET_KEY')
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+    SECRET_KEY     = os.getenv('SECRET_KEY') or 'change-me-in-production'
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY') or 'change-me-jwt-in-production'
     CORS_ORIGINS   = "*"
 
     SQLALCHEMY_DATABASE_URI = (

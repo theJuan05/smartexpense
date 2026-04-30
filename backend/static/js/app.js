@@ -1,30 +1,36 @@
 // app.js — Main app with tabs + charts
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Safety net: always dismiss skeleton after 6s even if something errors
+  const _skel = document.getElementById('page-skeleton');
+  if (_skel) setTimeout(() => _skel.classList.add('sk-hidden'), 6000);
+
   // 1. Show online status IMMEDIATELY (no waiting)
   updateOnlineStatus();
 
-  // 2. Initialize DB
-  await initDB();
+  try {
+    // 2. Initialize DB
+    await initDB();
 
-  // 3. Set today's date in form
-  const dateEl = document.getElementById('exp-date');
-  if (dateEl) dateEl.value = today();
+    // 3. Set today's date in form
+    const dateEl = document.getElementById('exp-date');
+    if (dateEl) dateEl.value = today();
 
-  // 4. Setup tabs
-  setupTabs();
+    // 4. Setup tabs
+    setupTabs();
 
-  // 5. Load UI data in parallel (faster)
-  await Promise.all([
-    loadExpenseList(),
-    refreshStats()
-  ]);
-  await renderBalance();
-  setupIncomeModal();
-
-  // 6. Dismiss skeleton loader now that data is ready
-  const skel = document.getElementById('page-skeleton');
-  if (skel) skel.classList.add('sk-hidden');
+    // 5. Load UI data in parallel (faster)
+    await Promise.all([
+      loadExpenseList(),
+      refreshStats()
+    ]);
+    await renderBalance();
+    setupIncomeModal();
+  } finally {
+    // 6. Always dismiss skeleton — even if something above threw
+    const skel = document.getElementById('page-skeleton');
+    if (skel) skel.classList.add('sk-hidden');
+  }
 
   // 7. Charts in background (non-blocking)
   renderAllCharts();
