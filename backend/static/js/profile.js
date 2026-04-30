@@ -1,5 +1,6 @@
 // ── PROFILE & SETTINGS ───────────────────────────────────────
-const PROFILE_KEY = 'smartexpense-profile';
+const PROFILE_KEY  = 'smartexpense-profile';
+const PROFILE_PIC_KEY = 'smartexpense-profile-pic';
 
 // ── LOAD PROFILE FROM LOCALSTORAGE ───────────────────────────
 function loadProfile() {
@@ -21,15 +22,26 @@ function saveProfile(data) {
   localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
 }
 
-// ── RENDER PROFILE UI ─────────────────────────────────────────
+// ── RENDER PROFILE UI ─────────────────────���───────────────────
 function renderProfile() {
-  const p = loadProfile();
+  const p   = loadProfile();
+  const pic = localStorage.getItem(PROFILE_PIC_KEY);
+  const avatarEl = document.getElementById('profile-avatar-display');
 
-  // Header
-  document.getElementById('profile-avatar-display').textContent = p.avatar  || '👤';
-  document.getElementById('profile-name-display').textContent   = p.username || 'Your Name';
-  document.getElementById('profile-email-display').textContent  = p.email    || 'your@email.com';
-  document.getElementById('profile-since').textContent          = p.since    || '—';
+  // Show photo or emoji
+  if (pic) {
+    avatarEl.innerHTML = `<img src="${pic}" alt="Profile photo" class="profile-avatar-photo">`;
+  } else {
+    avatarEl.textContent = p.avatar || '👤';
+  }
+
+  // Show/hide "Remove photo" button in modal
+  const removeBtn = document.getElementById('btn-remove-photo');
+  if (removeBtn) removeBtn.style.display = pic ? 'inline-flex' : 'none';
+
+  document.getElementById('profile-name-display').textContent  = p.username || 'Your Name';
+  document.getElementById('profile-email-display').textContent = p.email    || 'your@email.com';
+  document.getElementById('profile-since').textContent         = p.since    || '—';
 
   // Account fields
   document.getElementById('display-username').textContent = p.username || 'Not set';
@@ -121,9 +133,58 @@ function selectAvatar(emoji) {
   const p  = loadProfile();
   p.avatar = emoji;
   saveProfile(p);
+  localStorage.removeItem(PROFILE_PIC_KEY);
   renderProfile();
   closeProfileModal('modal-edit-avatar');
   showToast('✅ Avatar updated!');
+}
+
+function removeProfilePhoto() {
+  localStorage.removeItem(PROFILE_PIC_KEY);
+  renderProfile();
+  closeProfileModal('modal-edit-avatar');
+  showToast('✅ Photo removed.');
+}
+
+function handleProfilePicUpload(file) {
+  if (!file || !file.type.startsWith('image/')) {
+    showToast('❌ Please select a valid image file.');
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('❌ Image must be under 5 MB.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const img = new Image();
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      const MAX    = 200;
+      let w = img.width;
+      let h = img.height;
+
+      if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+      else       { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+
+      canvas.width  = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+      try {
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        localStorage.setItem(PROFILE_PIC_KEY, dataUrl);
+        renderProfile();
+        closeProfileModal('modal-edit-avatar');
+        showToast('✅ Profile photo updated!');
+      } catch (_) {
+        showToast('❌ Could not save photo. Try a smaller image.');
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 // ── DANGER ZONE ───────────────────────────────────────────────
@@ -205,6 +266,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-change-avatar')
     ?.addEventListener('click', () => openProfileModal('modal-edit-avatar'));
 
+  // File input — triggered by the label inside the modal
+  document.getElementById('profile-pic-input')
+    ?.addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        handleProfilePicUpload(this.files[0]);
+        this.value = ''; // reset so same file can be re-selected
+      }
+    });
+
+  // Also allow clicking the avatar circle itself to open the modal
+  document.getElementById('profile-avatar-display')
+    ?.addEventListener('click', () => openProfileModal('modal-edit-avatar'));
+
   // Dark mode toggle inside settings
   document.getElementById('settings-dark-toggle')
     ?.addEventListener('change', function () {
@@ -268,6 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.getElementById('tab-profile').classList.add('active');
       renderProfile();
+      if (typeof updateThemePicker === 'function') updateThemePicker();
     });
 
 });

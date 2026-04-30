@@ -1,0 +1,31 @@
+<svg width="100%" viewBox="0 0 680 432" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SmartExpense logo">
+  <defs>
+    <clipPath id="walletclip2">
+      <rect x="140" y="30" width="400" height="320" rx="48"/>
+    </clipPath>
+  </defs>
+  <rect x="140" y="30" width="400" height="320" rx="48" fill="#0f1e3c"/>
+  <rect x="420" y="30" width="120" height="120" fill="#1a3a6b" clip-path="url(#walletclip2)"/>
+  <rect x="175" y="110" width="210" height="150" rx="16" fill="none" stroke="#00d4aa" stroke-width="3"/>
+  <rect x="175" y="110" width="210" height="150" rx="16" fill="#00d4aa" opacity="0.08"/>
+  <rect x="175" y="100" width="210" height="40" rx="12" fill="#00d4aa" opacity="0.25"/>
+  <line x1="175" y1="130" x2="385" y2="130" stroke="#00d4aa" stroke-width="1.5" opacity="0.4"/>
+  <rect x="310" y="145" width="65" height="70" rx="10" fill="#1a3a6b" stroke="#4a9eff" stroke-width="1.5"/>
+  <circle cx="342" cy="180" r="18" fill="none" stroke="#4a9eff" stroke-width="2"/>
+  <text x="342" y="186" text-anchor="middle" font-family="Arial" font-weight="700" font-size="18" fill="#4a9eff">$</text>
+  <rect x="190" y="150" width="100" height="12" rx="4" fill="#4a9eff" opacity="0.4"/>
+  <rect x="190" y="172" width="70" height="10" rx="4" fill="#4a9eff" opacity="0.25"/>
+  <rect x="190" y="192" width="85" height="10" rx="4" fill="#4a9eff" opacity="0.2"/>
+  <rect x="415" y="210" width="22" height="90" rx="4" fill="#4a9eff" opacity="0.5"/>
+  <rect x="444" y="170" width="22" height="130" rx="4" fill="#4a9eff" opacity="0.75"/>
+  <rect x="473" y="135" width="22" height="165" rx="4" fill="#4a9eff"/>
+  <polyline points="426,198 455,158 484,124" fill="none" stroke="#00d4aa" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="426" cy="198" r="5" fill="#00d4aa"/>
+  <circle cx="455" cy="158" r="5" fill="#00d4aa"/>
+  <circle cx="484" cy="124" r="5" fill="#00d4aa"/>
+  <line x1="405" y1="302" x2="505" y2="302" stroke="#4a9eff" stroke-width="1" opacity="0.3"/>
+  <text x="204" y="408" font-family="Georgia, serif" font-weight="700" font-size="44" fill="#0f1e3c">Smart</text>
+  <rect x="318" y="374" width="178" height="44" rx="10" fill="#0f1e3c"/>
+  <text x="407" y="408" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="44" fill="#00d4aa">Expense</text>
+  <rect x="200" y="422" width="296" height="2.5" fill="#4a9eff"/>
+</svg>

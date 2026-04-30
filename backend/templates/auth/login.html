@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign In – SmartExpense AI Pro</title>
+  <title>Sign In – SmartExpense</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,108 +13,210 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       display: flex;
-      background: #f0f0ff;
+      background: #f5f5f7;
       -webkit-font-smoothing: antialiased;
+      color: #111;
     }
 
-    /* ── Left panel (desktop only) ────────────────── */
+    /* ── Left panel ─────────────────────────────────── */
     .left-panel {
       display: none;
       flex-direction: column;
-      justify-content: center;
-      padding: 60px 56px;
-      background: linear-gradient(160deg, #2d1b8a 0%, #1a1040 60%, #0d0d20 100%);
-      width: 46%;
+      width: 44%;
       min-height: 100vh;
+      background: #0d0d18;
+      padding: 44px 48px;
       position: sticky;
       top: 0;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(108,79,255,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,212,170,0.08) 0%, transparent 60%);
+      pointer-events: none;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 56px;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
     }
 
     .brand-icon {
-      width: 40px;
-      height: 40px;
-      background: #6c4fff;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      font-weight: 800;
-      color: white;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: block;
       flex-shrink: 0;
     }
 
     .brand-name {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: white;
-      letter-spacing: -0.2px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: -0.1px;
     }
 
     .brand-name span { color: #a48fff; }
 
-    .left-panel h1 {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: white;
-      line-height: 1.2;
-      margin-bottom: 20px;
-      letter-spacing: -0.5px;
-    }
-
-    .left-panel p {
-      font-size: 1rem;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.7;
-      margin-bottom: 48px;
-      max-width: 360px;
-    }
-
-    .feature-list {
-      list-style: none;
+    /* Main text */
+    .left-body {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
     }
 
-    .feature-list li {
+    .left-heading {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    .left-heading em {
+      font-style: normal;
+      color: #a48fff;
+    }
+
+    .left-sub {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+      margin-bottom: 36px;
+      max-width: 300px;
+    }
+
+    /* Mini transaction preview */
+    .preview-card {
+      background: rgba(255,255,255,0.05);
+      border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 18px 20px;
+      max-width: 320px;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .preview-header-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .preview-total {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .preview-row {
       display: flex;
       align-items: center;
-      gap: 14px;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.9rem;
-      font-weight: 500;
+      gap: 11px;
+      padding: 9px 0;
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
     }
 
-    .feature-icon {
-      width: 28px;
-      height: 28px;
-      background: rgba(108,79,255,0.25);
-      border: 1px solid rgba(108,79,255,0.4);
+    .preview-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .preview-row:first-of-type { padding-top: 0; }
+
+    .preview-dot {
+      width: 30px;
+      height: 30px;
       border-radius: 8px;
-      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.85rem;
+      flex-shrink: 0;
     }
 
-    .left-tagline {
-      margin-top: auto;
-      padding-top: 48px;
+    .preview-dot.food   { background: rgba(196,96,58,0.2); }
+    .preview-dot.ride   { background: rgba(74,122,184,0.2); }
+    .preview-dot.shop   { background: rgba(157,143,255,0.2); }
+    .preview-dot.bill   { background: rgba(184,140,26,0.2); }
+
+    .preview-info { flex: 1; min-width: 0; }
+
+    .preview-name {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .preview-cat {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.3);
+      margin-top: 1px;
+    }
+
+    .preview-amount {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .preview-bar-wrap {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .preview-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 7px;
+    }
+
+    .preview-bar-track {
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .preview-bar-fill {
+      height: 100%;
+      width: 62%;
+      background: linear-gradient(90deg, #6c4fff, #a48fff);
+      border-radius: 4px;
+    }
+
+    .left-foot {
+      position: relative;
+      z-index: 1;
       font-size: 0.72rem;
-      color: rgba(255,255,255,0.2);
-      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.18);
     }
 
-    /* ── Right panel ──────────────────────────────── */
+    /* ── Right panel ────────────────────────────────── */
     .right-panel {
       flex: 1;
       display: flex;
@@ -126,284 +228,365 @@
 
     .auth-card {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
     }
 
-    /* Mobile logo */
+    /* Mobile brand */
     .mobile-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 32px;
+      gap: 9px;
+      margin-bottom: 28px;
     }
 
     .mobile-brand-icon {
-      width: 36px;
-      height: 36px;
-      background: #6c4fff;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: block;
     }
 
     .mobile-brand-name {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #1a1a2e;
-      letter-spacing: -0.2px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111;
     }
 
     .mobile-brand-name span { color: #6c4fff; }
 
-    /* ── Form card ────────────────────────────────── */
+    /* Form card */
     .form-card {
-      background: white;
-      border-radius: 18px;
-      padding: 36px 32px;
-      box-shadow: 0 4px 24px rgba(108,79,255,0.1);
-      border: 0.5px solid #e8e8f4;
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+      border: 0.5px solid #e4e4e8;
+      position: relative;
     }
 
     .form-card h2 {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #1a1a2e;
-      margin-bottom: 6px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 4px;
       letter-spacing: -0.3px;
     }
 
     .form-card .subtitle {
-      font-size: 0.88rem;
-      color: #4a4a6a;
-      margin-bottom: 28px;
+      font-size: 0.875rem;
+      color: #666;
+      margin-bottom: 24px;
     }
 
     /* Flash messages */
     .flash {
-      padding: 10px 14px;
+      padding: 10px 13px;
       border-radius: 8px;
       font-size: 0.83rem;
       margin-bottom: 16px;
       font-weight: 500;
     }
-    .flash.error   { background: #fff0f0; color: #7a1a1e; border: 0.5px solid rgba(231,76,60,0.25); }
-    .flash.success { background: #edfaf3; color: #0a5f40; border: 0.5px solid rgba(10,140,90,0.25); }
-    .flash.info    { background: #f0eeff; color: #3a1a9a; border: 0.5px solid rgba(108,79,255,0.25); }
+    .flash.error   { background: #fff0f0; color: #7a1a1e; border: 1px solid rgba(231,76,60,0.2); }
+    .flash.success { background: #edfaf3; color: #0a5f40; border: 1px solid rgba(10,140,90,0.2); }
+    .flash.info    { background: #f0eeff; color: #3a1a9a; border: 1px solid rgba(108,79,255,0.2); }
 
     /* Fields */
-    .field { margin-bottom: 18px; }
+    .field { margin-bottom: 16px; }
 
     .field label {
       display: block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #4a4a6a;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 7px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 6px;
     }
+
+    .field-input-wrap { position: relative; }
 
     .field input {
       width: 100%;
-      padding: 11px 14px;
-      border: 0.5px solid #e8e8f4;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
       border-radius: 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.92rem;
-      color: #1a1a2e;
-      background: #f0f0ff;
-      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+      font-size: 0.9rem;
+      color: #111;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
     .field input:focus {
       outline: none;
       border-color: #6c4fff;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(108,79,255,0.12);
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.1);
     }
 
-    .field input:focus-visible {
-      outline: none;
-      border-color: #6c4fff;
-      box-shadow: 0 0 0 3px rgba(108,79,255,0.25);
+    .field input::placeholder { color: #bbb; }
+
+    /* Password toggle */
+    .field input[type="password"],
+    .field input[data-type="password"] {
+      padding-right: 42px;
     }
 
-    .field input::placeholder { color: #c0c0d8; }
+    .pw-toggle {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s;
+    }
 
-    /* Submit button */
+    .pw-toggle:hover { color: #555; }
+
+    /* Submit */
     .btn-signin {
       width: 100%;
-      padding: 13px;
+      padding: 11px;
       background: #6c4fff;
       color: white;
       border: none;
       border-radius: 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 700;
+      font-size: 0.9rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
-      box-shadow: 0 2px 8px rgba(108,79,255,0.3);
-      margin-top: 6px;
+      transition: background 0.15s, box-shadow 0.15s;
+      margin-top: 4px;
     }
 
-    .btn-signin:hover {
-      background: #5538e8;
-      box-shadow: 0 4px 16px rgba(108,79,255,0.4);
-      transform: translateY(-1px);
-    }
-
-    .btn-signin:active { transform: scale(0.97); }
-
-    .btn-signin:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(108,79,255,0.35);
-    }
+    .btn-signin:hover  { background: #5538e8; box-shadow: 0 4px 12px rgba(108,79,255,0.3); }
+    .btn-signin:active { transform: scale(0.98); }
+    .btn-signin:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(108,79,255,0.35); }
 
     .form-footer {
       text-align: center;
-      margin-top: 22px;
-      font-size: 0.85rem;
-      color: #4a4a6a;
+      margin-top: 20px;
+      font-size: 0.84rem;
+      color: #666;
     }
 
     .form-footer a {
-      color: #5538e8;
-      font-weight: 700;
+      color: #6c4fff;
+      font-weight: 600;
       text-decoration: none;
     }
 
     .form-footer a:hover { text-decoration: underline; }
-    .form-footer a:focus-visible { outline: 2px solid #6c4fff; outline-offset: 2px; border-radius: 2px; }
 
-    /* ── Welcome-back state ───────────────────────── */
+    /* ── Welcome-back state ────────────────────────── */
     #welcome-back { display: none; }
 
     .welcome-avatar {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       background: #f0eeff;
-      border-radius: 14px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      margin: 0 auto 16px;
-      border: 0.5px solid #d4ccff;
+      font-size: 1.5rem;
+      margin: 0 auto 14px;
+      border: 1px solid #d4ccff;
     }
 
     #welcome-name {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: #1a1a2e;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #111;
       text-align: center;
       margin-bottom: 4px;
-      letter-spacing: -0.2px;
     }
 
     .welcome-sub {
-      font-size: 0.85rem;
-      color: #4a4a6a;
+      font-size: 0.84rem;
+      color: #666;
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .btn-pin {
       width: 100%;
-      padding: 13px;
+      padding: 11px;
       background: #6c4fff;
       color: white;
       border: none;
       border-radius: 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 700;
+      font-size: 0.9rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
-      box-shadow: 0 2px 8px rgba(108,79,255,0.3);
-      margin-bottom: 14px;
+      transition: background 0.15s;
+      margin-bottom: 10px;
     }
 
-    .btn-pin:hover {
-      background: #5538e8;
-      box-shadow: 0 4px 16px rgba(108,79,255,0.4);
-      transform: translateY(-1px);
-    }
-
-    .btn-pin:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(108,79,255,0.35); }
+    .btn-pin:hover { background: #5538e8; }
 
     .switch-link {
       display: block;
       width: 100%;
       background: none;
-      border: 0.5px solid #e8e8f4;
+      border: 1px solid #e4e4e8;
       border-radius: 8px;
-      padding: 11px;
+      padding: 10px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      color: #4a4a6a;
+      font-size: 0.84rem;
+      color: #666;
       cursor: pointer;
       transition: border-color 0.15s, color 0.15s;
     }
 
-    .switch-link:hover {
-      border-color: #6c4fff;
-      color: #6c4fff;
-    }
+    .switch-link:hover { border-color: #6c4fff; color: #6c4fff; }
 
-    /* ── Desktop layout ───────────────────────────── */
+    /* ── Desktop ──────────────────────────────────── */
     @media (min-width: 860px) {
       .left-panel   { display: flex; }
       .mobile-brand { display: none; }
-      .right-panel  { background: #f0f0ff; }
+      .right-panel  { background: #f5f5f7; }
     }
 
     @media (max-width: 480px) {
-      .form-card { padding: 28px 20px; border-radius: 14px; }
-      .form-card h2 { font-size: 1.35rem; }
+      .form-card { padding: 26px 20px; }
     }
+
+    /* ── Skeleton loader ─────────────────────────────── */
+    @keyframes sk-shimmer {
+      0%   { background-position: -500px 0; }
+      100% { background-position:  500px 0; }
+    }
+
+    .sk-line {
+      border-radius: 6px;
+      background: linear-gradient(90deg, #e8e8ee 25%, #f2f2f7 50%, #e8e8ee 75%);
+      background-size: 500px 100%;
+      animation: sk-shimmer 1.4s infinite linear;
+    }
+
+    #login-skeleton {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    #login-skeleton.sk-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .sk-auth-title  { height: 22px; width: 55%; margin-bottom: 8px; }
+    .sk-auth-sub    { height: 13px; width: 40%; margin-bottom: 26px; }
+    .sk-auth-label  { height: 11px; width: 30%; margin-bottom: 8px; }
+    .sk-auth-input  { height: 40px; width: 100%; border-radius: 8px; margin-bottom: 18px; }
+    .sk-auth-btn    { height: 42px; width: 100%; border-radius: 8px; margin-top: 6px; }
+    .sk-auth-footer { height: 12px; width: 50%; margin: 20px auto 0; }
   </style>
 </head>
 <body>
 
-  <!-- Left panel — desktop only -->
+  <!-- Left panel — desktop -->
   <div class="left-panel">
     <div class="brand">
-      <div class="brand-icon" aria-hidden="true">$</div>
-      <div class="brand-name">Smart<span>Expense</span> AI Pro</div>
+      <img src="/static/icons/logo-icon.svg" class="brand-icon" alt="" aria-hidden="true">
+      <div class="brand-name">Smart<span>Expense</span></div>
     </div>
 
-    <h1>Take control of your finances.</h1>
-    <p>AI-powered insights, real-time tracking, and smart budgeting — all in one place.</p>
+    <div class="left-body">
+      <h1 class="left-heading">Know where every<br><em>peso</em> goes.</h1>
+      <p class="left-sub">Track daily spending, set budgets that stick, and actually understand your money.</p>
 
-    <ul class="feature-list">
-      <li><span class="feature-icon" aria-hidden="true">✦</span> AI expense categorization</li>
-      <li><span class="feature-icon" aria-hidden="true">✦</span> Smart budget alerts</li>
-      <li><span class="feature-icon" aria-hidden="true">✦</span> Receipt scanner with OCR</li>
-      <li><span class="feature-icon" aria-hidden="true">✦</span> AES-256 encrypted storage</li>
-      <li><span class="feature-icon" aria-hidden="true">✦</span> Spending anomaly detection</li>
-    </ul>
+      <div class="preview-card" aria-hidden="true">
+        <div class="preview-header">
+          <span class="preview-header-label">This month</span>
+          <span class="preview-total">₱14,280</span>
+        </div>
+        <div class="preview-row">
+          <div class="preview-dot food">🍔</div>
+          <div class="preview-info">
+            <div class="preview-name">Jollibee drive-thru</div>
+            <div class="preview-cat">Food & Dining</div>
+          </div>
+          <span class="preview-amount">−₱185</span>
+        </div>
+        <div class="preview-row">
+          <div class="preview-dot ride">🚗</div>
+          <div class="preview-info">
+            <div class="preview-name">Grab to Makati</div>
+            <div class="preview-cat">Transportation</div>
+          </div>
+          <span class="preview-amount">−₱95</span>
+        </div>
+        <div class="preview-row">
+          <div class="preview-dot shop">📦</div>
+          <div class="preview-info">
+            <div class="preview-name">Shopee order</div>
+            <div class="preview-cat">Shopping</div>
+          </div>
+          <span class="preview-amount">−₱1,250</span>
+        </div>
+        <div class="preview-row">
+          <div class="preview-dot bill">💡</div>
+          <div class="preview-info">
+            <div class="preview-name">Meralco bill</div>
+            <div class="preview-cat">Utilities</div>
+          </div>
+          <span class="preview-amount">−₱2,400</span>
+        </div>
+        <div class="preview-bar-wrap">
+          <div class="preview-bar-label">
+            <span>Budget used</span>
+            <span>₱14,280 / ₱23,000</span>
+          </div>
+          <div class="preview-bar-track">
+            <div class="preview-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <p class="left-tagline">SmartExpense AI Pro &nbsp;·&nbsp; Secure &nbsp;·&nbsp; Intelligent</p>
+    <p class="left-foot">SmartExpense &nbsp;·&nbsp; Free to use</p>
   </div>
 
   <!-- Right panel -->
   <div class="right-panel">
     <div class="auth-card">
 
-      <!-- Mobile logo -->
+      <!-- Mobile brand -->
       <div class="mobile-brand">
-        <div class="mobile-brand-icon" aria-hidden="true">$</div>
+        <img src="/static/icons/logo-icon.svg" class="mobile-brand-icon" alt="" aria-hidden="true">
         <div class="mobile-brand-name">Smart<span>Expense</span></div>
       </div>
 
       <div class="form-card">
 
-        <!-- Welcome-back state (shown by JS on mobile with active PIN) -->
+        <!-- Skeleton overlay — hides after session check -->
+        <div id="login-skeleton">
+          <div class="sk-line sk-auth-title"></div>
+          <div class="sk-line sk-auth-sub"></div>
+          <div class="sk-line sk-auth-label"></div>
+          <div class="sk-line sk-auth-input"></div>
+          <div class="sk-line sk-auth-label"></div>
+          <div class="sk-line sk-auth-input" style="margin-bottom:0"></div>
+          <div class="sk-line sk-auth-btn"></div>
+          <div class="sk-line sk-auth-footer"></div>
+        </div>
+
+        <!-- Welcome-back state -->
         <div id="welcome-back">
           <div class="welcome-avatar" aria-hidden="true">👋</div>
           <div id="welcome-name"></div>
@@ -415,7 +598,7 @@
         <!-- Login form -->
         <div id="login-form-wrap">
           <h2>Sign in</h2>
-          <p class="subtitle">Welcome back — enter your credentials</p>
+          <p class="subtitle">Good to see you again.</p>
 
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
@@ -425,21 +608,40 @@
 
           <form id="login-form" method="POST" action="{{ url_for('auth.login') }}">
             <div class="field">
-              <label for="email">Email address</label>
-              <input type="email" id="email" name="email" placeholder="you@example.com" required autofocus autocomplete="email" />
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="you@example.com"
+                     required autofocus autocomplete="email" />
             </div>
 
             <div class="field">
               <label for="password">Password</label>
-              <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+              <div class="field-input-wrap">
+                <input type="password" id="password" name="password" placeholder="••••••••"
+                       required autocomplete="current-password" />
+                <button type="button" class="pw-toggle" id="pw-toggle-btn"
+                        aria-label="Show password" title="Show password">
+                  <svg id="pw-eye" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg id="pw-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                       style="display:none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            <button type="submit" class="btn-signin">Sign In</button>
+            <button type="submit" class="btn-signin">Sign in</button>
           </form>
         </div>
 
         <p class="form-footer" id="form-footer">
-          Don't have an account? <a href="{{ url_for('auth.register') }}">Create one</a>
+          No account? <a href="{{ url_for('auth.register') }}">Create one</a>
         </p>
 
       </div>
@@ -447,10 +649,25 @@
   </div>
 
   <script>
-    const isMobile  = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    // Password show/hide
+    const pwInput  = document.getElementById('password');
+    const pwBtn    = document.getElementById('pw-toggle-btn');
+    const eyeIcon  = document.getElementById('pw-eye');
+    const eyeOff   = document.getElementById('pw-eye-off');
+
+    pwBtn.addEventListener('click', function () {
+      const show = pwInput.type === 'password';
+      pwInput.type          = show ? 'text' : 'password';
+      eyeIcon.style.display = show ? 'none'  : '';
+      eyeOff.style.display  = show ? ''      : 'none';
+      this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
+
+    // Session / PIN check
+    const isMobile   = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
     const pinEnabled = localStorage.getItem('smartexpense-pin-enabled') === 'true';
 
-    function goToApp() { window.location.href = '/'; }
+    function goToApp()       { window.location.href = '/'; }
 
     function showLoginForm() {
       document.getElementById('welcome-back').style.display    = 'none';
@@ -458,21 +675,27 @@
       document.getElementById('form-footer').style.display     = 'block';
     }
 
+    const loginSkel = document.getElementById('login-skeleton');
+    function hideSkeleton() {
+      if (loginSkel) loginSkel.classList.add('sk-hidden');
+    }
+
     (async function checkSession() {
       try {
         const res  = await fetch('/api/auth/status');
         const data = await res.json();
-        if (!data.logged_in) return;
+        if (!data.logged_in) { hideSkeleton(); return; }
 
         if (isMobile && pinEnabled) {
-          document.getElementById('welcome-name').textContent       = 'Welcome back, ' + data.user_name + '!';
-          document.getElementById('login-form-wrap').style.display  = 'none';
-          document.getElementById('form-footer').style.display      = 'none';
-          document.getElementById('welcome-back').style.display     = 'block';
+          document.getElementById('welcome-name').textContent      = 'Welcome back, ' + data.user_name + '!';
+          document.getElementById('login-form-wrap').style.display = 'none';
+          document.getElementById('form-footer').style.display     = 'none';
+          document.getElementById('welcome-back').style.display    = 'block';
+          hideSkeleton();
         } else {
           goToApp();
         }
-      } catch (_) { /* network error — show form as-is */ }
+      } catch (_) { hideSkeleton(); /* network error — show form */ }
     })();
   </script>
 

@@ -22,7 +22,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   await renderBalance();
   setupIncomeModal();
 
-  // 6. Charts in background (non-blocking)
+  // 6. Dismiss skeleton loader now that data is ready
+  const skel = document.getElementById('page-skeleton');
+  if (skel) skel.classList.add('sk-hidden');
+
+  // 7. Charts in background (non-blocking)
   renderAllCharts();
   setupChartPillToggle();
 

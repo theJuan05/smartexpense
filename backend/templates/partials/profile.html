@@ -5,7 +5,11 @@
   <div class="card profile-header-card">
     <div class="profile-avatar-wrap">
       <div class="profile-avatar" id="profile-avatar-display" aria-hidden="true">👤</div>
-      <button class="profile-avatar-edit" id="btn-change-avatar" aria-label="Change avatar">✏️</button>
+      <button class="profile-avatar-edit" id="btn-change-avatar" aria-label="Change profile photo">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>
+      <!-- Hidden file input -->
+      <input type="file" id="profile-pic-input" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" aria-label="Upload profile photo">
     </div>
     <div class="profile-info">
       <div class="profile-name" id="profile-name-display">Your Name</div>
@@ -71,19 +75,109 @@
     <h2>App Preferences</h2>
     <div class="settings-group">
 
-      <!-- Dark Mode -->
-      <div class="settings-item">
+      <!-- Appearance / Theme Picker -->
+      <div class="settings-item settings-item--appearance">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🌙</span>
+          <span class="settings-icon" aria-hidden="true">🎨</span>
           <div>
-            <div class="settings-label">Dark Mode</div>
-            <div class="settings-value">Switch app theme</div>
+            <div class="settings-label">Appearance</div>
+            <div class="settings-value" id="theme-current-label">Light</div>
           </div>
         </div>
-        <label class="toggle-switch">
-          <input type="checkbox" id="settings-dark-toggle" />
-          <span class="toggle-slider"></span>
-        </label>
+      </div>
+
+      <div class="theme-picker" role="radiogroup" aria-label="Choose theme">
+
+        <!-- Light -->
+        <button class="theme-option" id="theme-opt-light" role="radio" data-theme="light" aria-label="Light theme">
+          <div class="theme-preview" aria-hidden="true">
+            <!-- navbar -->
+            <div class="tp-nav tp-nav--light">
+              <div class="tp-nav-dot"></div>
+              <div class="tp-nav-dot"></div>
+              <div class="tp-nav-dot"></div>
+            </div>
+            <!-- hero balance card -->
+            <div class="tp-hero tp-hero--light">
+              <div class="tp-hero-line tp-hero-line--lg"></div>
+              <div class="tp-hero-line tp-hero-line--sm"></div>
+            </div>
+            <!-- stat row -->
+            <div class="tp-stats tp-stats--light">
+              <div class="tp-stat-box"></div>
+              <div class="tp-stat-box"></div>
+            </div>
+            <!-- list rows -->
+            <div class="tp-rows tp-rows--light">
+              <div class="tp-row">
+                <div class="tp-row-dot"></div>
+                <div class="tp-row-lines">
+                  <div class="tp-row-line tp-row-line--lg"></div>
+                  <div class="tp-row-line tp-row-line--sm"></div>
+                </div>
+                <div class="tp-row-amt"></div>
+              </div>
+              <div class="tp-row">
+                <div class="tp-row-dot"></div>
+                <div class="tp-row-lines">
+                  <div class="tp-row-line tp-row-line--lg"></div>
+                  <div class="tp-row-line tp-row-line--sm"></div>
+                </div>
+                <div class="tp-row-amt"></div>
+              </div>
+            </div>
+          </div>
+          <div class="theme-option-footer">
+            <span class="theme-option-check" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="theme-option-label">Light</span>
+          </div>
+        </button>
+
+        <!-- Dark -->
+        <button class="theme-option" id="theme-opt-dark" role="radio" data-theme="dark" aria-label="Dark theme">
+          <div class="theme-preview" aria-hidden="true">
+            <div class="tp-nav tp-nav--dark">
+              <div class="tp-nav-dot"></div>
+              <div class="tp-nav-dot"></div>
+              <div class="tp-nav-dot"></div>
+            </div>
+            <div class="tp-hero tp-hero--dark">
+              <div class="tp-hero-line tp-hero-line--lg"></div>
+              <div class="tp-hero-line tp-hero-line--sm"></div>
+            </div>
+            <div class="tp-stats tp-stats--dark">
+              <div class="tp-stat-box"></div>
+              <div class="tp-stat-box"></div>
+            </div>
+            <div class="tp-rows tp-rows--dark">
+              <div class="tp-row">
+                <div class="tp-row-dot"></div>
+                <div class="tp-row-lines">
+                  <div class="tp-row-line tp-row-line--lg"></div>
+                  <div class="tp-row-line tp-row-line--sm"></div>
+                </div>
+                <div class="tp-row-amt"></div>
+              </div>
+              <div class="tp-row">
+                <div class="tp-row-dot"></div>
+                <div class="tp-row-lines">
+                  <div class="tp-row-line tp-row-line--lg"></div>
+                  <div class="tp-row-line tp-row-line--sm"></div>
+                </div>
+                <div class="tp-row-amt"></div>
+              </div>
+            </div>
+          </div>
+          <div class="theme-option-footer">
+            <span class="theme-option-check" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="theme-option-label">Dark</span>
+          </div>
+        </button>
+
       </div>
 
       <!-- Currency -->
@@ -344,10 +438,25 @@
 <div id="modal-edit-avatar" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-header">
-      <h2>Choose Avatar</h2>
+      <h2>Profile Photo</h2>
       <button class="modal-close" onclick="closeProfileModal('modal-edit-avatar')">✕</button>
     </div>
     <div class="modal-body">
+
+      <!-- Upload photo section -->
+      <div class="avatar-upload-section">
+        <label for="profile-pic-input" class="avatar-upload-btn" role="button" tabindex="0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload a photo
+        </label>
+        <p class="avatar-upload-hint">JPG, PNG, WebP up to 5 MB</p>
+        <button id="btn-remove-photo" class="avatar-remove-btn" style="display:none" onclick="removeProfilePhoto()">Remove photo</button>
+      </div>
+
+      <div class="avatar-section-divider">
+        <span>or choose an emoji</span>
+      </div>
+
       <div class="avatar-grid">
         <span class="avatar-option" onclick="selectAvatar('👤')">👤</span>
         <span class="avatar-option" onclick="selectAvatar('🧑')">🧑</span>
@@ -362,6 +471,7 @@
         <span class="avatar-option" onclick="selectAvatar('👨‍💻')">👨‍💻</span>
         <span class="avatar-option" onclick="selectAvatar('👩‍💻')">👩‍💻</span>
       </div>
+
     </div>
   </div>
 </div>

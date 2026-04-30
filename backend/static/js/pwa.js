@@ -114,3 +114,49 @@ if ('serviceWorker' in navigator) {
 
 // Initialize
 initPWA();
+
+// ── More Sheet ────────────────────────────────────────────────
+(function () {
+  const btn      = document.getElementById('btn-more-menu');
+  const sheet    = document.getElementById('more-sheet');
+  const backdrop = document.getElementById('more-sheet-backdrop');
+  if (!btn || !sheet || !backdrop) return;
+
+  function openSheet() {
+    sheet.classList.add('open');
+    backdrop.classList.add('open');
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    sheet.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeSheet() {
+    sheet.classList.remove('open');
+    backdrop.classList.remove('open');
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    sheet.setAttribute('aria-hidden', 'true');
+  }
+
+  btn.addEventListener('click', function () {
+    sheet.classList.contains('open') ? closeSheet() : openSheet();
+  });
+
+  backdrop.addEventListener('click', closeSheet);
+
+  // Close sheet and navigate when a sheet item is tapped
+  sheet.querySelectorAll('.more-sheet-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      closeSheet();
+      // Mark More button as open when Insights/Advice is active
+      btn.classList.add('open');
+    });
+  });
+
+  // If a main nav tab is clicked, remove the "open" highlight from More
+  document.querySelectorAll('.bottom-nav .tab-btn').forEach(function (navBtn) {
+    navBtn.addEventListener('click', function () {
+      btn.classList.remove('open');
+    });
+  });
+})();

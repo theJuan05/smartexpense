@@ -40,15 +40,9 @@
     .brand-icon {
       width: 40px;
       height: 40px;
-      background: #6c4fff;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      font-weight: 800;
-      color: white;
       flex-shrink: 0;
+      display: block;
     }
 
     .brand-name {
@@ -142,14 +136,8 @@
     .mobile-brand-icon {
       width: 34px;
       height: 34px;
-      background: #6c4fff;
       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: white;
+      display: block;
     }
 
     .mobile-brand-name {
@@ -305,8 +293,8 @@
   <!-- Left panel — desktop only -->
   <div class="left-panel">
     <div class="brand">
-      <div class="brand-icon" aria-hidden="true">$</div>
-      <div class="brand-name">Smart<span>Expense</span> AI Pro</div>
+      <img src="/static/icons/logo-icon.svg" class="brand-icon" alt="" aria-hidden="true">
+      <div class="brand-name">Smart<span>Expense</span></div>
     </div>
 
     <h1>Your money, finally clear.</h1>
@@ -318,7 +306,7 @@
       <li><span class="step-num" aria-hidden="true">3</span> Let AI surface patterns and flag unusual spending</li>
     </ul>
 
-    <p class="left-tagline">SmartExpense AI Pro &nbsp;·&nbsp; Free to use</p>
+    <p class="left-tagline">SmartExpense &nbsp;·&nbsp; Free to use</p>
   </div>
 
   <!-- Right panel -->
@@ -327,7 +315,7 @@
 
       <!-- Mobile logo -->
       <div class="mobile-brand">
-        <div class="mobile-brand-icon" aria-hidden="true">$</div>
+        <img src="/static/icons/logo-icon.svg" class="mobile-brand-icon" alt="" aria-hidden="true">
         <div class="mobile-brand-name">Smart<span>Expense</span></div>
       </div>
 

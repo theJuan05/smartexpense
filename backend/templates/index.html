@@ -18,7 +18,10 @@
 
   <!-- Navigation -->
   <nav class="navbar" role="banner">
-    <span class="logo" aria-label="SmartExpense AI Pro">Smart<span>Expense</span> AI Pro</span>
+    <span class="logo" aria-label="SmartExpense">
+      <img src="/static/icons/logo-icon.svg" alt="" aria-hidden="true" class="logo-img">
+      Smart<span>Expense</span>
+    </span>
     <div class="navbar-actions">
       <button id="btn-dark-mode" aria-label="Switch to dark mode" title="Switch to Dark Mode">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -43,6 +46,101 @@
     <button class="tab-btn" data-tab="profile" role="tab" aria-selected="false" aria-controls="tab-profile">Settings</button>
   </div>
 
+  <!-- ── Skeleton Loader ──────────────────────────────────────── -->
+  <div id="page-skeleton" aria-hidden="true">
+    <div class="sk-container">
+
+      <!-- Balance hero card -->
+      <div class="sk-hero">
+        <div class="sk-hero-top">
+          <div class="sk-line sk-line--xs" style="width:90px"></div>
+          <div class="sk-line sk-line--xs" style="width:70px"></div>
+        </div>
+        <div class="sk-line sk-line--xl" style="width:160px; margin:14px 0 18px"></div>
+        <div class="sk-hero-footer">
+          <div class="sk-hero-col">
+            <div class="sk-circle sk-circle--sm"></div>
+            <div>
+              <div class="sk-line sk-line--xs" style="width:40px;margin-bottom:4px"></div>
+              <div class="sk-line sk-line--sm" style="width:72px"></div>
+            </div>
+          </div>
+          <div class="sk-hero-col">
+            <div class="sk-circle sk-circle--sm"></div>
+            <div>
+              <div class="sk-line sk-line--xs" style="width:40px;margin-bottom:4px"></div>
+              <div class="sk-line sk-line--sm" style="width:72px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="sk-stats-row">
+        <div class="sk-stat-card">
+          <div class="sk-line sk-line--xs" style="width:70px;margin-bottom:10px"></div>
+          <div class="sk-line sk-line--lg" style="width:90px"></div>
+        </div>
+        <div class="sk-stat-card">
+          <div class="sk-line sk-line--xs" style="width:70px;margin-bottom:10px"></div>
+          <div class="sk-line sk-line--lg" style="width:60px"></div>
+        </div>
+      </div>
+
+      <!-- Section header -->
+      <div class="sk-card">
+        <div class="sk-section-head">
+          <div class="sk-line sk-line--sm" style="width:130px"></div>
+          <div class="sk-line sk-line--xs" style="width:60px"></div>
+        </div>
+
+        <!-- Expense rows -->
+        <div class="sk-row">
+          <div class="sk-circle"></div>
+          <div class="sk-row-body">
+            <div class="sk-line sk-line--sm" style="width:55%"></div>
+            <div class="sk-line sk-line--xs" style="width:35%;margin-top:5px"></div>
+          </div>
+          <div class="sk-line sk-line--sm" style="width:52px;flex-shrink:0"></div>
+        </div>
+        <div class="sk-row">
+          <div class="sk-circle"></div>
+          <div class="sk-row-body">
+            <div class="sk-line sk-line--sm" style="width:48%"></div>
+            <div class="sk-line sk-line--xs" style="width:30%;margin-top:5px"></div>
+          </div>
+          <div class="sk-line sk-line--sm" style="width:48px;flex-shrink:0"></div>
+        </div>
+        <div class="sk-row">
+          <div class="sk-circle"></div>
+          <div class="sk-row-body">
+            <div class="sk-line sk-line--sm" style="width:62%"></div>
+            <div class="sk-line sk-line--xs" style="width:40%;margin-top:5px"></div>
+          </div>
+          <div class="sk-line sk-line--sm" style="width:56px;flex-shrink:0"></div>
+        </div>
+        <div class="sk-row">
+          <div class="sk-circle"></div>
+          <div class="sk-row-body">
+            <div class="sk-line sk-line--sm" style="width:44%"></div>
+            <div class="sk-line sk-line--xs" style="width:28%;margin-top:5px"></div>
+          </div>
+          <div class="sk-line sk-line--sm" style="width:44px;flex-shrink:0"></div>
+        </div>
+      </div>
+
+      <!-- Second card -->
+      <div class="sk-card">
+        <div class="sk-section-head">
+          <div class="sk-line sk-line--sm" style="width:110px"></div>
+        </div>
+        <div class="sk-chart-placeholder"></div>
+      </div>
+
+    </div>
+  </div>
+  <!-- ─────────────────────────────────────────────────────────── -->
+
   <!-- Main Container -->
   <div class="container">
     {% include 'partials/dashboard.html' %}
@@ -65,26 +163,52 @@
       <span>Expenses</span>
     </button>
     <button class="tab-btn bottom-nav-item bottom-nav-add" data-tab="add" aria-label="Add expense">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       <span>Add</span>
     </button>
     <button class="tab-btn bottom-nav-item" data-tab="budget" aria-label="Budget">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><path d="M8 7V5a2 2 0 0 0-4 0v2"/><line x1="8" y1="12" x2="8" y2="12.01"/><line x1="12" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="12" y1="16" x2="16" y2="16"/></svg>
       <span>Budget</span>
     </button>
-    <button class="tab-btn bottom-nav-item" data-tab="insights" aria-label="Insights">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      <span>Insights</span>
-    </button>
-    <button class="tab-btn bottom-nav-item" data-tab="advice" aria-label="Advice">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span>Advice</span>
-    </button>
-    <button class="tab-btn bottom-nav-item" data-tab="profile" aria-label="Settings">
+    <button class="tab-btn bottom-nav-item" data-tab="profile" aria-label="Profile">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
       <span>Profile</span>
     </button>
+    <!-- More button — opens slide-up sheet with Insights & Advice -->
+    <button class="bottom-nav-item bottom-nav-more" id="btn-more-menu" aria-label="More" aria-expanded="false" aria-controls="more-sheet">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+      <span>More</span>
+    </button>
   </nav>
+
+  <!-- More Sheet (slide-up) -->
+  <div id="more-sheet-backdrop" class="more-sheet-backdrop" aria-hidden="true"></div>
+  <div id="more-sheet" class="more-sheet" role="dialog" aria-label="More navigation" aria-hidden="true">
+    <div class="more-sheet-handle"></div>
+    <p class="more-sheet-label">More</p>
+    <div class="more-sheet-items">
+      <button class="tab-btn more-sheet-item" data-tab="insights" aria-label="Insights">
+        <div class="more-sheet-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div class="more-sheet-text">
+          <span class="more-sheet-title">Insights</span>
+          <span class="more-sheet-sub">Charts & spending trends</span>
+        </div>
+        <svg class="more-sheet-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="tab-btn more-sheet-item" data-tab="advice" aria-label="AI Advice">
+        <div class="more-sheet-icon more-sheet-icon--advice">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="more-sheet-text">
+          <span class="more-sheet-title">AI Advice</span>
+          <span class="more-sheet-sub">Personalized financial tips</span>
+        </div>
+        <svg class="more-sheet-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
 
   <!-- Hidden backend status -->
   <p id="backend-status" style="display:none;"></p>
