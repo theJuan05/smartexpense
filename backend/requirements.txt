@@ -8,7 +8,6 @@ python-dotenv
 gunicorn
 cryptography
 requests
-openai
-google-generativeai
 PyJWT
 Pillow
+google-genai
