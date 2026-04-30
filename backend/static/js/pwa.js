@@ -102,7 +102,7 @@ function initPWA() {
 // Register service worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/frontend/service-worker.js')
+    navigator.serviceWorker.register('/static/service-worker.js')
       .then(function(reg) {
         console.log('[PWA] Service Worker registered:', reg.scope);
       })
