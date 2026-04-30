@@ -7,10 +7,10 @@ async function loadBudgetSummary() {
 
   container.innerHTML = '<div class="spinner">Loading...</div>';
 
-  // Fetch from Flask budget summary endpoint
   const result = await API.request('/budgets/summary?user_id=1');
 
   if (!result || result.status !== 'success' || !result.data.length) {
+    renderBudgetHero(null);
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">📊</div>
@@ -22,36 +22,103 @@ async function loadBudgetSummary() {
     return;
   }
 
+  // Split overall budget from category budgets
+  const overall  = result.data.find(b => b.category === 'Overall Budget');
+  const catBudgets = result.data.filter(b => b.category !== 'Overall Budget');
+
+  renderBudgetHero(overall || null);
+
   container.innerHTML = '';
 
-  // Check for alerts first
-  const alerts = result.data.filter(b => b.status !== 'ok');
-  if (alerts.length > 0) {
-    const alertBox = document.createElement('div');
-    alertBox.style.marginBottom = '16px';
-    alerts.forEach(b => {
-      const pct  = b.percentage;
-      const type = b.status;
-      const msg  = type === 'danger'
-        ? `Over budget alert! ${b.category} is at ${pct}% of limit`
-        : `Warning: ${b.category} is at ${pct}% of limit`;
+  if (catBudgets.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="padding:16px 0;">
+        <p style="font-size:0.85rem;color:var(--text-muted);">No category budgets set yet.</p>
+      </div>`;
+  } else {
+    // Alerts for category budgets
+    const alerts = catBudgets.filter(b => b.status !== 'ok');
+    if (alerts.length > 0) {
+      const alertBox = document.createElement('div');
+      alertBox.style.marginBottom = '16px';
+      alerts.forEach(b => {
+        const type = b.status;
+        const msg  = type === 'danger'
+          ? `Over budget! ${b.category} is at ${b.percentage}% of limit`
+          : `Warning: ${b.category} is at ${b.percentage}% of limit`;
+        alertBox.innerHTML += `
+          <div class="budget-alert ${type}">
+            ${type === 'danger' ? 'OVER BUDGET' : 'WARNING'}: ${msg}
+          </div>`;
+      });
+      container.appendChild(alertBox);
+    }
 
-      alertBox.innerHTML += `
-        <div class="budget-alert ${type}">
-          ${type === 'danger' ? 'OVER BUDGET' : 'WARNING'}: ${msg}
-        </div>`;
+    catBudgets.forEach(budget => {
+      container.appendChild(createBudgetCard(budget));
     });
-    container.appendChild(alertBox);
   }
 
-  // Render each budget card
-  result.data.forEach(budget => {
-    const card = createBudgetCard(budget);
-    container.appendChild(card);
-  });
-
-  // Also refresh dashboard budget section
   await renderBudgetProgress();
+}
+
+// ── Render overall budget as a hero card ──────────────────
+function renderBudgetHero(budget) {
+  const heroEl = document.getElementById('budget-hero');
+  if (!heroEl) return;
+
+  if (!budget) {
+    heroEl.innerHTML = '';
+    return;
+  }
+
+  const remaining  = budget.amount_limit - budget.spent;
+  const pct        = Math.min(budget.percentage, 100);
+  const isOver     = budget.status === 'danger';
+  const isWarn     = budget.status === 'warning';
+  const remainColor = isOver ? '#ff7675' : '#00b894';
+  const fmt = v => '₱' + Math.abs(v).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+
+  heroEl.innerHTML = `
+    <div class="balance-card" style="margin-bottom:14px;">
+      <div class="balance-card-header">
+        <span class="balance-card-label">Overall Budget</span>
+        ${isOver
+          ? '<span style="background:rgba(255,118,117,0.2);color:#ff7675;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:.5px;">OVER BUDGET</span>'
+          : isWarn
+          ? '<span style="background:rgba(253,203,110,0.2);color:#fdcb6e;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:.5px;">WARNING</span>'
+          : ''}
+      </div>
+      <div class="balance-amount" style="color:${remainColor}">
+        ${remaining < 0 ? '-' : ''}${fmt(remaining)}
+      </div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-bottom:14px;position:relative;z-index:1;">
+        Remaining this ${budget.period || 'month'}
+      </div>
+      <div class="balance-footer">
+        <div class="balance-col">
+          <div class="balance-col-icon income">↑</div>
+          <div class="balance-col-body">
+            <div class="balance-col-label">Budget Limit</div>
+            <div class="balance-col-val income">${fmt(budget.amount_limit)}</div>
+          </div>
+        </div>
+        <div class="balance-sep"></div>
+        <div class="balance-col">
+          <div class="balance-col-icon expense">↓</div>
+          <div class="balance-col-body">
+            <div class="balance-col-label">Spent</div>
+            <div class="balance-col-val expense">${fmt(budget.spent)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="progress-bar-track"
+           style="margin-top:14px;background:rgba(255,255,255,0.1);border-radius:6px;height:6px;overflow:hidden;position:relative;z-index:1;">
+        <div class="progress-bar-fill ${isOver ? 'danger' : isWarn ? 'warning' : ''}"
+             style="width:${pct}%;transition:width 0.6s ease;height:100%;border-radius:6px;"></div>
+      </div>
+    </div>
+  `;
 }
 
 // ── Create a single budget card ────────────────────────────

@@ -2050,7 +2050,7 @@ textarea:focus-visible {
   .container { max-width: 1280px; padding: 28px 40px; }
 
   /* ── Dashboard: balance + stats full-width; charts side-by-side ── */
-  #tab-dashboard {
+  #tab-dashboard.active {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 20px;
@@ -2062,16 +2062,16 @@ textarea:focus-visible {
   #tab-dashboard > #dashboard-empty { grid-column: 1 / -1; }
 
   /* ── Add Expense: form left, tips sidebar right ── */
-  #tab-add {
+  #tab-add.active {
     display: grid;
     grid-template-columns: 1fr 300px;
     column-gap: 20px;
     align-items: start;
   }
-  .add-sidebar { display: block; }
+  #tab-add.active > .add-sidebar { display: block; }
 
   /* ── Budget: overview left, set-budget right ── */
-  #tab-budget {
+  #tab-budget.active {
     display: grid;
     grid-template-columns: 1fr 340px;
     column-gap: 20px;
@@ -2079,7 +2079,7 @@ textarea:focus-visible {
   }
 
   /* ── Insights: anomaly + prediction side-by-side; forecast full ── */
-  #tab-insights {
+  #tab-insights.active {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 20px;
@@ -2088,7 +2088,7 @@ textarea:focus-visible {
   #tab-insights > .card-forecast { grid-column: 1 / -1; }
 
   /* ── Advice: health score left, tips right ── */
-  #tab-advice {
+  #tab-advice.active {
     display: grid;
     grid-template-columns: 300px 1fr;
     column-gap: 20px;
