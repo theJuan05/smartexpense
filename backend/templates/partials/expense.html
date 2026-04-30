@@ -1,0 +1,126 @@
+<!-- ── EXPENSES TAB ───────────────────────────── -->
+<div id="tab-expenses" class="tab-content">
+  <div class="card">
+    <h2>Recent Expenses
+      <span id="expense-count-badge" class="card-count-badge"></span>
+    </h2>
+
+    <!-- Search Bar -->
+    <input type="text" id="search-expenses"
+           placeholder="Search expenses..."
+           aria-label="Search expenses" />
+
+    <!-- Export Buttons -->
+    <div class="modal-actions" style="margin-bottom:14px;">
+      <button class="btn btn-success" onclick="exportToCSV()">
+        <span aria-hidden="true">📊</span> Export CSV
+      </button>
+      <button class="btn btn-success" onclick="exportToPDF()">
+        <span aria-hidden="true">📄</span> Export PDF
+      </button>
+    </div>
+
+    <!-- Expense List -->
+    <div id="expense-list">
+      <div class="spinner">Loading expenses...</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── EDIT EXPENSE MODAL ─────────────────────────────────── -->
+<div id="modal-edit-expense" class="modal-overlay">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2><span aria-hidden="true">✏️ </span>Edit Expense</h2>
+      <button class="modal-close" id="btn-close-edit-expense" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" id="edit-exp-id" />
+
+      <div class="form-group">
+        <label for="edit-exp-title">Title</label>
+        <input type="text" id="edit-exp-title"
+               placeholder="e.g. Jollibee lunch" />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-exp-amount">Amount (PHP)</label>
+        <input type="number" id="edit-exp-amount"
+               placeholder="0.00" min="0" step="0.01" />
+      </div>
+
+      <div class="form-group">
+        <label for="edit-exp-category">Category</label>
+        <select id="edit-exp-category">
+          <option value="">-- Select category --</option>
+          <option value="Food &amp; Dining">Food and Dining</option>
+          <option value="Transportation">Transportation</option>
+          <option value="Utilities &amp; Bills">Utilities and Bills</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Education">Education</option>
+          <option value="Savings">Savings</option>
+          <option value="Housing &amp; Rent">Housing and Rent</option>
+          <option value="Others">Others</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="edit-exp-date" />
+      </div>
+
+      <div class="form-group">
+        <label>Payment Method</label>
+        <select id="edit-exp-payment">
+          <option value="cash">Cash</option>
+          <option value="card">Card</option>
+          <option value="online">Online</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Notes (optional)</label>
+        <input type="text" id="edit-exp-notes"
+               placeholder="Any additional details..." />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn" id="btn-cancel-edit-expense">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-edit-expense">
+          <span aria-hidden="true">💾</span> Save Changes
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── CONFIRM DELETE MODAL ───────────────────────────────── -->
+<div id="modal-confirm-delete" class="modal-overlay">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2 class="modal-heading-danger"><span aria-hidden="true">🗑️ </span>Delete Expense</h2>
+      <button class="modal-close" id="btn-close-delete-expense" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" id="delete-expense-id" />
+
+      <p id="delete-expense-title" class="delete-expense-name"></p>
+      <p class="delete-note">Once deleted, it's gone for good.</p>
+
+      <div class="modal-actions">
+        <button class="btn" id="btn-cancel-delete-expense">Keep it</button>
+        <button class="btn btn-danger" id="btn-confirm-delete-expense">Delete</button>
+      </div>
+
+    </div>
+  </div>
+</div>

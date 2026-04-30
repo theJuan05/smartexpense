@@ -1,0 +1,57 @@
+<!-- ── PIN LOCK OVERLAY ───────────────────────────────────── -->
+<div id="pin-overlay" class="pin-overlay">
+  <div class="pin-box">
+
+    <!-- Logo -->
+    <div class="pin-logo">
+      💰 Smart<span>Expense</span>
+    </div>
+
+    <!-- Title -->
+    <h2 id="pin-title" class="pin-title">🔒 Enter PIN</h2>
+    <p id="pin-subtitle" class="pin-subtitle">
+      Enter your 4-digit PIN to continue
+    </p>
+
+    <!-- PIN Dots -->
+    <div class="pin-dots">
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="pin-error" class="pin-error" style="display:none;"></div>
+
+    <!-- Keypad -->
+    <div class="pin-keypad">
+      <!-- Row 1 -->
+      <button class="pin-key" data-digit="1">1</button>
+      <button class="pin-key" data-digit="2">2<span>ABC</span></button>
+      <button class="pin-key" data-digit="3">3<span>DEF</span></button>
+
+      <!-- Row 2 -->
+      <button class="pin-key" data-digit="4">4<span>GHI</span></button>
+      <button class="pin-key" data-digit="5">5<span>JKL</span></button>
+      <button class="pin-key" data-digit="6">6<span>MNO</span></button>
+
+      <!-- Row 3 -->
+      <button class="pin-key" data-digit="7">7<span>PQRS</span></button>
+      <button class="pin-key" data-digit="8">8<span>TUV</span></button>
+      <button class="pin-key" data-digit="9">9<span>WXYZ</span></button>
+
+      <!-- Row 4 -->
+      <div class="pin-key pin-key-empty"></div>
+      <button class="pin-key" data-digit="0">0</button>
+      <button class="pin-key pin-key-delete" id="pin-delete">⌫</button>
+    </div>
+
+    <!-- Forgot PIN -->
+    <button id="pin-forgot" class="pin-forgot-btn">
+      Forgot PIN?
+    </button>
+
+  </div>
+</div>
+<!-- ── END PIN LOCK OVERLAY ───────────────────────────────── -->

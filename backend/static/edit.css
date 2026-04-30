@@ -1,0 +1,54 @@
+/* ── EXPENSE ITEM ACTIONS ────────────────────────────────────── */
+
+.expense-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.expense-item:last-child {
+  border-bottom: none;
+}
+
+.expense-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.expense-amount {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--danger);
+}
+
+.expense-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.expense-edit-btn,
+.expense-delete-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.expense-edit-btn:hover {
+  background: rgba(108,79,255,0.1);
+  border-color: var(--primary);
+}
+
+.expense-delete-btn:hover {
+  background: rgba(231,76,60,0.1);
+  border-color: var(--danger);
+}

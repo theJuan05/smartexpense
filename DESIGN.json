@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-04-29T00:00:00Z",
+  "title": "Design System: SmartExpense AI Pro",
+  "extensions": {
+    "colorMeta": {
+      "momentum-violet": {
+        "role": "primary",
+        "displayName": "Momentum Violet",
+        "canonical": "oklch(54% 0.23 272)",
+        "tonalRamp": [
+          "oklch(15% 0.06 272)",
+          "oklch(25% 0.11 272)",
+          "oklch(35% 0.17 272)",
+          "oklch(44% 0.21 272)",
+          "oklch(54% 0.23 272)",
+          "oklch(65% 0.18 272)",
+          "oklch(80% 0.10 272)",
+          "oklch(93% 0.04 272)"
+        ]
+      },
+      "growth-green": {
+        "role": "secondary",
+        "displayName": "Growth Green",
+        "canonical": "oklch(50% 0.15 160)",
+        "tonalRamp": [
+          "oklch(15% 0.05 160)",
+          "oklch(25% 0.08 160)",
+          "oklch(35% 0.12 160)",
+          "oklch(43% 0.15 160)",
+          "oklch(50% 0.15 160)",
+          "oklch(62% 0.12 160)",
+          "oklch(78% 0.07 160)",
+          "oklch(92% 0.03 160)"
+        ]
+      },
+      "alert-red": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "canonical": "oklch(58% 0.20 25)",
+        "tonalRamp": [
+          "oklch(15% 0.05 25)",
+          "oklch(25% 0.09 25)",
+          "oklch(35% 0.14 25)",
+          "oklch(47% 0.18 25)",
+          "oklch(58% 0.20 25)",
+          "oklch(68% 0.15 25)",
+          "oklch(80% 0.09 25)",
+          "oklch(93% 0.03 25)"
+        ]
+      },
+      "caution-amber": {
+        "role": "tertiary",
+        "displayName": "Caution Amber",
+        "canonical": "oklch(74% 0.18 80)",
+        "tonalRamp": [
+          "oklch(20% 0.06 80)",
+          "oklch(30% 0.10 80)",
+          "oklch(42% 0.15 80)",
+          "oklch(55% 0.18 80)",
+          "oklch(65% 0.20 80)",
+          "oklch(74% 0.18 80)",
+          "oklch(85% 0.12 80)",
+          "oklch(95% 0.05 80)"
+        ]
+      },
+      "surface-page": {
+        "role": "neutral",
+        "displayName": "Violet Mist",
+        "canonical": "oklch(95% 0.01 272)",
+        "tonalRamp": [
+          "oklch(60% 0.04 272)",
+          "oklch(70% 0.04 272)",
+          "oklch(78% 0.03 272)",
+          "oklch(84% 0.02 272)",
+          "oklch(89% 0.02 272)",
+          "oklch(93% 0.01 272)",
+          "oklch(95% 0.01 272)",
+          "oklch(98% 0.005 272)"
+        ]
+      },
+      "text-primary": {
+        "role": "neutral",
+        "displayName": "Midnight Ink",
+        "canonical": "oklch(14% 0.02 272)",
+        "tonalRamp": [
+          "oklch(8% 0.01 272)",
+          "oklch(12% 0.02 272)",
+          "oklch(16% 0.03 272)",
+          "oklch(22% 0.04 272)",
+          "oklch(30% 0.05 272)",
+          "oklch(45% 0.06 272)",
+          "oklch(60% 0.05 272)",
+          "oklch(80% 0.03 272)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Balance hero — the primary financial number. One instance per screen." },
+      "headline": { "displayName": "Headline", "purpose": "Stat card values (income, expenses, savings). Big, bold, readable at a glance." },
+      "title": { "displayName": "Title", "purpose": "Section context and modal headings." },
+      "body": { "displayName": "Body", "purpose": "Expense descriptions, form field values, general content. Max 70ch line length." },
+      "label": { "displayName": "Label", "purpose": "Section headings inside cards, form field labels, tab bar text. Always uppercase." }
+    },
+    "shadows": [
+      {
+        "name": "ambient",
+        "value": "0 1px 4px rgba(108,79,255,0.06)",
+        "purpose": "Resting state for cards and the navbar. Barely visible — separates surfaces without declaring depth."
+      },
+      {
+        "name": "lift",
+        "value": "0 4px 16px rgba(108,79,255,0.1)",
+        "purpose": "Hover state for cards and stat boxes. Shadow intensifies, violet tint becomes perceptible — element feels responsive."
+      },
+      {
+        "name": "float",
+        "value": "0 8px 32px rgba(108,79,255,0.15)",
+        "purpose": "Active modals and raised panels. The loudest shadow in the system; used sparingly."
+      },
+      {
+        "name": "glow-primary",
+        "value": "0 2px 8px rgba(108,79,255,0.3)",
+        "purpose": "Resting violet glow on primary buttons. Distinguishes interactive controls from structural cards."
+      },
+      {
+        "name": "glow-primary-hover",
+        "value": "0 4px 16px rgba(108,79,255,0.4)",
+        "purpose": "Intensified glow on primary button hover."
+      }
+    ],
+    "motion": [
+      {
+        "name": "micro",
+        "value": "0.15s ease-out",
+        "purpose": "Button states, tab hover, input focus — immediate feedback interactions."
+      },
+      {
+        "name": "standard",
+        "value": "0.2s ease-out",
+        "purpose": "Card hover lift, stat box elevation — slightly slower for spatial transitions."
+      },
+      {
+        "name": "theme",
+        "value": "background 0.3s ease, color 0.2s ease",
+        "purpose": "Dark mode toggle — smooth surface transition."
+      },
+      {
+        "name": "toast-enter",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1) 0.3s",
+        "purpose": "Toast notification entrance — standard material easing."
+      }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "375px", "purpose": "Minimum supported width. All layouts must function at this size." },
+      { "name": "tablet", "value": "640px", "purpose": "Two-column form grid activates above this." },
+      { "name": "desktop", "value": "960px", "purpose": "Max content width container. Desktop layout enhancements." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main call-to-action. Used for save, submit, and primary confirmations.",
+      "html": "<button class=\"ds-btn-primary\">Save Expense</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; background: #6c4fff; color: #ffffff; border: none; border-radius: 8px; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(108,79,255,0.3); transition: background 0.15s, box-shadow 0.15s, transform 0.15s; } .ds-btn-primary:hover { background: #5538e8; box-shadow: 0 4px 16px rgba(108,79,255,0.4); transform: translateY(-1px); } .ds-btn-primary:active { transform: scale(0.97); box-shadow: 0 1px 4px rgba(108,79,255,0.2); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(108,79,255,0.35); }"
+    },
+    {
+      "name": "Success Button",
+      "kind": "button",
+      "refersTo": "button-success",
+      "description": "Positive secondary action. Used for income entry and confirmations that carry a positive signal.",
+      "html": "<button class=\"ds-btn-success\">Mark as Income</button>",
+      "css": ".ds-btn-success { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; background: #edfaf3; color: #0a8c5a; border: 0.5px solid #b3e8cc; border-radius: 8px; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s; } .ds-btn-success:hover { background: #0a8c5a; color: #ffffff; border-color: #0a8c5a; } .ds-btn-success:active { transform: scale(0.97); } .ds-btn-success:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(10,140,90,0.25); }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive action. Used for delete and remove operations.",
+      "html": "<button class=\"ds-btn-danger\">Delete</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; background: #fff0f0; color: #e74c3c; border: 0.5px solid rgba(231,76,60,0.25); border-radius: 8px; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s; } .ds-btn-danger:hover { background: #e74c3c; color: #ffffff; border-color: #e74c3c; } .ds-btn-danger:active { transform: scale(0.97); } .ds-btn-danger:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(231,76,60,0.25); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Core structural unit. Groups related data on a white surface lifted off the violet-misted page.",
+      "html": "<div class=\"ds-card\"><h2 class=\"ds-card-heading\">Recent Expenses</h2><p style=\"font-size:0.88rem;color:#4a4a6a;\">Card content goes here.</p></div>",
+      "css": ".ds-card { background: #ffffff; border: 0.5px solid #e8e8f4; border-radius: 14px; box-shadow: 0 1px 4px rgba(108,79,255,0.06); padding: 20px 22px; transition: box-shadow 0.2s; } .ds-card:hover { box-shadow: 0 4px 16px rgba(108,79,255,0.1); } .ds-card-heading { display: flex; align-items: center; gap: 10px; font-size: 0.68rem; font-weight: 700; color: #9a9ab0; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 18px; font-family: Inter, sans-serif; } .ds-card-heading::before { content: ''; width: 3px; height: 12px; background: #6c4fff; border-radius: 2px; flex-shrink: 0; }"
+    },
+    {
+      "name": "Input Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard text/number input. Violet-mist background at rest, white with violet glow ring on focus.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-ex-amount\">Amount</label><input class=\"ds-field-input\" id=\"ds-ex-amount\" type=\"number\" placeholder=\"0.00\" /></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; } .ds-field-label { font-size: 0.65rem; font-weight: 700; color: #9a9ab0; text-transform: uppercase; letter-spacing: 0.7px; font-family: Inter, sans-serif; } .ds-field-input { padding: 10px 13px; background: #f0f0ff; border: 0.5px solid #e8e8f4; border-radius: 8px; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.88rem; color: #1a1a2e; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; width: 100%; } .ds-field-input::placeholder { color: #c0c0d8; } .ds-field-input:focus { outline: none; border-color: #6c4fff; background: #ffffff; box-shadow: 0 0 0 3px rgba(108,79,255,0.12); }"
+    },
+    {
+      "name": "Tab Bar",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Horizontal tab navigation. 7 tabs for the main app sections. Active tab underlined in violet.",
+      "html": "<div class=\"ds-tab-bar\"><button class=\"ds-tab-btn\">Dashboard</button><button class=\"ds-tab-btn ds-tab-btn--active\">Expenses</button><button class=\"ds-tab-btn\">Budget</button><button class=\"ds-tab-btn\">Insights</button></div>",
+      "css": ".ds-tab-bar { display: flex; background: #ffffff; border-bottom: 0.5px solid #e8e8f4; overflow-x: auto; scrollbar-width: none; padding: 0 12px; } .ds-tab-bar::-webkit-scrollbar { display: none; } .ds-tab-btn { flex: 1; min-width: 72px; height: 46px; padding: 0 14px; border: none; background: none; font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 0.68rem; font-weight: 600; color: #9a9ab0; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, background 0.15s, border-color 0.15s; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; } .ds-tab-btn:hover { color: #6c4fff; background: #f0eeff; } .ds-tab-btn--active { color: #6c4fff; border-bottom-color: #6c4fff; background: #f0eeff; font-weight: 700; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "card",
+      "description": "Pill-shaped status indicator. Variants: online (green), offline (red), pending (amber), default (muted).",
+      "html": "<span class=\"ds-badge ds-badge--online\">Online</span>",
+      "css": ".ds-badge { font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: #f4f4fc; color: #9a9ab0; border: 0.5px solid #e8e8f4; letter-spacing: 0.2px; display: inline-flex; align-items: center; font-family: Inter, sans-serif; } .ds-badge--online { background: #edfaf3; color: #0a8c5a; border-color: #b3e8cc; } .ds-badge--offline { background: #fff0f0; color: #e74c3c; border-color: rgba(231,76,60,0.3); } .ds-badge--pending { background: #fff8e1; color: #f59e0b; border-color: rgba(245,158,11,0.3); }"
+    },
+    {
+      "name": "Expense List Item",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Transaction row. Emoji icon, title, metadata, and amount. Slides right on hover with violet tint.",
+      "html": "<div class=\"ds-expense-item\"><div class=\"ds-expense-icon\">🍔</div><div class=\"ds-expense-meta\"><span class=\"ds-expense-title\">Lunch at Chipotle</span><span class=\"ds-expense-sub\">Food · Today</span></div><span class=\"ds-expense-amount\">-$14.50</span></div>",
+      "css": ".ds-expense-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #f0f0ff; border: 0.5px solid #f4f4fc; border-radius: 12px; cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.15s; } .ds-expense-item:hover { background: #f0eeff; border-color: #d4ccff; transform: translateX(2px); } .ds-expense-icon { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: #ffffff; border-radius: 10px; border: 0.5px solid #e8e8f4; flex-shrink: 0; } .ds-expense-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; } .ds-expense-title { font-size: 0.88rem; font-weight: 500; color: #1a1a2e; font-family: Inter, sans-serif; } .ds-expense-sub { font-size: 0.72rem; color: #9a9ab0; font-family: Inter, sans-serif; } .ds-expense-amount { font-size: 0.88rem; font-weight: 700; color: #e74c3c; letter-spacing: -0.3px; font-family: Inter, sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clarity Coach",
+    "overview": "SmartExpense AI Pro is built for people who don't feel confident about money yet — young professionals watching their first paycheck disappear, students trying to make rent, families deciding what to cut. The interface must feel like a knowledgeable friend: warm enough to not make them feel judged, structured enough to actually help them improve. Every screen earns trust before it earns compliance.\n\nDensity is intentional: enough information to be useful in a 30-second check-in, nothing that overwhelms on first visit. Cards group related data without nesting. Purple anchors the experience as a signal of clarity and focus — not luxury, not technicality, just 'this is the thing you pay attention to.' White space is generous; the interface breathes. Progress (health scores, budget bars, trend lines) is always the hero; raw data is secondary.\n\nThis system explicitly rejects the corporate gray of enterprise finance tools (Quickbooks, SAP), the data-wall anxiety of Bloomberg and old Mint, and the aggressive neon energy of crypto and trading apps. It also refuses generic bank-app blandness — sterile white with navy headers and zero personality.",
+    "keyCharacteristics": [
+      "Purple-tinted neutrals — even the page background carries a faint violet tint, keeping surfaces warm rather than cold",
+      "Progress-first hierarchy — health scores, budget bars, and trend lines are primary; raw data is secondary",
+      "State-responsive elevation — shadows appear as feedback to interaction, not decoration at rest",
+      "Mobile-first density — everything works at 375px without horizontal scroll or pinch-zoom",
+      "Dark mode as first-class — full parallel token set, not an afterthought"
+    ],
+    "rules": [
+      {
+        "name": "The Violet Signal Rule",
+        "body": "Momentum Violet appears on exactly one interactive element per context — the active tab, the focused input, the primary button. Its scarcity is its meaning. If it appears everywhere, it means nothing.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tinted Neutral Rule",
+        "body": "Every neutral in this system carries a faint violet undertone. Never use pure #000000, #ffffff, or gray-family (#888888, #cccccc). The tint is what keeps the interface feeling cohesive rather than assembled.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight-Contrast Rule",
+        "body": "At least a 200-unit weight gap between adjacent hierarchy levels. 800 headline into 400 body reads clearly. 600 into 500 does not.",
+        "section": "typography"
+      },
+      {
+        "name": "The Number-Tightening Rule",
+        "body": "Negative letter-spacing is reserved for numerical display only (-1px to -1.5px). Prose and labels never use negative tracking.",
+        "section": "typography"
+      },
+      {
+        "name": "The State-Only Rule",
+        "body": "Elements do not receive shadow at rest unless they are interactive (cards, buttons, navbar). Static text blocks, dividers, and layout containers are always flat.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Glow-Not-Drop Rule",
+        "body": "Primary buttons carry a violet ambient glow rather than a neutral drop shadow. The glow intensifies on hover. This distinguishes interactive controls from structural cards.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use Momentum Violet (#6c4fff) on one interactive element per context at a time. Its scarcity is its signal.",
+      "Do tint every neutral toward violet. Never use pure gray (#888), pure white (#fff), or pure black (#000).",
+      "Do pair every color-coded status with a text label or icon shape. Never rely on color alone.",
+      "Do keep body line length under 70ch. Financial information reads fastest in a narrower column.",
+      "Do apply transform: scale(0.97) on button :active — it makes interactions feel physical.",
+      "Do honor prefers-reduced-motion — suppress translateY lifts and reduce transition durations.",
+      "Do let cards breathe at 20px+ internal padding. Compressed cards feel like the corporate tools this product is not."
+    ],
+    "donts": [
+      "Don't use Quickbooks/SAP visual language — no corporate gray as primary surfaces, no dense form grids with 10+ fields visible at once.",
+      "Don't build data walls. One primary insight per screen surface.",
+      "Don't use aggressive crypto or trading aesthetics — no neon on dark, no price-ticker animations.",
+      "Don't ship generic bank-app blandness — sterile white with a navy header and zero personality.",
+      "Don't use border-left or border-right greater than 1px as a standalone colored stripe accent on list items or callouts.",
+      "Don't use gradient text (background-clip: text with a gradient fill). Emphasis belongs to weight and size.",
+      "Don't animate layout properties (width, height, top, left, margin). Use transform and opacity only.",
+      "Don't use bounce or elastic easing. Ease-out-quart or expo for all transitions.",
+      "Don't reach for a modal as the first solution for any new interaction."
+    ]
+  }
+}

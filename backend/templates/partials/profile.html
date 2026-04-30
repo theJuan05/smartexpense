@@ -1,0 +1,389 @@
+<!-- ── PROFILE & SETTINGS TAB ─────────────────────────────── -->
+<div id="tab-profile" class="tab-content">
+
+  <!-- Profile Header Card -->
+  <div class="card profile-header-card">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar" id="profile-avatar-display" aria-hidden="true">👤</div>
+      <button class="profile-avatar-edit" id="btn-change-avatar" aria-label="Change avatar">✏️</button>
+    </div>
+    <div class="profile-info">
+      <div class="profile-name" id="profile-name-display">Your Name</div>
+      <div class="profile-email" id="profile-email-display">your@email.com</div>
+      <div class="profile-since">Member since <span id="profile-since">—</span></div>
+    </div>
+  </div>
+
+  <!-- Account Settings -->
+  <div class="card">
+    <h2>Account Settings</h2>
+    <div class="settings-group">
+
+      <div class="settings-item" id="open-edit-name">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">👤</span>
+          <div>
+            <div class="settings-label">Username</div>
+            <div class="settings-value" id="display-username">Not set</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+      <div class="settings-item" id="open-edit-email">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">✉️</span>
+          <div>
+            <div class="settings-label">Email Address</div>
+            <div class="settings-value" id="display-email">Not set</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+      <div class="settings-item" id="open-edit-password">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🔒</span>
+          <div>
+            <div class="settings-label">Password</div>
+            <div class="settings-value">••••••••</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+      <div class="settings-item" id="open-edit-phone">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">📱</span>
+          <div>
+            <div class="settings-label">Phone Number</div>
+            <div class="settings-value" id="display-phone">Not set</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- App Preferences -->
+  <div class="card">
+    <h2>App Preferences</h2>
+    <div class="settings-group">
+
+      <!-- Dark Mode -->
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🌙</span>
+          <div>
+            <div class="settings-label">Dark Mode</div>
+            <div class="settings-value">Switch app theme</div>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="settings-dark-toggle" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- Currency -->
+      <div class="settings-item" id="open-edit-currency">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">💱</span>
+          <div>
+            <div class="settings-label">Currency</div>
+            <div class="settings-value" id="display-currency">PHP (₱)</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+      <!-- Budget Alerts -->
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🔔</span>
+          <div>
+            <div class="settings-label">Budget Alerts</div>
+            <div class="settings-value">Notify when near limit</div>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="settings-notif-toggle" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- PIN Lock -->
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🔐</span>
+          <div>
+            <div class="settings-label">PIN Lock</div>
+            <div class="settings-value" id="pin-status">PIN is disabled</div>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="pin-toggle" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <!-- Change PIN (hidden until PIN is enabled) -->
+      <div class="settings-item" id="btn-change-pin" style="display:none;">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🔑</span>
+          <div>
+            <div class="settings-label">Change PIN</div>
+            <div class="settings-value">Update your current PIN</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Data Management -->
+  <div class="card">
+    <h2>Data Management</h2>
+    <div class="settings-group">
+
+      <div class="settings-item" id="btn-export-csv-settings">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">📊</span>
+          <div>
+            <div class="settings-label">Export to CSV</div>
+            <div class="settings-value">Download all expenses</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+      <div class="settings-item" id="btn-export-pdf-settings">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">📄</span>
+          <div>
+            <div class="settings-label">Export to PDF</div>
+            <div class="settings-value">Download expense report</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+      <div class="settings-item" id="btn-backup-settings">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">☁️</span>
+          <div>
+            <div class="settings-label">Backup Data</div>
+            <div class="settings-value">Save a local backup file</div>
+          </div>
+        </div>
+        <span class="settings-arrow">›</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="card">
+    <h2>About</h2>
+    <div class="settings-group">
+
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">📱</span>
+          <div>
+            <div class="settings-label">App Version</div>
+            <div class="settings-value">SmartExpense AI Pro v1.0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-item">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🛠️</span>
+          <div>
+            <div class="settings-label">Built with</div>
+            <div class="settings-value">Flask · Chart.js · Gemini AI · Claude AI</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="card danger-zone-card">
+    <h2 style="color:var(--danger);"><span aria-hidden="true">⚠️ </span>Danger Zone</h2>
+    <div class="settings-group">
+
+      <div class="settings-item danger-item" id="btn-clear-expenses">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🗑️</span>
+          <div>
+            <div class="settings-label" style="color:var(--danger);">Clear All Expenses</div>
+            <div class="settings-value">Permanently delete all expense records</div>
+          </div>
+        </div>
+        <span class="settings-arrow" style="color:var(--danger);">›</span>
+      </div>
+
+      <div class="settings-item danger-item" id="btn-clear-budgets">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">💸</span>
+          <div>
+            <div class="settings-label" style="color:var(--danger);">Clear All Budgets</div>
+            <div class="settings-value">Permanently delete all budget settings</div>
+          </div>
+        </div>
+        <span class="settings-arrow" style="color:var(--danger);">›</span>
+      </div>
+
+      <div class="settings-item danger-item" id="btn-reset-app">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🔄</span>
+          <div>
+            <div class="settings-label" style="color:var(--danger);">Reset Everything</div>
+            <div class="settings-value">Wipe all data and start fresh</div>
+          </div>
+        </div>
+        <span class="settings-arrow" style="color:var(--danger);">›</span>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end tab-profile -->
+
+
+<!-- ── PROFILE MODALS ─────────────────────────────────────── -->
+
+<!-- Edit Username Modal -->
+<div id="modal-edit-name" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Edit Username</h2>
+      <button class="modal-close" onclick="closeProfileModal('modal-edit-name')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="input-username" placeholder="Enter your name" />
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;"
+              onclick="saveProfileField('username')">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Email Modal -->
+<div id="modal-edit-email" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Edit Email</h2>
+      <button class="modal-close" onclick="closeProfileModal('modal-edit-email')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="input-email" placeholder="your@email.com" />
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;"
+              onclick="saveProfileField('email')">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Password Modal -->
+<div id="modal-edit-password" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Change Password</h2>
+      <button class="modal-close" onclick="closeProfileModal('modal-edit-password')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" id="input-current-password" placeholder="Current password" />
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="input-new-password" placeholder="New password" />
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="input-confirm-password" placeholder="Confirm new password" />
+      </div>
+      <div id="password-error"
+           style="display:none;color:var(--danger);font-size:0.85rem;margin-top:4px;"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;"
+              onclick="saveProfileField('password')">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Phone Modal -->
+<div id="modal-edit-phone" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Edit Phone Number</h2>
+      <button class="modal-close" onclick="closeProfileModal('modal-edit-phone')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="input-phone" placeholder="e.g. 09XX XXX XXXX" />
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;"
+              onclick="saveProfileField('phone')">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Avatar Picker Modal -->
+<div id="modal-edit-avatar" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Choose Avatar</h2>
+      <button class="modal-close" onclick="closeProfileModal('modal-edit-avatar')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="avatar-grid">
+        <span class="avatar-option" onclick="selectAvatar('👤')">👤</span>
+        <span class="avatar-option" onclick="selectAvatar('🧑')">🧑</span>
+        <span class="avatar-option" onclick="selectAvatar('👨')">👨</span>
+        <span class="avatar-option" onclick="selectAvatar('👩')">👩</span>
+        <span class="avatar-option" onclick="selectAvatar('🧔')">🧔</span>
+        <span class="avatar-option" onclick="selectAvatar('👱')">👱</span>
+        <span class="avatar-option" onclick="selectAvatar('🧑‍💼')">🧑‍💼</span>
+        <span class="avatar-option" onclick="selectAvatar('👨‍💼')">👨‍💼</span>
+        <span class="avatar-option" onclick="selectAvatar('👩‍💼')">👩‍💼</span>
+        <span class="avatar-option" onclick="selectAvatar('🧑‍💻')">🧑‍💻</span>
+        <span class="avatar-option" onclick="selectAvatar('👨‍💻')">👨‍💻</span>
+        <span class="avatar-option" onclick="selectAvatar('👩‍💻')">👩‍💻</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Danger Modal -->
+<div id="modal-confirm-danger" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 style="color:var(--danger);"><span aria-hidden="true">⚠️ </span>Are you sure?</h2>
+      <button class="modal-close" onclick="closeProfileModal('modal-confirm-danger')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="danger-confirm-text"
+         style="color:var(--text);margin-bottom:16px;font-size:0.95rem;"></p>
+      <div style="display:flex;gap:10px;">
+        <button class="btn" style="flex:1;"
+                onclick="closeProfileModal('modal-confirm-danger')">Cancel</button>
+        <button class="btn" id="btn-confirm-danger-action"
+                style="flex:1;background:var(--danger);color:white;">
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

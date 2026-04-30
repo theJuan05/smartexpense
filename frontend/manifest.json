@@ -1,0 +1,19 @@
+{
+  "name": "SmartExpense AI Pro",
+  "short_name": "SmartExpense",
+  "description": "AI-Powered Financial Management App",
+  "start_url": "/frontend/index.html",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#6c63ff",
+  "orientation": "portrait-primary",
+  "scope": "/frontend/",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='20' fill='%236c63ff'/><text y='130' x='30' font-size='120' font-family='Arial'>💰</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

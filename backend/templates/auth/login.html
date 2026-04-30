@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In – SmartExpense AI Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      background: #f0f0ff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Left panel (desktop only) ────────────────── */
+    .left-panel {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 56px;
+      background: linear-gradient(160deg, #2d1b8a 0%, #1a1040 60%, #0d0d20 100%);
+      width: 46%;
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 56px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: #6c4fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-name span { color: #a48fff; }
+
+    .left-panel h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .left-panel p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      margin-bottom: 48px;
+      max-width: 360px;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .feature-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(108,79,255,0.25);
+      border: 1px solid rgba(108,79,255,0.4);
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .left-tagline {
+      margin-top: auto;
+      padding-top: 48px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Right panel ──────────────────────────────── */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* Mobile logo */
+    .mobile-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .mobile-brand-icon {
+      width: 36px;
+      height: 36px;
+      background: #6c4fff;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: white;
+    }
+
+    .mobile-brand-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: -0.2px;
+    }
+
+    .mobile-brand-name span { color: #6c4fff; }
+
+    /* ── Form card ────────────────────────────────── */
+    .form-card {
+      background: white;
+      border-radius: 18px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 24px rgba(108,79,255,0.1);
+      border: 0.5px solid #e8e8f4;
+    }
+
+    .form-card h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+
+    .form-card .subtitle {
+      font-size: 0.88rem;
+      color: #4a4a6a;
+      margin-bottom: 28px;
+    }
+
+    /* Flash messages */
+    .flash {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.83rem;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .flash.error   { background: #fff0f0; color: #7a1a1e; border: 0.5px solid rgba(231,76,60,0.25); }
+    .flash.success { background: #edfaf3; color: #0a5f40; border: 0.5px solid rgba(10,140,90,0.25); }
+    .flash.info    { background: #f0eeff; color: #3a1a9a; border: 0.5px solid rgba(108,79,255,0.25); }
+
+    /* Fields */
+    .field { margin-bottom: 18px; }
+
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4a4a6a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 7px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 0.5px solid #e8e8f4;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      color: #1a1a2e;
+      background: #f0f0ff;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: #6c4fff;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.12);
+    }
+
+    .field input:focus-visible {
+      outline: none;
+      border-color: #6c4fff;
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.25);
+    }
+
+    .field input::placeholder { color: #c0c0d8; }
+
+    /* Submit button */
+    .btn-signin {
+      width: 100%;
+      padding: 13px;
+      background: #6c4fff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(108,79,255,0.3);
+      margin-top: 6px;
+    }
+
+    .btn-signin:hover {
+      background: #5538e8;
+      box-shadow: 0 4px 16px rgba(108,79,255,0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-signin:active { transform: scale(0.97); }
+
+    .btn-signin:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.35);
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.85rem;
+      color: #4a4a6a;
+    }
+
+    .form-footer a {
+      color: #5538e8;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .form-footer a:hover { text-decoration: underline; }
+    .form-footer a:focus-visible { outline: 2px solid #6c4fff; outline-offset: 2px; border-radius: 2px; }
+
+    /* ── Welcome-back state ───────────────────────── */
+    #welcome-back { display: none; }
+
+    .welcome-avatar {
+      width: 56px;
+      height: 56px;
+      background: #f0eeff;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin: 0 auto 16px;
+      border: 0.5px solid #d4ccff;
+    }
+
+    #welcome-name {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      text-align: center;
+      margin-bottom: 4px;
+      letter-spacing: -0.2px;
+    }
+
+    .welcome-sub {
+      font-size: 0.85rem;
+      color: #4a4a6a;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .btn-pin {
+      width: 100%;
+      padding: 13px;
+      background: #6c4fff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(108,79,255,0.3);
+      margin-bottom: 14px;
+    }
+
+    .btn-pin:hover {
+      background: #5538e8;
+      box-shadow: 0 4px 16px rgba(108,79,255,0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-pin:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(108,79,255,0.35); }
+
+    .switch-link {
+      display: block;
+      width: 100%;
+      background: none;
+      border: 0.5px solid #e8e8f4;
+      border-radius: 8px;
+      padding: 11px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #4a4a6a;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .switch-link:hover {
+      border-color: #6c4fff;
+      color: #6c4fff;
+    }
+
+    /* ── Desktop layout ───────────────────────────── */
+    @media (min-width: 860px) {
+      .left-panel   { display: flex; }
+      .mobile-brand { display: none; }
+      .right-panel  { background: #f0f0ff; }
+    }
+
+    @media (max-width: 480px) {
+      .form-card { padding: 28px 20px; border-radius: 14px; }
+      .form-card h2 { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left panel — desktop only -->
+  <div class="left-panel">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">$</div>
+      <div class="brand-name">Smart<span>Expense</span> AI Pro</div>
+    </div>
+
+    <h1>Take control of your finances.</h1>
+    <p>AI-powered insights, real-time tracking, and smart budgeting — all in one place.</p>
+
+    <ul class="feature-list">
+      <li><span class="feature-icon" aria-hidden="true">✦</span> AI expense categorization</li>
+      <li><span class="feature-icon" aria-hidden="true">✦</span> Smart budget alerts</li>
+      <li><span class="feature-icon" aria-hidden="true">✦</span> Receipt scanner with OCR</li>
+      <li><span class="feature-icon" aria-hidden="true">✦</span> AES-256 encrypted storage</li>
+      <li><span class="feature-icon" aria-hidden="true">✦</span> Spending anomaly detection</li>
+    </ul>
+
+    <p class="left-tagline">SmartExpense AI Pro &nbsp;·&nbsp; Secure &nbsp;·&nbsp; Intelligent</p>
+  </div>
+
+  <!-- Right panel -->
+  <div class="right-panel">
+    <div class="auth-card">
+
+      <!-- Mobile logo -->
+      <div class="mobile-brand">
+        <div class="mobile-brand-icon" aria-hidden="true">$</div>
+        <div class="mobile-brand-name">Smart<span>Expense</span></div>
+      </div>
+
+      <div class="form-card">
+
+        <!-- Welcome-back state (shown by JS on mobile with active PIN) -->
+        <div id="welcome-back">
+          <div class="welcome-avatar" aria-hidden="true">👋</div>
+          <div id="welcome-name"></div>
+          <p class="welcome-sub">Your session is still active</p>
+          <button class="btn-pin" onclick="goToApp()">Enter PIN to continue</button>
+          <button class="switch-link" onclick="showLoginForm()">Sign in as a different user</button>
+        </div>
+
+        <!-- Login form -->
+        <div id="login-form-wrap">
+          <h2>Sign in</h2>
+          <p class="subtitle">Welcome back — enter your credentials</p>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}" role="alert">{{ message }}</div>
+            {% endfor %}
+          {% endwith %}
+
+          <form id="login-form" method="POST" action="{{ url_for('auth.login') }}">
+            <div class="field">
+              <label for="email">Email address</label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" required autofocus autocomplete="email" />
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+            </div>
+
+            <button type="submit" class="btn-signin">Sign In</button>
+          </form>
+        </div>
+
+        <p class="form-footer" id="form-footer">
+          Don't have an account? <a href="{{ url_for('auth.register') }}">Create one</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const isMobile  = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    const pinEnabled = localStorage.getItem('smartexpense-pin-enabled') === 'true';
+
+    function goToApp() { window.location.href = '/'; }
+
+    function showLoginForm() {
+      document.getElementById('welcome-back').style.display    = 'none';
+      document.getElementById('login-form-wrap').style.display = 'block';
+      document.getElementById('form-footer').style.display     = 'block';
+    }
+
+    (async function checkSession() {
+      try {
+        const res  = await fetch('/api/auth/status');
+        const data = await res.json();
+        if (!data.logged_in) return;
+
+        if (isMobile && pinEnabled) {
+          document.getElementById('welcome-name').textContent       = 'Welcome back, ' + data.user_name + '!';
+          document.getElementById('login-form-wrap').style.display  = 'none';
+          document.getElementById('form-footer').style.display      = 'none';
+          document.getElementById('welcome-back').style.display     = 'block';
+        } else {
+          goToApp();
+        }
+      } catch (_) { /* network error — show form as-is */ }
+    })();
+  </script>
+
+</body>
+</html>

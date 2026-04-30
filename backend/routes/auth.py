@@ -1,0 +1,110 @@
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
+from models.user import create_user, get_user_by_email, get_user_by_id, check_password
+from security.jwt_auth import generate_token
+from functools import wraps
+
+auth_bp = Blueprint('auth', __name__)
+
+# -----------------------------
+# LOGIN REQUIRED DECORATOR
+# -----------------------------
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Please log in to access SmartExpense AI Pro.', 'info')
+            return redirect(url_for('auth.login'))
+        return f(*args, **kwargs)
+    return decorated
+
+
+# -----------------------------
+# LOGIN
+# -----------------------------
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if 'user_id' in session:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        email    = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+
+        user = get_user_by_email(email)
+
+        if user and check_password(user, password):
+            session['user_id']   = user['id']
+            session['user_name'] = user['name']
+            session['jwt']       = generate_token(user['id'], user['name'])
+            session.permanent    = True
+            return redirect(url_for('index'))
+
+        flash('Invalid email or password. Please try again.', 'error')
+
+    return render_template('auth/login.html')
+
+
+# -----------------------------
+# AUTH STATUS (for login page JS)
+# -----------------------------
+@auth_bp.route('/api/auth/status')
+def auth_status():
+    if 'user_id' in session:
+        return jsonify({
+            'logged_in': True,
+            'user_name': session.get('user_name', ''),
+            'token':     session.get('jwt', '')
+        })
+    return jsonify({'logged_in': False})
+
+
+# -----------------------------
+# REGISTER
+# -----------------------------
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if 'user_id' in session:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        name     = request.form.get('name', '').strip()
+        email    = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '')
+        confirm  = request.form.get('confirm_password', '')
+
+        if not name or not email or not password:
+            flash('All fields are required.', 'error')
+            return render_template('auth/register.html')
+
+        if password != confirm:
+            flash('Passwords do not match.', 'error')
+            return render_template('auth/register.html')
+
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.', 'error')
+            return render_template('auth/register.html')
+
+        if get_user_by_email(email):
+            flash('An account with that email already exists.', 'error')
+            return render_template('auth/register.html')
+
+        user_id = create_user(name, email, password)
+        if user_id:
+            session['user_id']   = user_id
+            session['user_name'] = name
+            flash(f'Welcome, {name}! Your account has been created.', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Something went wrong. Please try again.', 'error')
+
+    return render_template('auth/register.html')
+
+
+# -----------------------------
+# LOGOUT
+# -----------------------------
+@auth_bp.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('auth.login'))

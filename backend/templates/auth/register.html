@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account – SmartExpense AI Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      background: #f0f0ff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Left panel (desktop only) ────────────────── */
+    .left-panel {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 56px;
+      background: linear-gradient(160deg, #2d1b8a 0%, #1a1040 60%, #0d0d20 100%);
+      width: 46%;
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 56px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: #6c4fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-name span { color: #a48fff; }
+
+    .left-panel h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .left-panel p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      margin-bottom: 44px;
+      max-width: 340px;
+    }
+
+    .step-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .step-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.88rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      background: rgba(108,79,255,0.3);
+      border: 1px solid rgba(108,79,255,0.5);
+      border-radius: 8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #a48fff;
+    }
+
+    .left-tagline {
+      margin-top: auto;
+      padding-top: 48px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Right panel ──────────────────────────────── */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .mobile-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .mobile-brand-icon {
+      width: 34px;
+      height: 34px;
+      background: #6c4fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: white;
+    }
+
+    .mobile-brand-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: -0.2px;
+    }
+
+    .mobile-brand-name span { color: #6c4fff; }
+
+    /* ── Form card ────────────────────────────────── */
+    .form-card {
+      background: white;
+      border-radius: 18px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 24px rgba(108,79,255,0.1);
+      border: 0.5px solid #e8e8f4;
+    }
+
+    .form-card h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+      letter-spacing: -0.3px;
+    }
+
+    .form-card .subtitle {
+      font-size: 0.88rem;
+      color: #4a4a6a;
+      margin-bottom: 24px;
+    }
+
+    /* Flash messages */
+    .flash {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.83rem;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .flash.error   { background: #fff0f0; color: #7a1a1e; border: 0.5px solid rgba(231,76,60,0.25); }
+    .flash.success { background: #edfaf3; color: #0a5f40; border: 0.5px solid rgba(10,140,90,0.25); }
+    .flash.info    { background: #f0eeff; color: #3a1a9a; border: 0.5px solid rgba(108,79,255,0.25); }
+
+    /* Fields */
+    .field { margin-bottom: 16px; }
+
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4a4a6a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 13px;
+      border: 0.5px solid #e8e8f4;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      color: #1a1a2e;
+      background: #f0f0ff;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: #6c4fff;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.12);
+    }
+
+    .field input:focus-visible {
+      outline: none;
+      border-color: #6c4fff;
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.25);
+    }
+
+    .field input::placeholder { color: #c0c0d8; }
+
+    .hint {
+      font-size: 0.78rem;
+      color: #4a4a6a;
+      margin-top: 5px;
+    }
+
+    /* Submit button */
+    .btn-register {
+      width: 100%;
+      padding: 12px;
+      background: #6c4fff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(108,79,255,0.3);
+      margin-top: 6px;
+    }
+
+    .btn-register:hover {
+      background: #5538e8;
+      box-shadow: 0 4px 16px rgba(108,79,255,0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-register:active { transform: scale(0.97); }
+
+    .btn-register:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.35);
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #4a4a6a;
+    }
+
+    .form-footer a {
+      color: #5538e8;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .form-footer a:hover { text-decoration: underline; }
+    .form-footer a:focus-visible { outline: 2px solid #6c4fff; outline-offset: 2px; border-radius: 2px; }
+
+    /* ── Desktop ──────────────────────────────────── */
+    @media (min-width: 860px) {
+      .left-panel   { display: flex; }
+      .mobile-brand { display: none; }
+      .right-panel  { background: #f0f0ff; }
+    }
+
+    @media (max-width: 480px) {
+      .form-card { padding: 24px 18px; border-radius: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left panel — desktop only -->
+  <div class="left-panel">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">$</div>
+      <div class="brand-name">Smart<span>Expense</span> AI Pro</div>
+    </div>
+
+    <h1>Your money, finally clear.</h1>
+    <p>Track every peso, catch patterns before they become problems, and feel in control of where your money goes.</p>
+
+    <ul class="step-list">
+      <li><span class="step-num" aria-hidden="true">1</span> Add your income and first expenses in under a minute</li>
+      <li><span class="step-num" aria-hidden="true">2</span> Set budgets by category — groceries, transport, dining</li>
+      <li><span class="step-num" aria-hidden="true">3</span> Let AI surface patterns and flag unusual spending</li>
+    </ul>
+
+    <p class="left-tagline">SmartExpense AI Pro &nbsp;·&nbsp; Free to use</p>
+  </div>
+
+  <!-- Right panel -->
+  <div class="right-panel">
+    <div class="auth-card">
+
+      <!-- Mobile logo -->
+      <div class="mobile-brand">
+        <div class="mobile-brand-icon" aria-hidden="true">$</div>
+        <div class="mobile-brand-name">Smart<span>Expense</span></div>
+      </div>
+
+      <div class="form-card">
+        <h2>Create account</h2>
+        <p class="subtitle">Free forever — no credit card needed</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}" role="alert">{{ message }}</div>
+          {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.register') }}">
+          <div class="field">
+            <label for="name">Full name</label>
+            <input type="text" id="name" name="name" placeholder="Juan dela Cruz" required autofocus autocomplete="name" />
+          </div>
+
+          <div class="field">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="new-password" aria-describedby="password-hint" />
+            <p class="hint" id="password-hint">At least 6 characters</p>
+          </div>
+
+          <div class="field">
+            <label for="confirm_password">Confirm password</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required autocomplete="new-password" />
+          </div>
+
+          <button type="submit" class="btn-register">Create Account</button>
+        </form>
+
+        <p class="form-footer">
+          Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

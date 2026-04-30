@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6c63ff" />
+  <title>SmartExpense AI Pro</title>
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='pinlock.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='scanner.css') }}">
+
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" role="banner">
+    <span class="logo" aria-label="SmartExpense AI Pro">Smart<span>Expense</span> AI Pro</span>
+    <div class="navbar-actions">
+      <button id="btn-dark-mode" aria-label="Switch to dark mode" title="Switch to Dark Mode">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button id="btn-profile-icon" aria-label="Profile and settings" title="Profile & Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <button id="btn-install" class="btn-install" style="display:none;" aria-label="Install app">Install App</button>
+      <span class="status-badge" id="status-badge" role="status" aria-live="polite">Checking...</span>
+      <a href="{{ url_for('auth.logout') }}" class="btn-logout" aria-label="Sign out">Sign out</a>
+    </div>
+  </nav>
+
+  <!-- Tab Navigation -->
+  <div class="tab-bar" role="tablist" aria-label="Main navigation">
+    <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true" aria-controls="tab-dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="expenses" role="tab" aria-selected="false" aria-controls="tab-expenses">Expenses</button>
+    <button class="tab-btn" data-tab="add" role="tab" aria-selected="false" aria-controls="tab-add">+ Add</button>
+    <button class="tab-btn" data-tab="budget" role="tab" aria-selected="false" aria-controls="tab-budget">Budget</button>
+    <button class="tab-btn" data-tab="insights" role="tab" aria-selected="false" aria-controls="tab-insights">Insights</button>
+    <button class="tab-btn" data-tab="advice" role="tab" aria-selected="false" aria-controls="tab-advice">Advice</button>
+    <button class="tab-btn" data-tab="profile" role="tab" aria-selected="false" aria-controls="tab-profile">Settings</button>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    {% include 'partials/dashboard.html' %}
+    {% include 'partials/expense.html' %}
+    {% include 'partials/add.html' %}
+    {% include 'partials/budget.html' %}
+    {% include 'partials/insights.html' %}
+    {% include 'partials/advice.html' %}
+    {% include 'partials/profile.html' %}
+  </div><!-- end .container -->
+
+  <!-- Hidden backend status -->
+  <p id="backend-status" style="display:none;"></p>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- ── ALL MODALS/OVERLAYS OUTSIDE CONTAINER ─────────────── -->
+  {% include 'partials/scanner.html' %}
+  {% include 'partials/pin-overlay.html' %}
+
+  <!-- Set Income Modal -->
+  <div id="modal-set-income" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2><span aria-hidden="true">💰 </span>Set Monthly Income</h2>
+        <button class="modal-close" id="btn-close-income-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="income-input">Monthly Income (PHP)</label>
+          <input type="number" id="income-input" placeholder="e.g. 30000" min="0" step="0.01" />
+        </div>
+        <div class="modal-actions">
+          <button class="btn" id="btn-cancel-income">Cancel</button>
+          <button class="btn btn-primary" id="btn-save-income">Save Income</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ─────────────────────────────────────────────────────── -->
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <!-- Scripts — darkmode MUST be first -->
+  <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/db.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/budget.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/predict.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/anomaly.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/advice.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/export.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/edit-expense.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/pinlock.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
