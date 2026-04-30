@@ -7,8 +7,8 @@ from google.genai import types
 # Initialize the Blueprint
 receipt_bp = Blueprint('receipt', __name__)
 
-# Use your actual API Key
-GEMINI_API_KEY = "AIzaSyDLzsPK3VoWNKnqyrZTpTNDZOt7-2Ia6nU"
+# Use environment variable instead of hardcoded key
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 @receipt_bp.route('/upload-receipt', methods=['POST'])
@@ -33,7 +33,7 @@ def upload_receipt():
         {"store": "string", "total": float, "date": "YYYY-MM-DD", "category": "string"}
         """
 
-        # 4. Call Gemini 3 Flash
+        # 4. Call Gemini Flash
         response = client.models.generate_content(
             model="gemini-3-flash-preview",
             contents=[
@@ -43,7 +43,6 @@ def upload_receipt():
         )
 
         # 5. Clean and parse the response
-        # Gemini sometimes wraps JSON in ```json ... ``` blocks
         raw_text = response.text.strip()
         if "```json" in raw_text:
             raw_text = raw_text.split("```json")[1].split("```")[0].strip()

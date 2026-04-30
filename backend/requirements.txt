@@ -1,4 +1,14 @@
 flask
 flask-cors
+flask-sqlalchemy
+flask-login
 mysql-connector-python
+pymysql
 python-dotenv
+gunicorn
+cryptography
+requests
+openai
+google-generativeai
+PyJWT
+Pillow
