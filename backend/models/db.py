@@ -2,27 +2,46 @@
 
 import logging
 import mysql.connector
+from mysql.connector import pooling
 from config import Config
 
 logger = logging.getLogger(__name__)
 
-def get_connection():
-    """Returns a live MySQL connection."""
+_pool = None
+
+def _get_pool():
+    global _pool
+    if _pool is not None:
+        return _pool
     try:
         kwargs = dict(
-            host     = Config.DB_HOST,
-            user     = Config.DB_USER,
-            password = Config.DB_PASSWORD,
-            database = Config.DB_NAME,
+            pool_name    = 'smartexpense_pool',
+            pool_size    = 5,
+            host         = Config.DB_HOST,
+            user         = Config.DB_USER,
+            password     = Config.DB_PASSWORD,
+            database     = Config.DB_NAME,
+            connection_timeout = 10,
         )
         if Config.DB_PORT:
             kwargs['port'] = int(Config.DB_PORT)
         if Config.DB_SSL:
             kwargs['ssl_disabled'] = False
-        conn = mysql.connector.connect(**kwargs)
-        return conn
+        _pool = pooling.MySQLConnectionPool(**kwargs)
+        logger.info("[DB POOL] Created pool (size=5) to %s/%s", Config.DB_HOST, Config.DB_NAME)
     except mysql.connector.Error as err:
-        logger.error("[DB CONNECTION ERROR] host=%s db=%s error=%s", Config.DB_HOST, Config.DB_NAME, err)
+        logger.error("[DB POOL ERROR] %s", err)
+    return _pool
+
+def get_connection():
+    """Returns a pooled MySQL connection."""
+    pool = _get_pool()
+    if pool is None:
+        return None
+    try:
+        return pool.get_connection()
+    except mysql.connector.Error as err:
+        logger.error("[DB CONNECTION ERROR] %s", err)
         return None
 
 

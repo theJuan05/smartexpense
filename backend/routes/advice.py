@@ -32,24 +32,21 @@ def get_financial_data(user_id):
             e['expense_date'] = e['expense_date'].strftime('%Y-%m-%d')
         e['amount'] = float(e['amount'])
 
-    # Get budgets with spending
+    # Get budgets with spending — single join, no correlated subquery
     budgets = query_all("""
         SELECT
             b.amount_limit,
             COALESCE(c.name, 'Overall Budget') AS category,
-            COALESCE(
-                (SELECT SUM(e2.amount)
-                 FROM expenses e2
-                 LEFT JOIN categories c2 ON e2.category_id = c2.id
-                 WHERE e2.user_id = b.user_id
-                 AND MONTH(e2.expense_date) = MONTH(CURDATE())
-                 AND YEAR(e2.expense_date)  = YEAR(CURDATE())
-                 AND (c.id IS NULL OR c2.id = c.id)
-                ), 0
-            ) AS spent
+            COALESCE(SUM(e.amount), 0) AS spent
         FROM budgets b
         LEFT JOIN categories c ON b.category_id = c.id
+        LEFT JOIN expenses e
+               ON e.user_id = b.user_id
+              AND MONTH(e.expense_date) = MONTH(CURDATE())
+              AND YEAR(e.expense_date)  = YEAR(CURDATE())
+              AND (b.category_id IS NULL OR e.category_id = b.category_id)
         WHERE b.user_id = %s
+        GROUP BY b.id, b.amount_limit, c.name
     """, (user_id,))
 
     for b in budgets:
