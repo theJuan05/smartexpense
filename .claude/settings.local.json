@@ -8,7 +8,9 @@
       "Bash(python -c ' *)",
       "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; print\\(predict\\('Jollibee'\\)\\)\")",
       "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; print\\(predict\\('Jollibee'\\)\\); print\\(predict\\('Grab ride'\\)\\); print\\(predict\\('Meralco bill'\\)\\)\")",
-      "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; r = predict\\('Jollibee'\\); print\\(type\\(r['category']\\), repr\\(r['category']\\)\\)\")"
+      "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; r = predict\\('Jollibee'\\); print\\(type\\(r['category']\\), repr\\(r['category']\\)\\)\")",
+      "Bash(curl -s \"http://localhost:5000/api/budgets/summary?user_id=1\")",
+      "Bash(curl -s -o - \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\")"
     ]
   }
 }

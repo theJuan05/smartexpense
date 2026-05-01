@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v3';
+const CACHE_NAME = 'smartexpense-v4';
 const STATIC_ASSETS = [
   '/',
   '/frontend/index.html',
@@ -47,7 +47,7 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
   const url = event.request.url;
 
-  if (url.includes('smartexpense-hco9.onrender.com/api') ||
+  if (url.includes('/api/') ||
       url.includes('cdnjs.cloudflare.com') ||
       url.includes('generativelanguage.googleapis.com')) {
     return;
