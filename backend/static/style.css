@@ -2047,26 +2047,34 @@ textarea:focus-visible {
 /* ═══════════════════════════════════════════════════════════════════
    SIDEBAR STYLES
    ═══════════════════════════════════════════════════════════════════ */
+/* ── Sidebar base (icon-only, expands on hover) ───────────────── */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
-  width: 220px;
+  width: 64px;
   background: var(--card-bg);
   border-right: 0.5px solid var(--border);
   z-index: 150;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  transition: background 0.3s, border-color 0.3s;
+  overflow: hidden;
+  transition: width 0.22s ease, box-shadow 0.22s ease, background 0.3s, border-color 0.3s;
 }
 
+.sidebar:hover {
+  width: 220px;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.10);
+}
+
+/* Logo row */
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 20px 18px 16px;
+  gap: 12px;
+  padding: 18px 18px 16px;
   border-bottom: 0.5px solid var(--border);
   flex-shrink: 0;
+  min-width: 220px;
 }
 
 .sidebar-logo-img {
@@ -2080,23 +2088,28 @@ textarea:focus-visible {
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.2px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s 0.05s;
 }
-
 .sidebar-logo-text span { color: var(--purple); }
+.sidebar:hover .sidebar-logo-text { opacity: 1; }
 
+/* Nav section */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 14px 10px;
+  padding: 12px 8px;
   flex: 1;
+  min-width: 220px;
 }
 
 .sidebar-item {
   display: flex !important;
   align-items: center;
-  gap: 11px;
-  padding: 10px 12px;
+  gap: 12px;
+  padding: 11px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
   font-weight: 500;
@@ -2106,9 +2119,18 @@ textarea:focus-visible {
   cursor: pointer;
   text-align: left;
   width: 100%;
-  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
   font-family: inherit;
+  transition: background 0.15s, color 0.15s;
 }
+
+.sidebar-item span {
+  opacity: 0;
+  transition: opacity 0.12s 0.05s;
+}
+.sidebar:hover .sidebar-item span { opacity: 1; }
+
+.sidebar-item svg { flex-shrink: 0; width: 18px; height: 18px; }
 
 .sidebar-item:hover {
   background: var(--purple-light);
@@ -2121,27 +2143,40 @@ textarea:focus-visible {
   font-weight: 600;
 }
 
-.sidebar-item svg { flex-shrink: 0; }
-
+/* Bottom section */
 .sidebar-bottom {
-  padding: 12px 10px;
+  padding: 10px 8px;
   border-top: 0.5px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex-shrink: 0;
+  min-width: 220px;
 }
 
 .sidebar-user {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  width: 100%;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  color: var(--text-muted);
+}
+
+.sidebar-user:hover {
+  background: var(--purple-light);
+  color: var(--purple);
 }
 
 .sidebar-avatar-icon {
-  width: 30px; height: 30px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   background: var(--purple-light);
   display: flex;
@@ -2154,24 +2189,34 @@ textarea:focus-visible {
 .sidebar-user-name {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--text);
+  color: inherit;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: 0;
+  transition: opacity 0.12s 0.05s;
 }
+.sidebar:hover .sidebar-user-name { opacity: 1; }
 
 .sidebar-signout {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 9px 12px;
+  gap: 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--text-muted);
   text-decoration: none;
+  white-space: nowrap;
   transition: background 0.15s, color 0.15s;
 }
+
+.sidebar-signout span {
+  opacity: 0;
+  transition: opacity 0.12s 0.05s;
+}
+.sidebar:hover .sidebar-signout span { opacity: 1; }
 
 .sidebar-signout:hover {
   background: rgba(231,76,60,0.08);
@@ -2187,10 +2232,10 @@ textarea:focus-visible {
   .sidebar  { display: flex; }
   .tab-bar  { display: none; }
 
-  /* Shift navbar and content right of sidebar */
-  .navbar    { margin-left: 220px; }
-  .container { margin-left: 220px; margin-right: 0; max-width: 1280px; padding: 28px 40px; }
-  #page-skeleton { left: 220px; }
+  /* Shift navbar and content right of collapsed sidebar */
+  .navbar    { margin-left: 64px; }
+  .container { margin-left: 64px; margin-right: 0; max-width: none; padding: 28px 32px; }
+  #page-skeleton { left: 64px; }
 
   /* ── Dashboard: balance + stats full-width; charts side-by-side ── */
   #tab-dashboard.active {
