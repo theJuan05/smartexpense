@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 5. Setup tabs
     setupTabs();
+    setPageTitle('dashboard');
 
     // 6. Load UI data in parallel (faster)
     await Promise.all([
@@ -84,6 +85,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ── Tab System ─────────────────────────────────────────────
+const TAB_TITLES = {
+  dashboard: 'Dashboard',
+  expenses:  'Expenses',
+  add:       'Add Expense',
+  budget:    'Budget',
+  insights:  'Insights',
+  advice:    'Advice',
+  profile:   'Settings',
+};
+
+function setPageTitle(tab) {
+  const label = TAB_TITLES[tab] || tab;
+  document.title = `${label} | SmartExpense`;
+}
+
 function setupTabs() {
   const buttons  = document.querySelectorAll('.tab-btn');
   const contents = document.querySelectorAll('.tab-content');
@@ -98,6 +114,8 @@ function setupTabs() {
       // Mark ALL nav buttons pointing to the same tab (sidebar + top bar)
       buttons.forEach(b => { if (b.dataset.tab === target) b.classList.add('active'); });
       document.getElementById(`tab-${target}`).classList.add('active');
+
+      setPageTitle(target);
 
       // Wait for DOM to update before loading data
       await new Promise(resolve => setTimeout(resolve, 50));

@@ -2263,13 +2263,15 @@ textarea:focus-visible {
   }
   #tab-add.active > .add-sidebar { display: block; }
 
-  /* ── Budget: overview left, set-budget right ── */
+  /* ── Budget: overview left, set-budget form right ── */
   #tab-budget.active {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 320px;
     column-gap: 20px;
     align-items: start;
   }
+  .budget-left-col  { display: flex; flex-direction: column; gap: 20px; }
+  .budget-right-col { position: sticky; top: 20px; }
 
   /* ── Insights: anomaly + prediction side-by-side; forecast full ── */
   #tab-insights.active {
