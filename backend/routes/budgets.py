@@ -1,6 +1,6 @@
 # budgets.py — Full Budget CRUD API
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from models.db import query_all, query_one, execute
 from datetime import date, datetime
 
@@ -10,7 +10,7 @@ budgets_bp = Blueprint('budgets', __name__)
 # ── GET /api/budgets ───────────────────────────────────────
 @budgets_bp.route('/budgets', methods=['GET'])
 def get_budgets():
-    user_id = request.args.get('user_id', 1)
+    user_id = session.get('user_id', 1)
 
     sql = """
         SELECT
@@ -65,7 +65,7 @@ def add_budget():
         if cat:
             category_id = cat['id']
 
-    user_id = data.get('user_id', 1)
+    user_id = session.get('user_id', 1)
 
     # Check if budget already exists for this category
     existing = query_one("""
@@ -134,7 +134,7 @@ def delete_budget(budget_id):
 # Returns budgets with actual spending this month
 @budgets_bp.route('/budgets/summary', methods=['GET'])
 def budget_summary():
-    user_id = request.args.get('user_id', 1)
+    user_id = session.get('user_id', 1)
 
     sql = """
         SELECT

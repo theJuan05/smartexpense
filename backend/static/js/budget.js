@@ -7,7 +7,7 @@ async function loadBudgetSummary() {
 
   container.innerHTML = '<div class="spinner">Loading...</div>';
 
-  const result = await API.request('/budgets/summary?user_id=1');
+  const result = await API.request('/budgets/summary');
 
   if (!result) {
     renderBudgetHero(null);
@@ -199,8 +199,7 @@ async function handleAddBudget() {
   const result = await API.request('/budgets', 'POST', {
     category,
     amount_limit: amount,
-    period,
-    user_id: 1
+    period
   });
 
   btn.textContent = '+ Set Budget';
@@ -239,7 +238,7 @@ async function handleDeleteBudget(budget_id) {
 async function checkBudgetAlerts() {
   if (!navigator.onLine) return;
 
-  const result = await API.request('/budgets/summary?user_id=1');
+  const result = await API.request('/budgets/summary');
   if (!result || result.status !== 'success') return;
 
   result.data.forEach(budget => {
