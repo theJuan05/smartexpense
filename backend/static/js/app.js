@@ -261,6 +261,13 @@ async function runSync() {
 async function refreshStats() {
   const stats = await getLocalStats();
   const el = id => document.getElementById(id);
+
+  // Update label to show which month
+  const monthLabel = el('stat-month-label');
+  if (monthLabel) {
+    monthLabel.textContent = new Date().toLocaleDateString('en-PH', { month: 'long' }) + ' Spending';
+  }
+
   if (el('stat-month'))
     el('stat-month').textContent =
       `₱${Number(stats.thisMonth).toLocaleString()}`;

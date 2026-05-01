@@ -1404,21 +1404,19 @@ body {
 .mobile-logout-card  { display: none; }
 
 /* ── Responsive ──────────────────────────────────────────────── */
-@media (max-width: 640px) {
+@media (max-width: 899px) {
   /* Layout */
   .stats-row { grid-template-columns: 1fr 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .form-group.full-width { grid-column: 1; }
   .stat-box .value { font-size: 1.4rem; }
-  .container { padding: 16px 12px 100px; }
+  .container { padding-bottom: 100px; }
   .card { padding: 16px; }
 
-  /* Top navbar */
-  .navbar { padding: 0 14px; height: 52px; }
-  .navbar .logo { font-size: 0.88rem; }
+  /* Hide nav chrome */
   .status-badge, .btn-logout, .btn-install { display: none; }
 
-  /* Hide top tab bar */
+  /* Hide top tab bar — bottom nav handles navigation */
   .tab-bar { display: none; }
 
   /* Toast above bottom nav */
@@ -1646,6 +1644,13 @@ body {
   }
 
   .more-sheet-chevron { stroke: var(--text-light); flex-shrink: 0; }
+}
+
+/* ── Phone-specific overrides (tighter padding) ──────────────── */
+@media (max-width: 640px) {
+  .container { padding: 16px 12px 100px; }
+  .navbar { padding: 0 14px; height: 52px; }
+  .navbar .logo { font-size: 0.88rem; }
 }
 
 @media (max-width: 380px) {
@@ -2047,23 +2052,18 @@ textarea:focus-visible {
 /* ═══════════════════════════════════════════════════════════════════
    SIDEBAR STYLES
    ═══════════════════════════════════════════════════════════════════ */
-/* ── Sidebar base (icon-only, expands on hover) ───────────────── */
+/* ── Sidebar base (fixed width, no hover expand) ──────────────── */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
-  width: 64px;
+  width: 220px;
   background: var(--card-bg);
   border-right: 0.5px solid var(--border);
   z-index: 150;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: width 0.22s ease, box-shadow 0.22s ease, background 0.3s, border-color 0.3s;
-}
-
-.sidebar:hover {
-  width: 220px;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.10);
+  transition: background 0.3s, border-color 0.3s;
 }
 
 /* Logo row */
@@ -2089,11 +2089,15 @@ textarea:focus-visible {
   color: var(--text);
   letter-spacing: -0.2px;
   white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.15s 0.05s;
 }
 .sidebar-logo-text span { color: var(--purple); }
-.sidebar:hover .sidebar-logo-text { opacity: 1; }
+
+/* Profile top section */
+.sidebar-profile-top {
+  padding: 10px 8px;
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
 
 /* Nav section */
 .sidebar-nav {
@@ -2124,11 +2128,7 @@ textarea:focus-visible {
   transition: background 0.15s, color 0.15s;
 }
 
-.sidebar-item span {
-  opacity: 0;
-  transition: opacity 0.12s 0.05s;
-}
-.sidebar:hover .sidebar-item span { opacity: 1; }
+.sidebar-item span { white-space: nowrap; }
 
 .sidebar-item svg { flex-shrink: 0; width: 18px; height: 18px; }
 
@@ -2193,10 +2193,7 @@ textarea:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  opacity: 0;
-  transition: opacity 0.12s 0.05s;
 }
-.sidebar:hover .sidebar-user-name { opacity: 1; }
 
 .sidebar-signout {
   display: flex;
@@ -2212,11 +2209,7 @@ textarea:focus-visible {
   transition: background 0.15s, color 0.15s;
 }
 
-.sidebar-signout span {
-  opacity: 0;
-  transition: opacity 0.12s 0.05s;
-}
-.sidebar:hover .sidebar-signout span { opacity: 1; }
+.sidebar-signout span { white-space: nowrap; }
 
 .sidebar-signout:hover {
   background: rgba(231,76,60,0.08);
@@ -2232,10 +2225,10 @@ textarea:focus-visible {
   .sidebar  { display: flex; }
   .tab-bar  { display: none; }
 
-  /* Shift navbar and content right of collapsed sidebar */
-  .navbar    { margin-left: 64px; }
-  .container { margin-left: 64px; margin-right: 0; max-width: none; padding: 28px 32px; }
-  #page-skeleton { left: 64px; }
+  /* Shift navbar and content right of sidebar */
+  .navbar    { margin-left: 220px; }
+  .container { margin-left: 220px; margin-right: 0; max-width: none; padding: 28px 32px; }
+  #page-skeleton { left: 220px; }
 
   /* ── Dashboard: balance + stats full-width; charts side-by-side ── */
   #tab-dashboard.active {
