@@ -5,7 +5,9 @@
       "Bash(mysql -u root -e \"SHOW DATABASES;\")",
       "PowerShell(mysql -u root -e \"SHOW DATABASES; USE smartexpense; SHOW TABLES;\" 2>&1)",
       "Bash(python -c \"from models.db import get_connection; conn = get_connection\\(\\); print\\('Connected:', conn is not None\\); conn and conn.close\\(\\)\")",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; print\\(predict\\('Jollibee'\\)\\)\")",
+      "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; print\\(predict\\('Jollibee'\\)\\); print\\(predict\\('Grab ride'\\)\\); print\\(predict\\('Meralco bill'\\)\\)\")"
     ]
   }
 }

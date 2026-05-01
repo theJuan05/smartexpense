@@ -81,7 +81,10 @@ def categorize(title: str) -> dict:
     2. If confidence < MIN_ML_CONFIDENCE, use keyword fallback.
     3. If keywords also fail, return Others.
     """
-    ml_result = ml_predict(title)
+    try:
+        ml_result = ml_predict(title)
+    except Exception:
+        ml_result = {'category': 'Others', 'confidence': 0.0}
 
     if ml_result['confidence'] >= MIN_ML_CONFIDENCE:
         return ml_result
