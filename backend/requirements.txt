@@ -11,3 +11,5 @@ requests
 PyJWT
 Pillow
 google-genai
+scikit-learn
+joblib

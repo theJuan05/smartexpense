@@ -95,7 +95,8 @@ function setupTabs() {
       buttons.forEach(b  => b.classList.remove('active'));
       contents.forEach(c => c.classList.remove('active'));
 
-      btn.classList.add('active');
+      // Mark ALL nav buttons pointing to the same tab (sidebar + top bar)
+      buttons.forEach(b => { if (b.dataset.tab === target) b.classList.add('active'); });
       document.getElementById(`tab-${target}`).classList.add('active');
 
       // Wait for DOM to update before loading data

@@ -35,7 +35,7 @@ def upload_receipt():
 
         # 4. Call Gemini Flash
         response = client.models.generate_content(
-            model="gemini-3-flash-preview",
+            model="gemini-2.0-flash",
             contents=[
                 types.Part.from_bytes(data=image_bytes, mime_type='image/jpeg'),
                 prompt

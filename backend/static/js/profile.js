@@ -40,6 +40,8 @@ function renderProfile() {
   if (removeBtn) removeBtn.style.display = pic ? 'inline-flex' : 'none';
 
   document.getElementById('profile-name-display').textContent  = p.username || 'Your Name';
+  const sidebarName = document.getElementById('sidebar-user-name');
+  if (sidebarName) sidebarName.textContent = p.username || 'My Account';
   document.getElementById('profile-email-display').textContent = p.email    || 'your@email.com';
   document.getElementById('profile-since').textContent         = p.since    || '—';
 

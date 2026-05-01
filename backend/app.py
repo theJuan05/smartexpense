@@ -78,6 +78,14 @@ def ping():
         "message": "SmartExpense AI Pro backend is running!"
     })
 
+# Warm up the ML classifier at startup so the first request isn't slow
+with app.app_context():
+    try:
+        from ml.classifier import get_classifier
+        get_classifier()
+    except Exception as e:
+        logging.warning('[ML] Classifier warm-up failed: %s', e)
+
 if __name__ == '__main__':
     print("=" * 50)
     print("  SmartExpense AI Pro - Flask Backend")
