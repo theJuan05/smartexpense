@@ -59,7 +59,7 @@ async function loadBudgetSummary() {
     });
   }
 
-  await renderBudgetProgress();
+  await renderBudgetProgress(result);
 }
 
 // ── Render overall budget as a hero card ──────────────────

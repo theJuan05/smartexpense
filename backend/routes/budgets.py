@@ -143,23 +143,16 @@ def budget_summary():
             b.period,
             COALESCE(c.name, 'Overall Budget') AS category,
             c.icon AS category_icon,
-            COALESCE(
-                (
-                    SELECT SUM(e.amount)
-                    FROM expenses e
-                    LEFT JOIN categories ec ON e.category_id = ec.id
-                    WHERE e.user_id = b.user_id
-                    AND MONTH(e.expense_date) = MONTH(CURDATE())
-                    AND YEAR(e.expense_date)  = YEAR(CURDATE())
-                    AND (
-                        c.id IS NULL
-                        OR ec.id = c.id
-                    )
-                ), 0
-            ) AS spent
+            COALESCE(SUM(e.amount), 0) AS spent
         FROM budgets b
         LEFT JOIN categories c ON b.category_id = c.id
+        LEFT JOIN expenses e
+            ON  e.user_id = b.user_id
+            AND MONTH(e.expense_date) = MONTH(CURDATE())
+            AND YEAR(e.expense_date)  = YEAR(CURDATE())
+            AND (b.category_id IS NULL OR e.category_id = b.category_id)
         WHERE b.user_id = %s
+        GROUP BY b.id, b.amount_limit, b.period, c.name, c.icon
         ORDER BY b.id
     """
     rows = query_all(sql, (user_id,))
