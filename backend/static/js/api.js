@@ -9,8 +9,8 @@ const API = {
     if (body) options.body = JSON.stringify(body);
     try {
       const response = await fetch(`${API_BASE}${endpoint}`, options);
-      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-      return await response.json();
+      const json = await response.json();
+      return json;
     } catch (error) {
       console.warn(`[API] Request failed for ${endpoint}:`, error.message);
       return null;

@@ -1,8 +1,9 @@
 # budgets.py — Full Budget CRUD API
 
 from flask import Blueprint, jsonify, request, session
-from models.db import query_all, query_one, execute
+from models.db import query_all, query_one, execute, get_connection
 from datetime import date, datetime
+import mysql.connector
 
 budgets_bp = Blueprint('budgets', __name__)
 
@@ -65,7 +66,9 @@ def add_budget():
         if cat:
             category_id = cat['id']
 
-    user_id = session.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not logged in"}), 200
 
     # Check if budget already exists for this category
     existing = query_one("""
@@ -97,24 +100,31 @@ def add_budget():
     else:
         # ── INSERT new budget ──────────────────────────────
         start_date = date.today().replace(day=1).strftime('%Y-%m-%d')
-        new_id = execute("""
-            INSERT INTO budgets
-                (user_id, category_id, amount_limit, period, start_date)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (user_id, category_id, amount, data['period'], start_date))
-
-        if new_id:
-            return jsonify({
-                "status" : "success",
-                "message": "Budget created successfully",
-                "id"     : new_id,
-                "action" : "created"
-            }), 201
+        conn = get_connection()
+        if not conn:
+            return jsonify({"status": "error", "message": "Database connection failed"}), 200
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO budgets
+                    (user_id, category_id, amount_limit, period, start_date)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (user_id, category_id, amount, data['period'], start_date))
+            conn.commit()
+            new_id = cursor.lastrowid
+        except mysql.connector.Error as err:
+            conn.rollback()
+            return jsonify({"status": "error", "message": f"DB error: {err}"}), 200
+        finally:
+            cursor.close()
+            conn.close()
 
         return jsonify({
-            "status" : "error",
-            "message": "Failed to save budget"
-        }), 500
+            "status" : "success",
+            "message": "Budget created successfully",
+            "id"     : new_id,
+            "action" : "created"
+        }), 201
 
 
 # ── DELETE /api/budgets/<id> ───────────────────────────────
