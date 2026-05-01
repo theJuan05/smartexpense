@@ -10,7 +10,22 @@
       "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; print\\(predict\\('Jollibee'\\)\\); print\\(predict\\('Grab ride'\\)\\); print\\(predict\\('Meralco bill'\\)\\)\")",
       "Bash(python -c \"import sys; sys.path.insert\\(0,'backend'\\); from ml.classifier import predict; r = predict\\('Jollibee'\\); print\\(type\\(r['category']\\), repr\\(r['category']\\)\\)\")",
       "Bash(curl -s \"http://localhost:5000/api/budgets/summary?user_id=1\")",
-      "Bash(curl -s -o - \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\")"
+      "Bash(curl -s -o - \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\")",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" \"http://127.0.0.1:5000/api/ping\")",
+      "Bash(python app.py)",
+      "Bash(curl -s \"http://127.0.0.1:5000/api/ping\")",
+      "Bash(curl -s \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\")",
+      "Bash(python -c 'import sys,json; d=json.load\\(sys.stdin\\); print\\('\\\\''Status:'\\\\'', d.get\\('\\\\''status'\\\\''\\)\\); print\\('\\\\''Count:'\\\\'', len\\(d.get\\('\\\\''data'\\\\'',[]\\)\\)\\); *)",
+      "Bash(curl -s -X POST \"http://127.0.0.1:5000/api/budgets\" -H \"Content-Type: application/json\" -d '{\"category\":\"Food & Dining\",\"amount_limit\":5000,\"period\":\"monthly\",\"user_id\":1}')",
+      "Bash(curl -s -c /tmp/cookies.txt \"http://127.0.0.1:5000/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://127.0.0.1:5000/service-worker.js\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://127.0.0.1:5000/static/service-worker.js\")",
+      "Bash(curl -s -w \"\\\\n---HTTP_STATUS:%{http_code}---\\\\n\" \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\")",
+      "Bash(curl -s -c /tmp/test_cookies.txt -b /tmp/test_cookies.txt -L \"http://127.0.0.1:5000/\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('OK - budgets:', len\\(d.get\\('data',[]\\)\\)\\)\")",
+      "Bash(taskkill /F /IM python.exe)",
+      "Bash(curl -s \"http://127.0.0.1:5000/service-worker.js\" -o /dev/null -w \"SW route: %{http_code}\\\\n\")",
+      "Bash(curl -s \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\" -o /dev/null -w \"Budget API: %{http_code}\\\\n\")"
     ]
   }
 }

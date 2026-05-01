@@ -9,14 +9,33 @@ async function loadBudgetSummary() {
 
   const result = await API.request('/budgets/summary?user_id=1');
 
-  if (!result || result.status !== 'success' || !result.data.length) {
+  if (!result) {
+    renderBudgetHero(null);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <p style="font-weight:600;">Could not reach server</p>
+        <p style="font-size:0.85rem;margin-top:6px;color:var(--text-muted);">
+          Make sure the app is running, then retry.
+        </p>
+        <button onclick="loadBudgetSummary()"
+                style="margin-top:12px;padding:8px 20px;background:var(--primary);
+                       color:#fff;border:none;border-radius:8px;cursor:pointer;
+                       font-size:0.85rem;">
+          Retry
+        </button>
+      </div>`;
+    return;
+  }
+
+  if (result.status !== 'success' || !result.data.length) {
     renderBudgetHero(null);
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">📊</div>
         <p>No budgets set yet.</p>
         <p style="font-size:0.85rem;margin-top:6px;">
-          Add your first budget below!
+          Add your first budget using the form →
         </p>
       </div>`;
     return;

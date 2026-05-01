@@ -1,7 +1,7 @@
 import os
 import logging
 from datetime import timedelta
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, send_from_directory, make_response
 from flask_cors import CORS
 from config import Config
 
@@ -71,6 +71,15 @@ def index():
 # -----------------------------
 # API UTILITIES
 # -----------------------------
+@app.route('/service-worker.js')
+def service_worker():
+    response = make_response(
+        send_from_directory(app.static_folder, 'service-worker.js')
+    )
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
+
+
 @app.route('/api/ping', methods=['GET'])
 def ping():
     return jsonify({
@@ -91,4 +100,4 @@ if __name__ == '__main__':
     print("  SmartExpense AI Pro - Flask Backend")
     print("  Running at: http://localhost:5000")
     print("=" * 50)
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, use_reloader=True, reloader_type='stat')
