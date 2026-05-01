@@ -72,6 +72,6 @@ def predict(title: str) -> dict:
     idx   = proba.argmax()
 
     return {
-        'category'  : clf.classes_[idx],
+        'category'  : str(clf.classes_[idx]),
         'confidence': round(float(proba[idx]), 2),
     }
