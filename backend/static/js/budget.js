@@ -145,8 +145,6 @@ function createBudgetCard(budget) {
                   : budget.status === 'warning' ? 'warning' : '';
 
   card.innerHTML = `
-    <button class="budget-card-delete" data-id="${budget.id}"
-            title="Delete budget">🗑</button>
     <div class="budget-card-header">
       <div>
         <div class="budget-card-title">
@@ -154,13 +152,17 @@ function createBudgetCard(budget) {
         </div>
         <div class="budget-card-period">${budget.period}</div>
       </div>
-      <div class="budget-card-amounts">
-        <div class="budget-card-spent">
-          P${Number(budget.spent).toLocaleString()}
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="budget-card-amounts">
+          <div class="budget-card-spent">
+            P${Number(budget.spent).toLocaleString()}
+          </div>
+          <div class="budget-card-limit">
+            of P${Number(budget.amount_limit).toLocaleString()}
+          </div>
         </div>
-        <div class="budget-card-limit">
-          of P${Number(budget.amount_limit).toLocaleString()}
-        </div>
+        <button class="budget-card-delete" data-id="${budget.id}"
+                title="Delete budget">🗑</button>
       </div>
     </div>
     <div class="progress-bar-track">
