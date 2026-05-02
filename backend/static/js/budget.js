@@ -146,7 +146,7 @@ function createBudgetCard(budget) {
 
   card.innerHTML = `
     <button class="budget-card-delete" data-id="${budget.id}"
-            title="Delete budget">X</button>
+            title="Delete budget">🗑</button>
     <div class="budget-card-header">
       <div>
         <div class="budget-card-title">
