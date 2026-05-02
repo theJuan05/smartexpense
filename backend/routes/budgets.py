@@ -11,7 +11,9 @@ budgets_bp = Blueprint('budgets', __name__)
 # ── GET /api/budgets ───────────────────────────────────────
 @budgets_bp.route('/budgets', methods=['GET'])
 def get_budgets():
-    user_id = session.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
 
     sql = """
         SELECT
@@ -56,7 +58,7 @@ def add_budget():
     except ValueError as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-    # Find category_id if category name provided
+    # Find category_id if category name provided; auto-create if missing
     category_id = None
     if data.get('category') and data['category'] != 'Overall Budget':
         cat = query_one(
@@ -65,6 +67,13 @@ def add_budget():
         )
         if cat:
             category_id = cat['id']
+        else:
+            new_cat_id = execute(
+                "INSERT INTO categories (name, icon, color) VALUES (%s, '', '#7c5cbf')",
+                (data['category'],)
+            )
+            if new_cat_id:
+                category_id = new_cat_id
 
     user_id = session.get('user_id')
     if not user_id:
@@ -144,7 +153,9 @@ def delete_budget(budget_id):
 # Returns budgets with actual spending this month
 @budgets_bp.route('/budgets/summary', methods=['GET'])
 def budget_summary():
-    user_id = session.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
 
     sql = """
         SELECT

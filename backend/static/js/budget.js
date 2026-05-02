@@ -41,42 +41,36 @@ async function loadBudgetSummary() {
     return;
   }
 
-  // Split overall budget from category budgets
-  const overall  = result.data.find(b => b.category === 'Overall Budget');
+  // Overall budget goes to hero; ALL budgets appear in the overview list
+  const overall    = result.data.find(b => b.category === 'Overall Budget');
   const catBudgets = result.data.filter(b => b.category !== 'Overall Budget');
+  const listBudgets = catBudgets.length > 0 ? catBudgets : result.data;
 
   renderBudgetHero(overall || null);
 
   container.innerHTML = '';
 
-  if (catBudgets.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state" style="padding:16px 0;">
-        <p style="font-size:0.85rem;color:var(--text-muted);">No category budgets set yet.</p>
-      </div>`;
-  } else {
-    // Alerts for category budgets
-    const alerts = catBudgets.filter(b => b.status !== 'ok');
-    if (alerts.length > 0) {
-      const alertBox = document.createElement('div');
-      alertBox.style.marginBottom = '16px';
-      alerts.forEach(b => {
-        const type = b.status;
-        const msg  = type === 'danger'
-          ? `Over budget! ${b.category} is at ${b.percentage}% of limit`
-          : `Warning: ${b.category} is at ${b.percentage}% of limit`;
-        alertBox.innerHTML += `
-          <div class="budget-alert ${type}">
-            ${type === 'danger' ? 'OVER BUDGET' : 'WARNING'}: ${msg}
-          </div>`;
-      });
-      container.appendChild(alertBox);
-    }
-
-    catBudgets.forEach(budget => {
-      container.appendChild(createBudgetCard(budget));
+  // Alerts for budgets in warning/danger
+  const alerts = listBudgets.filter(b => b.status !== 'ok');
+  if (alerts.length > 0) {
+    const alertBox = document.createElement('div');
+    alertBox.style.marginBottom = '16px';
+    alerts.forEach(b => {
+      const type = b.status;
+      const msg  = type === 'danger'
+        ? `Over budget! ${b.category} is at ${b.percentage}% of limit`
+        : `Warning: ${b.category} is at ${b.percentage}% of limit`;
+      alertBox.innerHTML += `
+        <div class="budget-alert ${type}">
+          ${type === 'danger' ? 'OVER BUDGET' : 'WARNING'}: ${msg}
+        </div>`;
     });
+    container.appendChild(alertBox);
   }
+
+  listBudgets.forEach(budget => {
+    container.appendChild(createBudgetCard(budget));
+  });
 
   await renderBudgetProgress(result);
 }

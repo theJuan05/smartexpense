@@ -256,7 +256,7 @@ async function renderBudgetProgress(prefetched = null) {
   const container = document.getElementById('budget-progress-list');
   if (!container) return;
 
-  const result = prefetched || await API.request('/budgets/summary?user_id=1');
+  const result = prefetched || await API.request('/budgets/summary');
 
   if (!result || result.status !== 'success' || !result.data.length) {
     container.innerHTML =
