@@ -57,8 +57,8 @@ async function loadBudgetSummary() {
     alerts.forEach(b => {
       const type = b.status;
       const msg  = type === 'danger'
-        ? `Over budget! ${b.category} is at ${b.percentage}% of limit`
-        : `Warning: ${b.category} is at ${b.percentage}% of limit`;
+        ? `${b.category} is at ${b.percentage}% of limit`
+        : `${b.category} is at ${b.percentage}% of limit`;
       alertBox.innerHTML += `
         <div class="budget-alert ${type}">
           ${type === 'danger' ? 'OVER BUDGET' : 'WARNING'}: ${msg}
