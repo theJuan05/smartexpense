@@ -2416,6 +2416,11 @@ textarea:focus-visible {
     column-gap: 20px;
     align-items: start;
   }
+
+  /* ── Profile/Settings: constrained so cards don't stretch on wide screens ── */
+  #tab-profile.active {
+    max-width: 860px;
+  }
 }
 
 /* Sidebar hidden on mobile by default */
