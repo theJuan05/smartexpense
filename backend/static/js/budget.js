@@ -236,17 +236,39 @@ async function checkBudgetAlerts() {
   const result = await API.request('/budgets/summary');
   if (!result || result.status !== 'success') return;
 
+  const today   = new Date().toISOString().split('T')[0];
+  const seenKey = `se-budget-notified-${today}`;
+  const seen    = JSON.parse(localStorage.getItem(seenKey) || '[]');
+
   result.data.forEach(budget => {
     if (budget.status === 'danger') {
-      showToast(
-        `OVER BUDGET: ${budget.category} (${budget.percentage}%)`,
-        'warning'
-      );
+      showToast(`OVER BUDGET: ${budget.category} (${budget.percentage}%)`, 'warning');
+      const id = `${budget.id}-danger`;
+      if (!seen.includes(id)) {
+        seen.push(id);
+        if (typeof showPushNotification === 'function') {
+          showPushNotification(
+            `Over Budget: ${budget.category}`,
+            `You've used ${budget.percentage}% of your ₱${Number(budget.amount_limit).toLocaleString()} limit.`,
+            `budget-danger-${budget.id}`
+          );
+        }
+      }
     } else if (budget.status === 'warning') {
-      showToast(
-        `Warning: ${budget.category} at ${budget.percentage}%`,
-        'warning'
-      );
+      showToast(`Warning: ${budget.category} at ${budget.percentage}%`, 'warning');
+      const id = `${budget.id}-warning`;
+      if (!seen.includes(id)) {
+        seen.push(id);
+        if (typeof showPushNotification === 'function') {
+          showPushNotification(
+            `Budget Warning: ${budget.category}`,
+            `You've used ${budget.percentage}% of your ₱${Number(budget.amount_limit).toLocaleString()} limit.`,
+            `budget-warning-${budget.id}`
+          );
+        }
+      }
     }
   });
+
+  localStorage.setItem(seenKey, JSON.stringify(seen));
 }

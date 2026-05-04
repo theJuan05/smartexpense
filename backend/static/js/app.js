@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Register service worker and init PWA
   registerServiceWorker();
   initPWA();
+
+  // Ask for notification permission once, after a short delay
+  setTimeout(requestNotificationPermission, 3000);
 });
 
 // ── Tab System ─────────────────────────────────────────────
@@ -399,6 +402,31 @@ function registerServiceWorker() {
       .then(reg  => console.log('[SW] Registered, scope:', reg.scope))
       .catch(err => console.warn('[SW] Registration failed:', err));
   }
+}
+
+// ── Push Notifications ─────────────────────────────────────
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'default') return;
+  if (localStorage.getItem('se-notif-asked')) return;
+  localStorage.setItem('se-notif-asked', '1');
+  await Notification.requestPermission();
+}
+
+async function showPushNotification(title, body, tag) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (!reg) return;
+    reg.showNotification(title, {
+      body,
+      icon:      '/static/icons/logo-icon.svg',
+      badge:     '/static/icons/logo-icon.svg',
+      tag:       tag || 'smartexpense',
+      renotify:  false,
+    });
+  } catch (_) {}
 }
 
 // ── Modal focus management ─────────────────────────────────
