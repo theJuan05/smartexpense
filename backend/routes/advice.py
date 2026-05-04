@@ -175,7 +175,7 @@ def generate_advice(data):
     near_budget = [
         b for b in budgets
         if b['amount_limit'] > 0 and
-        0.8 <= b['spent'] / b['amount_limit'] < 1.0
+        0.7 <= b['spent'] / b['amount_limit'] < 1.0
     ]
 
     if over_budget:
@@ -200,7 +200,7 @@ def generate_advice(data):
             'type'    : 'warning',
             'title'   : 'Approaching Budget Limit',
             'message' : (
-                f'{cats} — you are at 80%+ of your budget. '
+                f'{cats} — you are at 70%+ of your budget. '
                 f'Slow down spending in these areas for the rest of the month.'
             ),
             'icon'    : 'warning',
