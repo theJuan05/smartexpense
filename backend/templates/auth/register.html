@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account – SmartExpense AI Pro</title>
+  <title>Create Account – SmartExpense</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,77 +13,105 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       display: flex;
-      background: #f0f0ff;
+      background: #f5f5f7;
       -webkit-font-smoothing: antialiased;
+      color: #111;
     }
 
-    /* ── Left panel (desktop only) ────────────────── */
+    /* ── Left panel ─────────────────────────────────── */
     .left-panel {
       display: none;
       flex-direction: column;
-      justify-content: center;
-      padding: 60px 56px;
-      background: linear-gradient(160deg, #2d1b8a 0%, #1a1040 60%, #0d0d20 100%);
-      width: 46%;
+      width: 44%;
       min-height: 100vh;
+      background: #0d0d18;
+      padding: 44px 48px;
       position: sticky;
       top: 0;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(108,79,255,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,212,170,0.08) 0%, transparent 60%);
+      pointer-events: none;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 56px;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
     }
 
     .brand-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
       display: block;
+      flex-shrink: 0;
     }
 
     .brand-name {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: white;
-      letter-spacing: -0.2px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: -0.1px;
     }
 
     .brand-name span { color: #a48fff; }
 
-    .left-panel h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-      color: white;
-      line-height: 1.2;
-      margin-bottom: 16px;
+    .left-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-heading {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.25;
       letter-spacing: -0.5px;
+      margin-bottom: 10px;
     }
 
-    .left-panel p {
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.55);
-      line-height: 1.7;
-      margin-bottom: 44px;
-      max-width: 340px;
+    .left-heading em {
+      font-style: normal;
+      color: #a48fff;
     }
 
+    .left-sub {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+      margin-bottom: 36px;
+      max-width: 300px;
+    }
+
+    /* Step list */
     .step-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 14px;
+      max-width: 320px;
     }
 
     .step-list li {
       display: flex;
       align-items: flex-start;
-      gap: 14px;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.88rem;
+      gap: 12px;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.86rem;
       font-weight: 500;
       line-height: 1.5;
     }
@@ -91,27 +119,26 @@
     .step-num {
       width: 26px;
       height: 26px;
-      background: rgba(108,79,255,0.3);
-      border: 1px solid rgba(108,79,255,0.5);
+      background: rgba(108,79,255,0.25);
+      border: 1px solid rgba(108,79,255,0.4);
       border-radius: 8px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: #a48fff;
     }
 
-    .left-tagline {
-      margin-top: auto;
-      padding-top: 48px;
+    .left-foot {
+      position: relative;
+      z-index: 1;
       font-size: 0.72rem;
-      color: rgba(255,255,255,0.2);
-      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.18);
     }
 
-    /* ── Right panel ──────────────────────────────── */
+    /* ── Right panel ────────────────────────────────── */
     .right-panel {
       flex: 1;
       display: flex;
@@ -123,205 +150,265 @@
 
     .auth-card {
       width: 100%;
-      max-width: 440px;
+      max-width: 400px;
     }
 
+    /* Mobile brand */
     .mobile-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       margin-bottom: 28px;
     }
 
     .mobile-brand-icon {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 8px;
       display: block;
     }
 
     .mobile-brand-name {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #1a1a2e;
-      letter-spacing: -0.2px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111;
     }
 
     .mobile-brand-name span { color: #6c4fff; }
 
-    /* ── Form card ────────────────────────────────── */
+    /* Form card */
     .form-card {
-      background: white;
-      border-radius: 18px;
+      background: #fff;
+      border-radius: 14px;
       padding: 32px 28px;
-      box-shadow: 0 4px 24px rgba(108,79,255,0.1);
-      border: 0.5px solid #e8e8f4;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+      border: 0.5px solid #e4e4e8;
+      position: relative;
     }
 
     .form-card h2 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #1a1a2e;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #111;
       margin-bottom: 4px;
       letter-spacing: -0.3px;
     }
 
     .form-card .subtitle {
-      font-size: 0.88rem;
-      color: #4a4a6a;
+      font-size: 0.875rem;
+      color: #666;
       margin-bottom: 24px;
     }
 
     /* Flash messages */
     .flash {
-      padding: 10px 14px;
+      padding: 10px 13px;
       border-radius: 8px;
       font-size: 0.83rem;
       margin-bottom: 16px;
       font-weight: 500;
     }
-    .flash.error   { background: #fff0f0; color: #7a1a1e; border: 0.5px solid rgba(231,76,60,0.25); }
-    .flash.success { background: #edfaf3; color: #0a5f40; border: 0.5px solid rgba(10,140,90,0.25); }
-    .flash.info    { background: #f0eeff; color: #3a1a9a; border: 0.5px solid rgba(108,79,255,0.25); }
+    .flash.error   { background: #fff0f0; color: #7a1a1e; border: 1px solid rgba(231,76,60,0.2); }
+    .flash.success { background: #edfaf3; color: #0a5f40; border: 1px solid rgba(10,140,90,0.2); }
+    .flash.info    { background: #f0eeff; color: #3a1a9a; border: 1px solid rgba(108,79,255,0.2); }
 
     /* Fields */
     .field { margin-bottom: 16px; }
 
     .field label {
       display: block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #4a4a6a;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #333;
       margin-bottom: 6px;
     }
 
+    .field-input-wrap { position: relative; }
+
     .field input {
       width: 100%;
-      padding: 10px 13px;
-      border: 0.5px solid #e8e8f4;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
       border-radius: 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.92rem;
-      color: #1a1a2e;
-      background: #f0f0ff;
-      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+      font-size: 0.9rem;
+      color: #111;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
     .field input:focus {
       outline: none;
       border-color: #6c4fff;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(108,79,255,0.12);
+      box-shadow: 0 0 0 3px rgba(108,79,255,0.1);
     }
 
-    .field input:focus-visible {
-      outline: none;
-      border-color: #6c4fff;
-      box-shadow: 0 0 0 3px rgba(108,79,255,0.25);
-    }
+    .field input::placeholder { color: #bbb; }
 
-    .field input::placeholder { color: #c0c0d8; }
+    .field input[type="password"] { padding-right: 42px; }
 
     .hint {
       font-size: 0.78rem;
-      color: #4a4a6a;
+      color: #888;
       margin-top: 5px;
     }
 
-    /* Submit button */
-    .btn-register {
+    /* Password toggle */
+    .pw-toggle {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s;
+    }
+
+    .pw-toggle:hover { color: #555; }
+
+    /* Submit */
+    .btn-submit {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
       background: #6c4fff;
       color: white;
       border: none;
       border-radius: 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.92rem;
-      font-weight: 700;
+      font-size: 0.9rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s, transform 0.15s;
-      box-shadow: 0 2px 8px rgba(108,79,255,0.3);
-      margin-top: 6px;
+      transition: background 0.15s, box-shadow 0.15s;
+      margin-top: 4px;
     }
 
-    .btn-register:hover {
-      background: #5538e8;
-      box-shadow: 0 4px 16px rgba(108,79,255,0.4);
-      transform: translateY(-1px);
-    }
-
-    .btn-register:active { transform: scale(0.97); }
-
-    .btn-register:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(108,79,255,0.35);
-    }
+    .btn-submit:hover  { background: #5538e8; box-shadow: 0 4px 12px rgba(108,79,255,0.3); }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(108,79,255,0.35); }
 
     .form-footer {
       text-align: center;
       margin-top: 20px;
-      font-size: 0.85rem;
-      color: #4a4a6a;
+      font-size: 0.84rem;
+      color: #666;
     }
 
     .form-footer a {
-      color: #5538e8;
-      font-weight: 700;
+      color: #6c4fff;
+      font-weight: 600;
       text-decoration: none;
     }
 
     .form-footer a:hover { text-decoration: underline; }
-    .form-footer a:focus-visible { outline: 2px solid #6c4fff; outline-offset: 2px; border-radius: 2px; }
 
     /* ── Desktop ──────────────────────────────────── */
     @media (min-width: 860px) {
       .left-panel   { display: flex; }
       .mobile-brand { display: none; }
-      .right-panel  { background: #f0f0ff; }
+      .right-panel  { background: #f5f5f7; }
     }
 
     @media (max-width: 480px) {
-      .form-card { padding: 24px 18px; border-radius: 14px; }
+      .form-card { padding: 26px 20px; }
     }
+
+    /* ── Skeleton loader ─────────────────────────────── */
+    @keyframes sk-shimmer {
+      0%   { background-position: -500px 0; }
+      100% { background-position:  500px 0; }
+    }
+
+    .sk-line {
+      border-radius: 6px;
+      background: linear-gradient(90deg, #e8e8ee 25%, #f2f2f7 50%, #e8e8ee 75%);
+      background-size: 500px 100%;
+      animation: sk-shimmer 1.4s infinite linear;
+    }
+
+    #reg-skeleton {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background: #fff;
+      border-radius: 14px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+
+    #reg-skeleton.sk-hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .sk-auth-title  { height: 22px; width: 55%; margin-bottom: 8px; }
+    .sk-auth-sub    { height: 13px; width: 40%; margin-bottom: 26px; }
+    .sk-auth-label  { height: 11px; width: 30%; margin-bottom: 8px; }
+    .sk-auth-input  { height: 40px; width: 100%; border-radius: 8px; margin-bottom: 18px; }
+    .sk-auth-btn    { height: 42px; width: 100%; border-radius: 8px; margin-top: 6px; }
+    .sk-auth-footer { height: 12px; width: 50%; margin: 20px auto 0; }
   </style>
 </head>
 <body>
 
-  <!-- Left panel — desktop only -->
+  <!-- Left panel — desktop -->
   <div class="left-panel">
     <div class="brand">
       <img src="/static/icons/logo-icon.svg" class="brand-icon" alt="" aria-hidden="true">
       <div class="brand-name">Smart<span>Expense</span></div>
     </div>
 
-    <h1>Your money, finally clear.</h1>
-    <p>Track every peso, catch patterns before they become problems, and feel in control of where your money goes.</p>
+    <div class="left-body">
+      <h1 class="left-heading">Your money,<br>finally <em>clear</em>.</h1>
+      <p class="left-sub">Track every peso, set budgets that stick, and let AI surface what you'd miss on your own.</p>
 
-    <ul class="step-list">
-      <li><span class="step-num" aria-hidden="true">1</span> Add your income and first expenses in under a minute</li>
-      <li><span class="step-num" aria-hidden="true">2</span> Set budgets by category — groceries, transport, dining</li>
-      <li><span class="step-num" aria-hidden="true">3</span> Let AI surface patterns and flag unusual spending</li>
-    </ul>
+      <ul class="step-list" aria-hidden="true">
+        <li><span class="step-num">1</span> Add your income and first expenses in under a minute</li>
+        <li><span class="step-num">2</span> Set budgets by category — groceries, transport, dining</li>
+        <li><span class="step-num">3</span> Let AI surface patterns and flag unusual spending</li>
+      </ul>
+    </div>
 
-    <p class="left-tagline">SmartExpense &nbsp;·&nbsp; Free to use</p>
+    <p class="left-foot">SmartExpense &nbsp;·&nbsp; Free to use</p>
   </div>
 
   <!-- Right panel -->
   <div class="right-panel">
     <div class="auth-card">
 
-      <!-- Mobile logo -->
+      <!-- Mobile brand -->
       <div class="mobile-brand">
         <img src="/static/icons/logo-icon.svg" class="mobile-brand-icon" alt="" aria-hidden="true">
         <div class="mobile-brand-name">Smart<span>Expense</span></div>
       </div>
 
       <div class="form-card">
+
+        <!-- Skeleton overlay -->
+        <div id="reg-skeleton">
+          <div class="sk-line sk-auth-title"></div>
+          <div class="sk-line sk-auth-sub"></div>
+          <div class="sk-line sk-auth-label"></div>
+          <div class="sk-line sk-auth-input"></div>
+          <div class="sk-line sk-auth-label"></div>
+          <div class="sk-line sk-auth-input"></div>
+          <div class="sk-line sk-auth-label"></div>
+          <div class="sk-line sk-auth-input" style="margin-bottom:0"></div>
+          <div class="sk-line sk-auth-btn"></div>
+          <div class="sk-line sk-auth-footer"></div>
+        </div>
+
         <h2>Create account</h2>
-        <p class="subtitle">Free forever — no credit card needed</p>
+        <p class="subtitle">Free forever — no credit card needed.</p>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% for category, message in messages %}
@@ -332,35 +419,106 @@
         <form method="POST" action="{{ url_for('auth.register') }}">
           <div class="field">
             <label for="name">Full name</label>
-            <input type="text" id="name" name="name" placeholder="Juan dela Cruz" required autofocus autocomplete="name" />
+            <input type="text" id="name" name="name" placeholder="Juan dela Cruz"
+                   required autofocus autocomplete="name" />
           </div>
 
           <div class="field">
-            <label for="email">Email address</label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com"
+                   required autocomplete="email" />
           </div>
 
           <div class="field">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="new-password" aria-describedby="password-hint" />
-            <p class="hint" id="password-hint">At least 6 characters</p>
+            <div class="field-input-wrap">
+              <input type="password" id="password" name="password" placeholder="••••••••"
+                     required autocomplete="new-password" aria-describedby="pw-hint" />
+              <button type="button" class="pw-toggle" id="pw-toggle-1"
+                      aria-label="Show password" title="Show password">
+                <svg id="eye-1" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg id="eye-off-1" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     style="display:none">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+            <p class="hint" id="pw-hint">At least 6 characters</p>
           </div>
 
           <div class="field">
             <label for="confirm_password">Confirm password</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required autocomplete="new-password" />
+            <div class="field-input-wrap">
+              <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••"
+                     required autocomplete="new-password" />
+              <button type="button" class="pw-toggle" id="pw-toggle-2"
+                      aria-label="Show password" title="Show password">
+                <svg id="eye-2" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg id="eye-off-2" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     style="display:none">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
-          <button type="submit" class="btn-register">Create Account</button>
+          <button type="submit" class="btn-submit">Create account</button>
         </form>
 
         <p class="form-footer">
           Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
         </p>
-      </div>
 
+      </div>
     </div>
   </div>
+
+  <script>
+    // Password toggles
+    function makePwToggle(inputId, btnId, eyeId, eyeOffId) {
+      const input  = document.getElementById(inputId);
+      const btn    = document.getElementById(btnId);
+      const eye    = document.getElementById(eyeId);
+      const eyeOff = document.getElementById(eyeOffId);
+      btn.addEventListener('click', function () {
+        const show = input.type === 'password';
+        input.type          = show ? 'text' : 'password';
+        eye.style.display   = show ? 'none' : '';
+        eyeOff.style.display = show ? '' : 'none';
+        this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      });
+    }
+
+    makePwToggle('password',         'pw-toggle-1', 'eye-1', 'eye-off-1');
+    makePwToggle('confirm_password', 'pw-toggle-2', 'eye-2', 'eye-off-2');
+
+    // Hide skeleton + redirect if already logged in
+    const skel = document.getElementById('reg-skeleton');
+    setTimeout(() => skel.classList.add('sk-hidden'), 2000);
+
+    (async function () {
+      try {
+        const res  = await fetch('/api/auth/status');
+        const data = await res.json();
+        if (data.logged_in) { window.location.href = '/'; return; }
+      } catch (_) {}
+      skel.classList.add('sk-hidden');
+    })();
+  </script>
 
 </body>
 </html>
