@@ -2338,7 +2338,7 @@ textarea:focus-visible {
 
   /* Shift navbar and content right of sidebar */
   .navbar    { margin-left: 220px; }
-  .container { margin-left: 220px; margin-right: 0; max-width: 1360px; padding: 28px 32px; }
+  .container { margin-left: 220px; margin-right: 0; max-width: none; padding: 28px 32px; }
   #page-skeleton { left: 220px; }
 
   /* ── Dashboard: main column + sticky aside ──────────────────── */
