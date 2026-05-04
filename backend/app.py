@@ -88,6 +88,11 @@ def ping():
         "message": "SmartExpense AI Pro backend is running!"
     })
 
+@app.route('/firebase-messaging-sw.js')
+def serve_sw():
+    return send_from_directory('static', 'firebase-messaging-sw.js')
+
+
 # Warm up the ML classifier at startup so the first request isn't slow
 with app.app_context():
     try:
