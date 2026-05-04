@@ -411,21 +411,11 @@ function registerServiceWorker() {
 // ── Push Notifications ─────────────────────────────────────
 async function requestNotificationPermission() {
   if (!('Notification' in window)) return;
-  if (localStorage.getItem('se-notif-asked')) {
-    // Permission was already asked — try to (re-)register FCM token in case
-    // firebase.js just loaded or the token changed.
-    if (Notification.permission === 'granted' &&
-        typeof initFirebaseMessaging === 'function') {
-      await initFirebaseMessaging();
-    }
-    return;
-  }
-  if (Notification.permission !== 'default') return;
+  if (Notification.permission === 'granted') return;
+  if (Notification.permission === 'denied') return;
+  if (localStorage.getItem('se-notif-asked')) return;
   localStorage.setItem('se-notif-asked', '1');
-  const perm = await Notification.requestPermission();
-  if (perm === 'granted' && typeof initFirebaseMessaging === 'function') {
-    await initFirebaseMessaging();
-  }
+  await Notification.requestPermission();
 }
 
 async function showPushNotification(title, body, tag) {
