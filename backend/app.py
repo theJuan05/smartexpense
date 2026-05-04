@@ -20,6 +20,7 @@ from routes.ai import ai_bp
 from routes.anomaly import anomaly_bp
 from routes.advice import advice_bp
 from routes.receipt_ocr import receipt_bp
+from routes.push import push_bp
 
 # -----------------------------
 # APP SETUP
@@ -48,6 +49,7 @@ app.register_blueprint(ai_bp, url_prefix='/api')
 app.register_blueprint(anomaly_bp, url_prefix='/api')
 app.register_blueprint(advice_bp, url_prefix='/api')
 app.register_blueprint(receipt_bp, url_prefix='/api/receipt')
+app.register_blueprint(push_bp,    url_prefix='/api')
 
 # -----------------------------
 # SECURITY HEADERS
@@ -89,8 +91,12 @@ def ping():
     })
 
 @app.route('/firebase-messaging-sw.js')
-def serve_sw():
-    return send_from_directory('static', 'firebase-messaging-sw.js')
+def serve_firebase_sw():
+    response = make_response(
+        send_from_directory(os.path.join(app.static_folder, 'js'), 'firebase-messaging-sw.js')
+    )
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
 
 
 # Warm up the ML classifier at startup so the first request isn't slow

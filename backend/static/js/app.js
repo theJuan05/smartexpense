@@ -161,9 +161,13 @@ async function handleAddExpense() {
   await renderAllCharts();
   renderRecentTransactions();
 
-  if (navigator.onLine) await runSync();
+  if (navigator.onLine) {
+    await runSync();
+    // Server-side FCM push for budget thresholds (works even when app later closes)
+    fetch('/api/budgets/notify', { method: 'POST' }).catch(() => {});
+  }
 
-  // Check if any budget is exceeded
+  // In-app toast + local SW notification (immediate feedback while app is open)
   await checkBudgetAlerts();
 
   // Switch to expenses tab to show new entry
@@ -407,24 +411,36 @@ function registerServiceWorker() {
 // ── Push Notifications ─────────────────────────────────────
 async function requestNotificationPermission() {
   if (!('Notification' in window)) return;
+  if (localStorage.getItem('se-notif-asked')) {
+    // Permission was already asked — try to (re-)register FCM token in case
+    // firebase.js just loaded or the token changed.
+    if (Notification.permission === 'granted' &&
+        typeof initFirebaseMessaging === 'function') {
+      await initFirebaseMessaging();
+    }
+    return;
+  }
   if (Notification.permission !== 'default') return;
-  if (localStorage.getItem('se-notif-asked')) return;
   localStorage.setItem('se-notif-asked', '1');
-  await Notification.requestPermission();
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted' && typeof initFirebaseMessaging === 'function') {
+    await initFirebaseMessaging();
+  }
 }
 
 async function showPushNotification(title, body, tag) {
   if (!('Notification' in window)) return;
   if (Notification.permission !== 'granted') return;
   try {
-    const reg = await navigator.serviceWorker.getRegistration();
+    // .ready waits for the active controlling SW — more reliable than getRegistration()
+    const reg = await navigator.serviceWorker.ready;
     if (!reg) return;
     reg.showNotification(title, {
       body,
       icon:      '/static/icons/logo-icon.svg',
       badge:     '/static/icons/logo-icon.svg',
       tag:       tag || 'smartexpense',
-      renotify:  false,
+      renotify:  true,
     });
   } catch (_) {}
 }
