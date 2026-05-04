@@ -604,8 +604,8 @@
     <div class="logo-text">Smart<em>Expense</em></div>
   </a>
   <div class="nav-actions">
-    <a href="{{ url_for('auth.login') }}" class="btn-ghost">Sign in</a>
-    <a href="{{ url_for('auth.register') }}" class="btn-nav-cta">Get Started</a>
+    <a href="/login" class="btn-ghost">Sign in</a>
+    <a href="/register" class="btn-nav-cta">Get Started</a>
   </div>
 </nav>
 
@@ -631,7 +631,7 @@
       </p>
 
       <div class="hero-actions">
-        <a href="{{ url_for('auth.register') }}" class="btn-hero-main">
+        <a href="/register" class="btn-hero-main">
           Get Started Free
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5"
@@ -639,7 +639,7 @@
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </a>
-        <a href="{{ url_for('auth.login') }}" class="btn-hero-sec">Sign in</a>
+        <a href="/login" class="btn-hero-sec">Sign in</a>
       </div>
 
       <p class="hero-note">No credit card required &nbsp;·&nbsp; Works offline &nbsp;·&nbsp; Free forever</p>
@@ -821,7 +821,7 @@
     <h2 class="cta-hd">Take control of<br><span class="acc">your money today.</span></h2>
     <p class="cta-sub">Free to use. No setup needed. Start tracking expenses in under a minute.</p>
     <div class="cta-btns">
-      <a href="{{ url_for('auth.register') }}" class="btn-cta-main">
+      <a href="/register" class="btn-cta-main">
         Create Free Account
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2.5"
@@ -829,7 +829,7 @@
           <path d="M5 12h14M12 5l7 7-7 7"/>
         </svg>
       </a>
-      <a href="{{ url_for('auth.login') }}" class="btn-cta-out">Already have an account?</a>
+      <a href="/login" class="btn-cta-out">Already have an account?</a>
     </div>
     <p class="cta-note">Free forever &nbsp;·&nbsp; Works offline &nbsp;·&nbsp; No credit card required</p>
   </div>
@@ -843,8 +843,8 @@
   </div>
   <p class="footer-copy">© 2025 SmartExpense AI Pro</p>
   <nav class="footer-links" aria-label="Footer navigation">
-    <a href="{{ url_for('auth.login') }}" class="footer-link">Sign In</a>
-    <a href="{{ url_for('auth.register') }}" class="footer-link">Register</a>
+    <a href="/login" class="footer-link">Sign In</a>
+    <a href="/register" class="footer-link">Register</a>
   </nav>
 </footer>
 
