@@ -2356,7 +2356,7 @@ textarea:focus-visible {
     grid-template-columns: 1fr 1fr;
     column-gap: 20px;
     row-gap: 14px;
-    align-items: start;
+    align-items: stretch;
   }
   .dash-main > .balance-card,
   .dash-main > .stats-row { grid-column: 1 / -1; margin-bottom: 0; }

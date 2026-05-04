@@ -235,10 +235,35 @@ function backupData() {
   }
 }
 
+// ── SYNC ACCOUNT EMAIL/NAME FROM SERVER ──────────────────────
+async function syncAccountFromServer() {
+  try {
+    const res = await fetch('/api/auth/status');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.logged_in) return;
+    const p = loadProfile();
+    let changed = false;
+    if (data.user_email && p.email !== data.user_email) {
+      p.email = data.user_email;
+      changed = true;
+    }
+    if (data.user_name && !p.username) {
+      p.username = data.user_name;
+      changed = true;
+    }
+    if (changed) {
+      saveProfile(p);
+      renderProfile();
+    }
+  } catch (_) {}
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
 
   renderProfile();
+  syncAccountFromServer();
 
   // Account settings click handlers
   document.getElementById('open-edit-name')

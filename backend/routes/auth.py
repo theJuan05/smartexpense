@@ -36,10 +36,11 @@ def login():
         user = get_user_by_email(email)
 
         if user and check_password(user, password):
-            session['user_id']   = user['id']
-            session['user_name'] = user['name']
-            session['jwt']       = generate_token(user['id'], user['name'])
-            session.permanent    = True
+            session['user_id']    = user['id']
+            session['user_name']  = user['name']
+            session['user_email'] = user['email']
+            session['jwt']        = generate_token(user['id'], user['name'])
+            session.permanent     = True
             return redirect(url_for('index'))
 
         flash('Invalid email or password. Please try again.', 'error')
@@ -54,9 +55,10 @@ def login():
 def auth_status():
     if 'user_id' in session:
         return jsonify({
-            'logged_in': True,
-            'user_name': session.get('user_name', ''),
-            'token':     session.get('jwt', '')
+            'logged_in':  True,
+            'user_name':  session.get('user_name', ''),
+            'user_email': session.get('user_email', ''),
+            'token':      session.get('jwt', '')
         })
     return jsonify({'logged_in': False})
 
@@ -93,10 +95,11 @@ def register():
 
         user_id = create_user(name, email, password)
         if user_id:
-            session['user_id']   = user_id
-            session['user_name'] = name
-            session['jwt']       = generate_token(user_id, name)
-            session.permanent    = True
+            session['user_id']    = user_id
+            session['user_name']  = name
+            session['user_email'] = email
+            session['jwt']        = generate_token(user_id, name)
+            session.permanent     = True
             flash(f'Welcome, {name}! Your account has been created.', 'success')
             return redirect(url_for('index'))
         else:
