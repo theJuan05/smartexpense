@@ -43,8 +43,7 @@ async function loadBudgetSummary() {
 
   // Overall budget goes to hero; ALL budgets appear in the overview list
   const overall    = result.data.find(b => b.category === 'Overall Budget');
-  const catBudgets = result.data.filter(b => b.category !== 'Overall Budget');
-  const listBudgets = catBudgets.length > 0 ? catBudgets : result.data;
+  const listBudgets = result.data;
 
   renderBudgetHero(overall || null);
 

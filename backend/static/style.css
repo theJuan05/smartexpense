@@ -2121,7 +2121,6 @@ textarea:focus-visible {
   background: var(--card-bg);
   border-right: 0.5px solid var(--border);
   z-index: 150;
-  display: flex;
   flex-direction: column;
   overflow: hidden;
   transition: background 0.3s, border-color 0.3s;
