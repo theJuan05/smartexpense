@@ -12,7 +12,9 @@ expenses_bp = Blueprint('expenses', __name__)
 # Returns all expenses for a user (default user_id=1 for now)
 @expenses_bp.route('/expenses', methods=['GET'])
 def get_expenses():
-    user_id = request.args.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
 
     sql = """
         SELECT
@@ -86,8 +88,12 @@ def add_expense():
         VALUES
             (%s, %s, %s, %s, %s, %s, %s, 1)
     """
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+
     params = (
-        data.get('user_id', 1),
+        user_id,
         category_id,
         data['title'].strip(),
         amount,

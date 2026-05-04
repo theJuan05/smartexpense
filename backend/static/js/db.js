@@ -174,6 +174,22 @@ function deleteExpenseLocal(local_id) {
 }
 
 /**
+ * Update fields on an existing expense record (marks it unsynced).
+ */
+function updateExpenseLocal(local_id, updates) {
+  return new Promise((resolve, reject) => {
+    const tx      = db.transaction('expenses', 'readwrite');
+    const store   = tx.objectStore('expenses');
+    const request = store.get(local_id);
+    request.onsuccess = () => {
+      const record = { ...request.result, ...updates, synced: 0 };
+      store.put(record).onsuccess = () => resolve();
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+/**
  * Clear ALL expenses from IndexedDB.
  */
 function clearAllExpensesLocal() {
@@ -285,7 +301,6 @@ async function syncToServer() {
         expense_date:   expense.expense_date,
         notes:          expense.notes || '',
         payment_method: expense.payment_method || 'cash',
-        user_id:        1   // hardcoded for now — auth comes later
       });
 
       if (result && result.status === 'success') {

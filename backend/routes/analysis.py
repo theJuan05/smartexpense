@@ -1,6 +1,6 @@
 # analysis.py — AI Analysis & Prediction Engine
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from models.db import query_all, query_one
 from datetime import date, datetime, timedelta
 from collections import defaultdict
@@ -76,7 +76,9 @@ def predict_spending():
     2. Current month spending so far
     3. Days remaining in month
     """
-    user_id = request.args.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
     today   = date.today()
 
     # Days in current month and days remaining
@@ -193,7 +195,9 @@ def forecast_chart():
     projected spending for remaining days.
     Used to draw the forecast line on the chart.
     """
-    user_id = request.args.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
     today   = date.today()
 
     # Get current month expenses
@@ -260,7 +264,9 @@ def category_trend():
     Returns spending per category for last 3 months.
     Used to show category trends.
     """
-    user_id  = request.args.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
     expenses = get_user_expenses(user_id, months_back=3)
 
     # Group by month then category

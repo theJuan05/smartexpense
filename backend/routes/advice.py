@@ -1,6 +1,6 @@
 # advice.py — Personalized Financial Advice Engine
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from models.db import query_all, query_one
 from datetime import date, timedelta
 from collections import defaultdict
@@ -367,7 +367,9 @@ def generate_advice(data):
 # ── GET /api/advice ────────────────────────────────────────
 @advice_bp.route('/advice', methods=['GET'])
 def get_advice():
-    user_id = request.args.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
     data    = get_financial_data(user_id)
     result  = generate_advice(data)
 

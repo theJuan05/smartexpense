@@ -9,7 +9,7 @@ async function loadAdvice() {
 
   container.innerHTML = '<div class="spinner">Generating advice...</div>';
 
-  const result = await API.request('/advice?user_id=1');
+  const result = await API.request('/advice');
 
   if (!result || result.status !== 'success') {
     container.innerHTML = `
