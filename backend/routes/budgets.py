@@ -149,6 +149,16 @@ def delete_budget(budget_id):
     return jsonify({"status": "success", "message": f"Budget {budget_id} deleted"})
 
 
+# ── DELETE /api/budgets (clear all) ───────────────────────
+@budgets_bp.route('/budgets', methods=['DELETE'])
+def clear_all_budgets():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+    execute("DELETE FROM budgets WHERE user_id = %s", (user_id,))
+    return jsonify({"status": "success", "message": "All budgets deleted"})
+
+
 # ── GET /api/budgets/summary ───────────────────────────────
 # Returns budgets with actual spending this month
 @budgets_bp.route('/budgets/summary', methods=['GET'])

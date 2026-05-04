@@ -1,6 +1,6 @@
 # expenses.py — Full expense CRUD API
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from models.db import query_all, query_one, execute
 from security.encryption import encrypt, decrypt
 from datetime import date
@@ -129,6 +129,16 @@ def delete_expense(expense_id):
         "status" : "success",
         "message": f"Expense {expense_id} deleted"
     })
+
+
+# ── DELETE /api/expenses (clear all) ─────────────────────────
+@expenses_bp.route('/expenses', methods=['DELETE'])
+def clear_all_expenses():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+    execute("DELETE FROM expenses WHERE user_id = %s", (user_id,))
+    return jsonify({"status": "success", "message": "All expenses deleted"})
 
 
 # ── GET /api/categories ───────────────────────────────────────

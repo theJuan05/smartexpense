@@ -302,27 +302,44 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-clear-expenses')
     ?.addEventListener('click', () => confirmDanger(
       'This will permanently delete ALL your expense records. This cannot be undone.',
-      () => {
-        localStorage.removeItem('expenses');
-        showToast('🗑️ All expenses cleared.');
+      async () => {
+        const result = await API.request('/expenses', 'DELETE');
+        if (result && result.status === 'success') {
+          await clearAllExpensesLocal();
+          showToast('All expenses cleared.');
+          if (typeof renderExpenses === 'function') await renderExpenses();
+          if (typeof renderRecentTransactions === 'function') renderRecentTransactions();
+        } else {
+          showToast('Failed to clear expenses', 'warning');
+        }
       }
     ));
 
   document.getElementById('btn-clear-budgets')
     ?.addEventListener('click', () => confirmDanger(
       'This will permanently delete ALL your budget settings. This cannot be undone.',
-      () => {
-        localStorage.removeItem('budgets');
-        showToast('🗑️ All budgets cleared.');
+      async () => {
+        const result = await API.request('/budgets', 'DELETE');
+        if (result && result.status === 'success') {
+          showToast('All budgets cleared.');
+          if (typeof loadBudgetSummary === 'function') await loadBudgetSummary();
+        } else {
+          showToast('Failed to clear budgets', 'warning');
+        }
       }
     ));
 
   document.getElementById('btn-reset-app')
     ?.addEventListener('click', () => confirmDanger(
       'This will wipe ALL data including expenses, budgets, and your profile. This cannot be undone.',
-      () => {
+      async () => {
+        await Promise.allSettled([
+          API.request('/expenses', 'DELETE'),
+          API.request('/budgets', 'DELETE')
+        ]);
+        await clearAllExpensesLocal();
         localStorage.clear();
-        showToast('🔄 App reset. Refreshing...');
+        showToast('App reset. Refreshing...');
         setTimeout(() => location.reload(), 1500);
       }
     ));

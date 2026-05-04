@@ -173,6 +173,19 @@ function deleteExpenseLocal(local_id) {
   });
 }
 
+/**
+ * Clear ALL expenses from IndexedDB.
+ */
+function clearAllExpensesLocal() {
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction('expenses', 'readwrite');
+    const store = tx.objectStore('expenses');
+    const req   = store.clear();
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
+}
+
 // ============================================================
 // 3. CATEGORIES — Cache from server
 // ============================================================
