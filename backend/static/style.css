@@ -946,6 +946,57 @@ body {
   color: var(--text-muted);
 }
 
+/* ── Recent Transactions (dashboard aside) ───────────────────── */
+.dash-aside-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.dash-aside-header h2 { margin: 0; }
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--purple);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+.link-btn:hover { text-decoration: underline; }
+
+.recent-tx-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.recent-tx-item:last-child { border-bottom: none; }
+.recent-tx-icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1; }
+.recent-tx-body { flex: 1; min-width: 0; }
+.recent-tx-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.recent-tx-meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.recent-tx-amount {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ff7675;
+  flex-shrink: 0;
+}
+
 .progress-bar-track {
   height: 7px;
   background: var(--border-light);
@@ -2290,28 +2341,44 @@ textarea:focus-visible {
   .container { margin-left: 220px; margin-right: 0; max-width: 1360px; padding: 28px 32px; }
   #page-skeleton { left: 220px; }
 
-  /* ── Dashboard: balance + stats full-width; charts side-by-side ── */
+  /* ── Dashboard: main column + sticky aside ──────────────────── */
   #tab-dashboard.active {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    column-gap: 24px;
+    align-items: start;
+  }
+  #tab-dashboard > #dashboard-empty { grid-column: 1 / -1; }
+
+  /* Main column: charts side-by-side in nested grid */
+  .dash-main {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 20px;
-    align-items: stretch;
+    row-gap: 14px;
+    align-items: start;
   }
-  #tab-dashboard > .balance-card,
-  #tab-dashboard > .stats-row,
-  #tab-dashboard > #card-budget-dash,
-  #tab-dashboard > #dashboard-empty { grid-column: 1 / -1; }
-
-  /* Cards in the chart row fill their grid cell height */
-  #tab-dashboard > .card,
-  #tab-dashboard > .dark-chart-card {
+  .dash-main > .balance-card,
+  .dash-main > .stats-row { grid-column: 1 / -1; margin-bottom: 0; }
+  .dash-main > .dark-chart-card { margin-bottom: 0; }
+  .dash-main > .card,
+  .dash-main > .dark-chart-card {
     display: flex;
     flex-direction: column;
   }
-  #tab-dashboard > .card .chart-container,
-  #tab-dashboard > .dark-chart-card .chart-container {
+  .dash-main > .card .chart-container,
+  .dash-main > .dark-chart-card .chart-container {
     flex: 1;
-    min-height: 260px;
+    min-height: 240px;
+  }
+
+  /* Aside: sticky panel */
+  .dash-aside {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
 
   /* ── Add Expense: form left, tips sidebar right ── */

@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 6. Load UI data in parallel (faster)
     await Promise.all([
       loadExpenseList(),
-      refreshStats()
+      refreshStats(),
+      renderRecentTransactions()
     ]);
     await renderBalance();
     setupIncomeModal();
@@ -155,6 +156,7 @@ async function handleAddExpense() {
   await loadExpenseList();
   await refreshStats();
   await renderAllCharts();
+  renderRecentTransactions();
 
   if (navigator.onLine) await runSync();
 
@@ -209,6 +211,7 @@ async function renderExpenses() {
   await loadExpenseList();
   await refreshStats();
   await renderAllCharts();
+  renderRecentTransactions();
 }
 
 // ── Search ─────────────────────────────────────────────────
@@ -483,6 +486,41 @@ function getCategoryIcon(category) {
     'Others'           : '📦',
   };
   return icons[category] || '📦';
+}
+
+// ── Recent Transactions (dashboard aside) ──────────────────
+async function renderRecentTransactions() {
+  const container = document.getElementById('recent-tx-list');
+  if (!container) return;
+
+  const expenses = await getAllExpensesLocal();
+  const recent   = expenses.slice(0, 8);
+
+  if (recent.length === 0) {
+    container.innerHTML =
+      '<div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:0.85rem;">No expenses yet.</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  recent.forEach(exp => {
+    const icon    = getCategoryIcon(exp.category);
+    const dateStr = exp.expense_date
+      ? new Date(exp.expense_date + 'T00:00:00')
+          .toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })
+      : '';
+    const item = document.createElement('div');
+    item.className = 'recent-tx-item';
+    item.innerHTML = `
+      <span class="recent-tx-icon">${icon}</span>
+      <div class="recent-tx-body">
+        <div class="recent-tx-title">${escapeHtml(exp.title)}</div>
+        <div class="recent-tx-meta">${exp.category || 'Uncategorized'} &bull; ${dateStr}</div>
+      </div>
+      <span class="recent-tx-amount">-&#8369;${Number(exp.amount).toLocaleString()}</span>
+    `;
+    container.appendChild(item);
+  });
 }
 
 function showToast(message, type = 'default') {

@@ -1,89 +1,112 @@
  <!-- ── DASHBOARD TAB ─────────────────────────── -->
     <div id="tab-dashboard" class="tab-content active">
 
-      <!-- Balance Hero Card -->
-      <div class="balance-card">
-        <div class="balance-card-header">
-          <span class="balance-card-label">Available Balance</span>
-          <button class="balance-set-btn" id="btn-set-income">+ Set Income</button>
-        </div>
-        <div class="balance-amount" id="balance-amount">₱0.00</div>
-        <div id="balance-encourage" class="balance-encourage" style="display:none;" role="status" aria-live="polite"></div>
-        <div class="balance-footer">
-          <div class="balance-col">
-            <div class="balance-col-icon income" aria-hidden="true">↑</div>
-            <div class="balance-col-body">
-              <div class="balance-col-label">Income</div>
-              <div class="balance-col-val income" id="balance-income">₱0.00</div>
+      <!-- ── Main content column ───────────────────────────── -->
+      <div class="dash-main">
+
+        <!-- Balance Hero Card -->
+        <div class="balance-card">
+          <div class="balance-card-header">
+            <span class="balance-card-label">Available Balance</span>
+            <button class="balance-set-btn" id="btn-set-income">+ Set Income</button>
+          </div>
+          <div class="balance-amount" id="balance-amount">₱0.00</div>
+          <div id="balance-encourage" class="balance-encourage" style="display:none;" role="status" aria-live="polite"></div>
+          <div class="balance-footer">
+            <div class="balance-col">
+              <div class="balance-col-icon income" aria-hidden="true">↑</div>
+              <div class="balance-col-body">
+                <div class="balance-col-label">Income</div>
+                <div class="balance-col-val income" id="balance-income">₱0.00</div>
+              </div>
+            </div>
+            <div class="balance-sep"></div>
+            <div class="balance-col">
+              <div class="balance-col-icon expense" aria-hidden="true">↓</div>
+              <div class="balance-col-body">
+                <div class="balance-col-label">Expenses</div>
+                <div class="balance-col-val expense" id="balance-expenses">₱0.00</div>
+              </div>
             </div>
           </div>
-          <div class="balance-sep"></div>
-          <div class="balance-col">
-            <div class="balance-col-icon expense" aria-hidden="true">↓</div>
-            <div class="balance-col-body">
-              <div class="balance-col-label">Expenses</div>
-              <div class="balance-col-val expense" id="balance-expenses">₱0.00</div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="label" id="stat-month-label">This Month Spending</div>
+            <div class="value" id="stat-month">₱0</div>
+          </div>
+          <div class="stat-box">
+            <div class="label">Transactions</div>
+            <div class="value" id="stat-count">0</div>
+          </div>
+        </div>
+
+        <!-- Spending by Category — Pie Chart -->
+        <div class="card">
+          <h2>Spending by Category</h2>
+          <div class="chart-container">
+            <canvas id="chart-category" role="img" aria-label="Spending by category chart"></canvas>
+          </div>
+          <table id="chart-category-table" class="sr-only" aria-label="Spending by category data">
+            <caption>Category spending breakdown</caption>
+            <thead><tr><th scope="col">Category</th><th scope="col">Amount</th></tr></thead>
+            <tbody id="chart-category-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Daily Spending — Dark Chart Card -->
+        <div class="dark-chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-label">Spending Trend</div>
+              <div class="chart-card-total" id="daily-total">₱0</div>
+              <div class="chart-card-sub" id="daily-range-label">Last 7 days</div>
+            </div>
+            <div class="chart-pill-group" role="group" aria-label="Spending range">
+              <button class="chart-pill active" data-range="7" aria-pressed="true">7D</button>
+              <button class="chart-pill" data-range="30" aria-pressed="false">30D</button>
+              <button class="chart-pill" data-range="90" aria-pressed="false">3M</button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Stats Row -->
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="label" id="stat-month-label">This Month Spending</div>
-          <div class="value" id="stat-month">₱0</div>
-        </div>
-        <div class="stat-box">
-          <div class="label">Transactions</div>
-          <div class="value" id="stat-count">0</div>
-        </div>
-      </div>
-
-      <!-- Spending by Category — Pie Chart -->
-      <div class="card">
-        <h2>Spending by Category</h2>
-        <div class="chart-container">
-          <canvas id="chart-category" role="img" aria-label="Spending by category chart"></canvas>
-        </div>
-        <table id="chart-category-table" class="sr-only" aria-label="Spending by category data">
-          <caption>Category spending breakdown</caption>
-          <thead><tr><th scope="col">Category</th><th scope="col">Amount</th></tr></thead>
-          <tbody id="chart-category-tbody"></tbody>
-        </table>
-      </div>
-
-      <!-- Daily Spending — Dark Chart Card -->
-      <div class="dark-chart-card">
-        <div class="chart-card-header">
-          <div>
-            <div class="chart-card-label">Spending Trend</div>
-            <div class="chart-card-total" id="daily-total">₱0</div>
-            <div class="chart-card-sub" id="daily-range-label">Last 7 days</div>
+          <div class="chart-container">
+            <canvas id="chart-daily" role="img" aria-label="Daily spending trend chart"></canvas>
           </div>
-          <div class="chart-pill-group" role="group" aria-label="Spending range">
-            <button class="chart-pill active" data-range="7" aria-pressed="true">7D</button>
-            <button class="chart-pill" data-range="30" aria-pressed="false">30D</button>
-            <button class="chart-pill" data-range="90" aria-pressed="false">3M</button>
+          <table id="chart-daily-table" class="sr-only" aria-label="Daily spending data">
+            <caption>Spending by date</caption>
+            <thead><tr><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>
+            <tbody id="chart-daily-tbody"></tbody>
+          </table>
+        </div>
+
+      </div>
+      <!-- ── End dash-main ──────────────────────────────────── -->
+
+      <!-- ── Right aside: budget + recent transactions ─────── -->
+      <div class="dash-aside">
+
+        <!-- Budget Overview -->
+        <div class="card" id="card-budget-dash">
+          <h2>Budget Overview</h2>
+          <div id="budget-progress-list">
+            <div class="spinner">Loading budgets...</div>
           </div>
         </div>
-        <div class="chart-container">
-          <canvas id="chart-daily" role="img" aria-label="Daily spending trend chart"></canvas>
-        </div>
-        <table id="chart-daily-table" class="sr-only" aria-label="Daily spending data">
-          <caption>Spending by date</caption>
-          <thead><tr><th scope="col">Date</th><th scope="col">Amount</th></tr></thead>
-          <tbody id="chart-daily-tbody"></tbody>
-        </table>
-      </div>
 
-      <!-- Budget Progress -->
-      <div class="card" id="card-budget-dash">
-        <h2>Budget Overview</h2>
-        <div id="budget-progress-list">
-          <div class="spinner">Loading budgets...</div>
+        <!-- Recent Transactions -->
+        <div class="card">
+          <div class="dash-aside-header">
+            <h2>Recent Transactions</h2>
+            <button class="link-btn" onclick="document.querySelector('[data-tab=expenses]').click()">View all</button>
+          </div>
+          <div id="recent-tx-list">
+            <div class="spinner">Loading...</div>
+          </div>
         </div>
+
       </div>
+      <!-- ── End dash-aside ─────────────────────────────────── -->
 
       <!-- First-time empty state (shown by JS when no expenses exist) -->
       <div id="dashboard-empty" class="dashboard-empty" style="display:none;" role="region" aria-label="Getting started">
