@@ -2417,9 +2417,11 @@ textarea:focus-visible {
     align-items: start;
   }
 
-  /* ── Profile/Settings: constrained so cards don't stretch on wide screens ── */
+  /* ── Profile/Settings: constrained and centered ── */
   #tab-profile.active {
     max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
