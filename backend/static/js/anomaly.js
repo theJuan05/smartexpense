@@ -147,7 +147,7 @@ function createAnomalyCard(anomaly) {
       </div>
       <div style="font-weight:700;color:${c.text};
                   font-size:1rem;">
-        P${Number(anomaly.amount).toLocaleString()}
+        ₱${Number(anomaly.amount).toLocaleString()}
       </div>
     </div>
     <div style="font-size:0.8rem;color:var(--text-muted);
@@ -215,7 +215,7 @@ function showAnomalyWarning(severity, reason, average) {
   warningEl.innerHTML = `
     ${c.label}: ${reason}
     <span style="font-weight:400;display:block;margin-top:4px;">
-      Your average expense: P${Number(average).toLocaleString()}
+      Your average expense: ₱${Number(average).toLocaleString()}
     </span>
   `;
 

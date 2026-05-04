@@ -67,8 +67,14 @@ async function loadPrediction() {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">🔮</div>
-        <p>Not enough data to predict yet.</p>
-        <p style="font-size:0.85rem;margin-top:6px;">Add more expenses to unlock predictions!</p>
+        <p style="font-weight:600;margin-bottom:6px;">No data to predict yet.</p>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">
+          Log at least a few expenses and predictions will appear here automatically.
+        </p>
+        <button class="btn btn-primary" style="font-size:0.85rem;padding:8px 20px;"
+                onclick="document.querySelector('[data-tab=add]').click()">
+          Add an expense
+        </button>
       </div>`;
     return;
   }

@@ -79,6 +79,20 @@ def generate_advice(data):
     advice_list  = []
     health_score = 100  # Start perfect, deduct for issues
 
+    # Prompt user to set income if not yet configured
+    if monthly_income == 0:
+        advice_list.append({
+            'type'    : 'warning',
+            'title'   : 'Set Your Monthly Income',
+            'message' : (
+                'Go to the Dashboard, tap "+ Set Income" on the balance card, '
+                'and enter your monthly take-home pay. '
+                'This unlocks savings rate tracking and personalised advice.'
+            ),
+            'icon'    : 'warning',
+            'priority': 0,
+        })
+
     if not expenses:
         return {
             'advice'      : [{
@@ -118,7 +132,7 @@ def generate_advice(data):
                 'message' : (
                     f'You are saving only {savings_rate:.1f}% of your income. '
                     f'Financial experts recommend saving at least 20%. '
-                    f'Try to cut P{spent_this_month * 0.1:,.0f} from '
+                    f'Try to cut ₱{spent_this_month * 0.1:,.0f} from '
                     f'your monthly expenses.'
                 ),
                 'icon'    : 'danger',
@@ -132,7 +146,7 @@ def generate_advice(data):
                 'message' : (
                     f'Your savings rate is {savings_rate:.1f}%. '
                     f'Aim for 20% or more. '
-                    f'You need to save P'
+                    f'You need to save ₱'
                     f'{monthly_income * 0.2 - (monthly_income - spent_this_month):,.0f}'
                     f' more this month to hit the 20% target.'
                 ),
@@ -234,7 +248,7 @@ def generate_advice(data):
                     'title'   : f'High Spending on {top_cat}',
                     'message' : (
                         f'{top_cat} is your biggest expense at '
-                        f'P{top_amount:,.0f} ({pct:.1f}% of income). {tip}'
+                        f'₱{top_amount:,.0f} ({pct:.1f}% of income). {tip}'
                     ),
                     'icon'    : 'warning',
                     'priority': 3,
@@ -261,7 +275,7 @@ def generate_advice(data):
             'title'   : 'Build an Emergency Fund',
             'message' : (
                 f'Aim to save 3 months of expenses '
-                f'(~P{emergency_target:,.0f}) as an emergency fund. '
+                f'(~₱{emergency_target:,.0f}) as an emergency fund. '
                 f'Start with a small automatic transfer each payday.'
             ),
             'icon'    : 'info',

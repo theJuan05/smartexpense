@@ -196,11 +196,19 @@ async function loadExpenseList(filter = '') {
   const emptyStateEl = document.getElementById('dashboard-empty');
 
   if (expenses.length === 0) {
-    listEl.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">📭</div>
-        <p>${filter ? 'No results found.' : 'No expenses yet.'}</p>
-      </div>`;
+    listEl.innerHTML = filter
+      ? `<div class="empty-state"><div class="empty-icon">🔍</div><p>No results found.</p></div>`
+      : `<div class="empty-state">
+           <div class="empty-icon">📭</div>
+           <p style="font-weight:600;margin-bottom:6px;">No expenses yet.</p>
+           <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">
+             Start tracking to see insights, budget alerts, and predictions.
+           </p>
+           <button class="btn btn-primary" style="font-size:0.85rem;padding:8px 20px;"
+                   onclick="document.querySelector('[data-tab=add]').click()">
+             Add your first expense
+           </button>
+         </div>`;
     if (emptyStateEl && !filter) emptyStateEl.style.display = 'block';
     return;
   }

@@ -110,12 +110,28 @@
 
       <!-- First-time empty state (shown by JS when no expenses exist) -->
       <div id="dashboard-empty" class="dashboard-empty" style="display:none;" role="region" aria-label="Getting started">
-        <div class="dashboard-empty-icon" aria-hidden="true">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg>
+        <h3 class="dashboard-empty-title">Welcome! Let's get you set up.</h3>
+        <p class="dashboard-empty-body">Complete these 3 steps to unlock all features.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;margin:16px auto 0;">
+          <button class="btn btn-primary" style="justify-content:flex-start;gap:12px;padding:12px 16px;text-align:left;"
+                  onclick="document.getElementById('btn-set-income').click()">
+            <span style="font-size:1.2rem;">💰</span>
+            <span><strong>Step 1:</strong> Set your monthly income<br>
+            <small style="font-weight:400;opacity:0.8;">Needed for savings rate &amp; advice</small></span>
+          </button>
+          <button class="btn" style="justify-content:flex-start;gap:12px;padding:12px 16px;text-align:left;background:var(--card-bg);border:1px solid var(--border);"
+                  onclick="document.querySelector('[data-tab=budget]').click()">
+            <span style="font-size:1.2rem;">📊</span>
+            <span><strong>Step 2:</strong> Set a budget<br>
+            <small style="font-weight:400;opacity:0.8;">Get alerts before you overspend</small></span>
+          </button>
+          <button class="btn btn-primary" style="justify-content:flex-start;gap:12px;padding:12px 16px;text-align:left;"
+                  onclick="document.querySelector('[data-tab=add]').click()">
+            <span style="font-size:1.2rem;">➕</span>
+            <span><strong>Step 3:</strong> Add your first expense<br>
+            <small style="font-weight:400;opacity:0.8;">Charts &amp; insights unlock here</small></span>
+          </button>
         </div>
-        <h3 class="dashboard-empty-title">Log your first expense</h3>
-        <p class="dashboard-empty-body">Tap the <strong>+ Add</strong> tab to record a purchase. Once you have a few entries, your charts and insights will come alive.</p>
-        <button class="btn btn-primary dashboard-empty-cta" onclick="document.querySelector('[data-tab=add]').click()">Add first expense</button>
       </div>
 
     </div>
