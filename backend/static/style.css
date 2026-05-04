@@ -2371,6 +2371,24 @@ textarea:focus-visible {
     flex: 1;
     min-height: 240px;
   }
+  .dash-main > .dash-recent-tx {
+    grid-column: 1 / -1;
+  }
+  .recent-tx-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+  }
+  .recent-tx-grid .recent-tx-item {
+    border-bottom: 0.5px solid var(--border);
+  }
+  .recent-tx-grid .recent-tx-item:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+  .recent-tx-grid > .spinner,
+  .recent-tx-grid > div:only-child {
+    grid-column: 1 / -1;
+  }
 
   /* Aside: sticky panel */
   .dash-aside {

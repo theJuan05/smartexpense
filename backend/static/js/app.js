@@ -542,7 +542,7 @@ async function renderRecentTransactions() {
   if (!container) return;
 
   const expenses = await getAllExpensesLocal();
-  const recent   = expenses.slice(0, 8);
+  const recent   = expenses.slice(0, 12);
 
   if (recent.length === 0) {
     container.innerHTML =
