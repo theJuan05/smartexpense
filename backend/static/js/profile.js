@@ -60,12 +60,11 @@ function renderProfile() {
 
 // ── OPEN / CLOSE MODALS ───────────────────────────────────────
 function openProfileModal(id) {
-  document.getElementById(id).classList.add('active');
+  openModal(id);
 }
 
 function closeProfileModal(id) {
-  document.getElementById(id).classList.remove('active');
-  // Clear password fields
+  // Clear password fields on close
   ['input-current-password','input-new-password',
    'input-confirm-password'].forEach(f => {
     const el = document.getElementById(f);
@@ -73,6 +72,7 @@ function closeProfileModal(id) {
   });
   const errEl = document.getElementById('password-error');
   if (errEl) errEl.style.display = 'none';
+  closeModal(id);
 }
 
 // ── SAVE PROFILE FIELD ────────────────────────────────────────

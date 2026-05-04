@@ -7,6 +7,11 @@
   <title>SmartExpense AI Pro</title>
   <link rel="manifest" href="/static/manifest.json" />
 
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- Styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
@@ -15,6 +20,8 @@
 
 </head>
 <body>
+
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <!-- ── Sidebar (desktop only) ────────────────────────────────── -->
   <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation">
@@ -79,7 +86,7 @@
   <!-- ──────────────────────────────────────────────────────────── -->
 
   <!-- Navigation -->
-  <nav class="navbar" role="banner">
+  <nav class="navbar" aria-label="App navigation">
     <span class="logo" aria-label="SmartExpense">
       <img src="/static/icons/logo-icon.svg" alt="" aria-hidden="true" class="logo-img">
       Smart<span>Expense</span>
@@ -204,7 +211,7 @@
   <!-- ─────────────────────────────────────────────────────────── -->
 
   <!-- Main Container -->
-  <div class="container">
+  <div class="container" id="main-content">
     {% include 'partials/dashboard.html' %}
     {% include 'partials/expense.html' %}
     {% include 'partials/add.html' %}

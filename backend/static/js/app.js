@@ -320,7 +320,9 @@ async function renderBalance() {
   if (encourageEl) {
     if (balance < 0) {
       const over = fmt(Math.abs(balance));
-      encourageEl.innerHTML = `You're ${over} over right now. <a onclick="document.querySelector('[data-tab=budget]').click()">Check your budgets</a> to see where to adjust.`;
+      encourageEl.innerHTML = `You're ${over} over right now. <button class="balance-encourage-btn">Check your budgets</button> to see where to adjust.`;
+      encourageEl.querySelector('.balance-encourage-btn')
+        .addEventListener('click', () => document.querySelector('[data-tab="budget"]').click());
       encourageEl.style.display = 'block';
     } else {
       encourageEl.style.display = 'none';
@@ -338,8 +340,8 @@ function setupIncomeModal() {
 
   if (!btnSet || !modal) return;
 
-  const open  = () => { input.value = localStorage.getItem('se_income') || ''; modal.classList.add('active'); input.focus(); };
-  const close = () => modal.classList.remove('active');
+  const open  = () => { input.value = localStorage.getItem('se_income') || ''; openModal(modal, btnSet); };
+  const close = () => closeModal(modal);
 
   btnSet.addEventListener('click', open);
   if (btnClose)  btnClose.addEventListener('click',  close);
@@ -396,6 +398,56 @@ function registerServiceWorker() {
   }
 }
 
+// ── Modal focus management ─────────────────────────────────
+const _FOCUSABLE = [
+  'button:not([disabled])', '[href]', 'input:not([disabled])',
+  'select:not([disabled])', 'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])'
+].join(',');
+
+function openModal(modal, triggerEl) {
+  if (typeof modal === 'string') modal = document.getElementById(modal);
+  if (!modal) return;
+  modal._triggerEl = triggerEl || document.activeElement;
+  modal.classList.add('active');
+
+  requestAnimationFrame(() => {
+    const first = modal.querySelector(_FOCUSABLE);
+    if (first) first.focus();
+  });
+
+  function onKeyDown(e) {
+    if (!modal.classList.contains('active')) return;
+    if (e.key === 'Escape') { closeModal(modal); return; }
+    if (e.key === 'Tab') {
+      const els = Array.from(modal.querySelectorAll(_FOCUSABLE));
+      if (!els.length) { e.preventDefault(); return; }
+      const first = els[0], last = els[els.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    }
+  }
+  if (modal._keyHandler) document.removeEventListener('keydown', modal._keyHandler);
+  modal._keyHandler = onKeyDown;
+  document.addEventListener('keydown', onKeyDown);
+}
+
+function closeModal(modal, triggerEl) {
+  if (typeof modal === 'string') modal = document.getElementById(modal);
+  if (!modal) return;
+  modal.classList.remove('active');
+  if (modal._keyHandler) {
+    document.removeEventListener('keydown', modal._keyHandler);
+    delete modal._keyHandler;
+  }
+  const tr = triggerEl || modal._triggerEl;
+  if (tr && typeof tr.focus === 'function') tr.focus();
+  delete modal._triggerEl;
+}
+
 // ── Helpers ────────────────────────────────────────────────
 function clearForm() {
   ['exp-title','exp-amount','exp-notes'].forEach(id => {
@@ -436,9 +488,9 @@ function getCategoryIcon(category) {
 function showToast(message, type = 'default') {
   const toast = document.getElementById('toast');
   if (!toast) return;
-  toast.textContent   = message;
-  toast.style.background =
-    type === 'warning' ? 'var(--warning)' : '#2d3436';
+  toast.textContent = message;
+  toast.dataset.type = type;
+  toast.style.background = type === 'warning' ? 'var(--amber)' : '';
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
@@ -468,21 +520,21 @@ async function handleTitleInput(e) {
 }
 
 function showAISuggestion(category, confidence) {
-  let hint = document.getElementById('ai-category-hint');
+  const hint = document.getElementById('ai-category-hint');
   if (!hint) return;
 
   const pct = Math.round(confidence * 100);
-  hint.innerHTML = `
-    AI suggests: <strong>${category}</strong>
-    (${pct}% confident)
-    <button onclick="applyAISuggestion('${category}')"
-            style="margin-left:8px;padding:2px 10px;
-                   background:var(--primary);color:white;
-                   border:none;border-radius:6px;
-                   cursor:pointer;font-size:0.8rem;">
-      Apply
-    </button>
-  `;
+
+  const strong = document.createElement('strong');
+  strong.textContent = category;
+
+  const btn = document.createElement('button');
+  btn.className = 'ai-hint-apply';
+  btn.textContent = 'Apply';
+  btn.addEventListener('click', () => applyAISuggestion(category));
+
+  hint.innerHTML = '';
+  hint.append('AI suggests: ', strong, ` (${pct}% confident) `, btn);
   hint.style.display = 'block';
 }
 

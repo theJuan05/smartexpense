@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v5';
+const CACHE_NAME = 'smartexpense-v7';
 const STATIC_ASSETS = [
   '/',
   '/frontend/index.html',

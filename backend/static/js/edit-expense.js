@@ -32,7 +32,7 @@ function openEditExpenseModal(expenseId) {
     }
   }
 
-  document.getElementById('modal-edit-expense').classList.add('active');
+  openModal('modal-edit-expense');
 }
 
 // ── SAVE EDITED EXPENSE ───────────────────────────────────────
@@ -94,7 +94,7 @@ function deleteExpense(expenseId) {
   document.getElementById('delete-expense-title').textContent =
     `"${expense.title}" — ₱${parseFloat(expense.amount).toFixed(2)}`;
 
-  document.getElementById('modal-confirm-delete').classList.add('active');
+  openModal('modal-confirm-delete');
 }
 
 function confirmDeleteExpense() {
@@ -115,11 +115,11 @@ function confirmDeleteExpense() {
 
 // ── CLOSE MODALS ──────────────────────────────────────────────
 function closeEditExpenseModal() {
-  document.getElementById('modal-edit-expense').classList.remove('active');
+  closeModal('modal-edit-expense');
 }
 
 function closeDeleteModal() {
-  document.getElementById('modal-confirm-delete').classList.remove('active');
+  closeModal('modal-confirm-delete');
 }
 
 // ── INIT ──────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ window.addEventListener('load', () => {
   // Close on backdrop click
   ['modal-edit-expense','modal-confirm-delete'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', function(e) {
-      if (e.target === this) this.classList.remove('active');
+      if (e.target === this) closeModal(this);
     });
   });
 

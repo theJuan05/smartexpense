@@ -25,7 +25,8 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('OK - budgets:', len\\(d.get\\('data',[]\\)\\)\\)\")",
       "Bash(taskkill /F /IM python.exe)",
       "Bash(curl -s \"http://127.0.0.1:5000/service-worker.js\" -o /dev/null -w \"SW route: %{http_code}\\\\n\")",
-      "Bash(curl -s \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\" -o /dev/null -w \"Budget API: %{http_code}\\\\n\")"
+      "Bash(curl -s \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\" -o /dev/null -w \"Budget API: %{http_code}\\\\n\")",
+      "PowerShell(node .agents/skills/impeccable/scripts/load-context.mjs)"
     ]
   }
 }
