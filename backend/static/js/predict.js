@@ -61,23 +61,6 @@ async function loadPrediction() {
     trendAmount    = Math.abs(diff);
   }
 
-  // Budget from localStorage (set by budget tab)
-  const budgetLimit = parseFloat(localStorage.getItem('se_overall_budget') || '0') || null;
-
-  let risk = 'low', riskMessage = 'Spending looks healthy!';
-  if (budgetLimit) {
-    const pct = (predictedTotal / budgetLimit) * 100;
-    if (pct >= 100) {
-      risk = 'high';
-      riskMessage = `You are projected to EXCEED your budget by ₱${(predictedTotal - budgetLimit).toLocaleString('en-PH', { minimumFractionDigits: 2 })}!`;
-    } else if (pct >= 80) {
-      risk = 'medium';
-      riskMessage = `You may reach ${pct.toFixed(0)}% of your budget this month.`;
-    } else {
-      riskMessage = `On track! Projected to use ${pct.toFixed(0)}% of budget.`;
-    }
-  }
-
   if (expenses.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
@@ -86,6 +69,44 @@ async function loadPrediction() {
         <p style="font-size:0.85rem;margin-top:6px;">Add more expenses to unlock predictions!</p>
       </div>`;
     return;
+  }
+
+  // Fetch live budget data from server
+  let budgets = [];
+  try {
+    const res = await API.request('/budgets/summary');
+    if (res && res.status === 'success') budgets = res.data || [];
+  } catch (_) {}
+
+  const overall    = budgets.find(b => b.category === 'Overall Budget');
+  const budgetLimit = overall ? parseFloat(overall.amount_limit) : null;
+  const alertBudgets = budgets.filter(b => b.status !== 'ok');
+
+  // Risk from overall budget projection
+  let risk = 'low', riskMessage = 'Spending looks healthy!';
+  if (budgetLimit) {
+    const pct = (predictedTotal / budgetLimit) * 100;
+    if (pct >= 100) {
+      risk = 'high';
+      riskMessage = `Projected to EXCEED budget by ₱${(predictedTotal - budgetLimit).toLocaleString('en-PH', { minimumFractionDigits: 2 })}!`;
+    } else if (pct >= 80) {
+      risk = 'medium';
+      riskMessage = `You may reach ${pct.toFixed(0)}% of your overall budget.`;
+    } else {
+      riskMessage = `On track! Projected to use ${pct.toFixed(0)}% of overall budget.`;
+    }
+  }
+
+  // Escalate risk if any category budget is already in warning/danger
+  if (risk === 'low' && alertBudgets.length > 0) {
+    const worst = alertBudgets.find(b => b.status === 'danger') || alertBudgets[0];
+    if (worst.status === 'danger') {
+      risk = 'high';
+      riskMessage = `${worst.category} is over budget (${worst.percentage}% of ₱${Number(worst.amount_limit).toLocaleString()} limit)!`;
+    } else {
+      risk = 'medium';
+      riskMessage = `${worst.category} is at ${worst.percentage}% of its ₱${Number(worst.amount_limit).toLocaleString()} limit.`;
+    }
   }
 
   const riskColor =
@@ -97,6 +118,19 @@ async function loadPrediction() {
     trendDirection === 'down' ? 'Trending Down' : 'Stable';
 
   const fmt = v => '₱' + Number(v).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+
+  // Category budget alert rows
+  const alertRows = alertBudgets.map(b => `
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:8px 12px;border-radius:7px;margin-bottom:6px;
+                background:${b.status === 'danger' ? 'rgba(255,118,117,0.1)' : 'rgba(253,203,110,0.1)'};
+                border-left:3px solid ${b.status === 'danger' ? 'var(--danger)' : 'var(--warning)'};">
+      <span style="font-size:0.85rem;font-weight:600;color:var(--text);">${b.category}</span>
+      <span style="font-size:0.82rem;color:${b.status === 'danger' ? 'var(--danger)' : 'var(--warning)'};">
+        ₱${Number(b.spent).toLocaleString()} / ₱${Number(b.amount_limit).toLocaleString()}
+        &nbsp;(${b.percentage}%)
+      </span>
+    </div>`).join('');
 
   container.innerHTML = `
     <div style="padding:14px 18px;border-radius:10px;
@@ -128,11 +162,16 @@ async function loadPrediction() {
         <div class="predict-sub">${fmt(trendAmount)} vs last month</div>
       </div>
     </div>
+    ${alertBudgets.length > 0 ? `
+      <div style="margin-bottom:12px;">
+        <div style="font-size:0.75rem;font-weight:700;color:var(--text-muted);
+                    letter-spacing:.5px;margin-bottom:8px;">BUDGET ALERTS</div>
+        ${alertRows}
+      </div>` : ''}
     ${budgetLimit ? `
-      <div style="padding:12px 16px;background:var(--bg);border-radius:8px;font-size:0.88rem;">
-        <strong>Budget:</strong> ${fmt(budgetLimit)} /month
-        &nbsp;|&nbsp;
-        <strong>Projected usage:</strong> ${((predictedTotal / budgetLimit) * 100).toFixed(1)}%
+      <div style="padding:10px 14px;background:var(--bg);border-radius:8px;font-size:0.85rem;color:var(--text-muted);">
+        Overall budget: ${fmt(budgetLimit)} &nbsp;|&nbsp;
+        Projected usage: ${((predictedTotal / budgetLimit) * 100).toFixed(1)}%
       </div>` : ''}
   `;
 
