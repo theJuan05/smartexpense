@@ -1,7 +1,7 @@
 import os
 import logging
 from datetime import timedelta
-from flask import Flask, jsonify, render_template, send_from_directory, make_response
+from flask import Flask, jsonify, render_template, send_from_directory, make_response, session
 from flask_cors import CORS
 from config import Config
 
@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 
 # Blueprints
-from routes.auth import auth_bp, login_required
+from routes.auth import auth_bp
 from routes.email_alert import email_alert_bp
 from routes.expenses import expenses_bp
 from routes.analysis import analysis_bp
@@ -61,12 +61,13 @@ def add_security_headers(response):
     return response
 
 # -----------------------------
-# FRONTEND ROUTE — protected
+# FRONTEND ROUTES
 # -----------------------------
 @app.route('/')
-@login_required                                        # ← blocks access if not logged in
 def index():
-    return render_template("index.html")
+    if 'user_id' in session:
+        return render_template("index.html")
+    return render_template("landing.html")
 
 # -----------------------------
 # API UTILITIES

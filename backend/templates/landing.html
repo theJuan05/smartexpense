@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartExpense AI Pro — Finally know where your money goes</title>
+  <meta name="description" content="Track daily expenses, set budgets that stick, and get AI-powered financial insights. Free. Built for Filipinos." />
+  <link rel="icon" href="/static/icons/logo-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-0:    #0d0d18;
+      --bg-1:    #111124;
+      --bg-2:    #1a1a2e;
+      --bg-3:    #242448;
+      --violet:  #6c4fff;
+      --violet-d:#5538e8;
+      --violet-a:rgba(108,79,255,0.15);
+      --violet-g:rgba(108,79,255,0.32);
+      --purple:  #a48fff;
+      --green:   #00b894;
+      --amber:   #fdcb6e;
+      --red:     #ff7675;
+      --t1:      rgba(255,255,255,0.95);
+      --t2:      rgba(255,255,255,0.60);
+      --t3:      rgba(255,255,255,0.32);
+      --t4:      rgba(255,255,255,0.12);
+      --b1:      rgba(255,255,255,0.08);
+      --b2:      rgba(255,255,255,0.04);
+      --font:    'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg-0);
+      color: var(--t1);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 56px;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 5vw, 64px);
+      background: rgba(13,13,24,0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 0.5px solid var(--b1);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      color: var(--t1);
+    }
+
+    .logo-badge {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: var(--violet);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.82rem; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px var(--violet-g);
+    }
+
+    .logo-text { font-size: 0.88rem; font-weight: 700; letter-spacing: -0.2px; }
+    .logo-text em { font-style: normal; color: var(--purple); }
+
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+    .btn-ghost {
+      background: transparent; border: none;
+      padding: 7px 13px;
+      font-family: var(--font); font-size: 0.82rem; font-weight: 500;
+      color: var(--t2); cursor: pointer; border-radius: 7px;
+      transition: color 0.15s, background 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-ghost:hover { color: var(--t1); background: var(--b1); }
+
+    .btn-nav-cta {
+      background: var(--violet); color: #fff; border: none;
+      padding: 8px 16px;
+      font-family: var(--font); font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; border-radius: 7px;
+      transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+      text-decoration: none; display: inline-block;
+      box-shadow: 0 2px 8px var(--violet-g);
+    }
+    .btn-nav-cta:hover { background: var(--violet-d); box-shadow: 0 4px 16px rgba(108,79,255,0.45); transform: translateY(-1px); }
+    .btn-nav-cta:active { transform: scale(0.97); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 100px clamp(20px, 5vw, 64px) 80px;
+      position: relative; overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 35%, rgba(108,79,255,0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 55% at 20% 75%, rgba(0,184,148,0.05) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 52px 52px;
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 10%, transparent 78%);
+      -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 10%, transparent 78%);
+    }
+
+    .hero-inner {
+      width: 100%; max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr;
+      gap: 60px; align-items: center;
+      position: relative; z-index: 1;
+    }
+
+    .hero-copy { max-width: 560px; }
+
+    .hero-copy > * {
+      animation: fade-up 0.55s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .hero-copy > *:nth-child(1) { animation-delay: 0.05s; }
+    .hero-copy > *:nth-child(2) { animation-delay: 0.15s; }
+    .hero-copy > *:nth-child(3) { animation-delay: 0.25s; }
+    .hero-copy > *:nth-child(4) { animation-delay: 0.35s; }
+    .hero-copy > *:nth-child(5) { animation-delay: 0.45s; }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--violet-a);
+      border: 0.5px solid rgba(108,79,255,0.3);
+      border-radius: 99px; padding: 5px 13px;
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--purple); letter-spacing: 0.3px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--violet); flex-shrink: 0;
+      animation: pulse-dot 2.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.45; transform: scale(0.65); }
+    }
+
+    .hero-heading {
+      font-size: clamp(2.8rem, 7.5vw, 5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: clamp(-2px, -0.04em, -3px);
+      color: var(--t1);
+      margin-bottom: 20px;
+    }
+
+    .hero-heading .h-accent {
+      display: block;
+      color: var(--green);
+      font-weight: 400;
+      font-size: 0.78em;
+      letter-spacing: clamp(-1px, -0.025em, -2px);
+      line-height: 1.25;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.9rem, 2vw, 1.03rem);
+      color: var(--t2); line-height: 1.68;
+      margin-bottom: 34px; max-width: 430px;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center;
+      gap: 12px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .btn-hero-main {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--violet); color: #fff;
+      padding: 13px 26px; border-radius: 10px;
+      font-family: var(--font); font-size: 0.93rem; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.15s, box-shadow 0.2s, transform 0.12s;
+      box-shadow: 0 4px 22px var(--violet-g);
+    }
+    .btn-hero-main:hover { background: var(--violet-d); box-shadow: 0 6px 30px rgba(108,79,255,0.52); transform: translateY(-2px); }
+    .btn-hero-main:active { transform: scale(0.97); }
+
+    .btn-hero-sec {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--t2);
+      padding: 13px 22px; border-radius: 10px;
+      font-family: var(--font); font-size: 0.93rem; font-weight: 500;
+      text-decoration: none; border: 0.5px solid var(--b1); cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .btn-hero-sec:hover { color: var(--t1); border-color: rgba(255,255,255,0.14); background: var(--b2); }
+
+    .hero-note { font-size: 0.73rem; color: var(--t3); }
+
+    /* ── Phone Mockup ── */
+    .hero-visual {
+      display: none;
+      justify-content: center; align-items: center;
+      position: relative;
+    }
+
+    .phone-wrap {
+      position: relative;
+      filter:
+        drop-shadow(0 32px 64px rgba(0,0,0,0.65))
+        drop-shadow(0 0 44px rgba(108,79,255,0.18));
+      animation: fade-up-scale 0.7s cubic-bezier(0.22,1,0.36,1) both;
+      animation-delay: 0.4s;
+    }
+
+    @keyframes fade-up-scale {
+      from { opacity: 0; transform: scale(0.94) translateY(18px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .phone {
+      width: 218px;
+      background: var(--bg-2);
+      border-radius: 30px;
+      border: 1.5px solid rgba(255,255,255,0.09);
+      overflow: hidden;
+    }
+
+    .phone-notch {
+      height: 14px; background: var(--bg-0);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .phone-notch-pill {
+      width: 48px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .phone-body { padding: 10px 12px 16px; }
+
+    .ph-balance {
+      background: linear-gradient(135deg, #2d1b8a 0%, #1a1040 55%, #0e0e28 100%);
+      border-radius: 14px; padding: 13px 14px 12px;
+      margin-bottom: 11px; position: relative; overflow: hidden;
+    }
+    .ph-balance::before {
+      content: '';
+      position: absolute; top: -22px; right: -22px;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(108,79,255,0.14);
+    }
+
+    .ph-bal-label {
+      font-size: 0.52rem; font-weight: 700; letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.38); text-transform: uppercase; margin-bottom: 3px;
+    }
+    .ph-bal-amount {
+      font-size: 1.45rem; font-weight: 800; color: #fff;
+      letter-spacing: -1px; margin-bottom: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    .ph-bal-chips { display: flex; gap: 5px; }
+    .ph-chip {
+      font-size: 0.52rem; font-weight: 600;
+      padding: 2px 6px; border-radius: 4px;
+    }
+    .ph-chip.g { background: rgba(0,184,148,0.2); color: var(--green); }
+    .ph-chip.r { background: rgba(255,118,117,0.2); color: var(--red); }
+
+    .ph-section {
+      font-size: 0.5rem; font-weight: 700; letter-spacing: 0.8px;
+      color: var(--t3); text-transform: uppercase; margin-bottom: 5px;
+    }
+
+    .ph-row {
+      display: flex; align-items: center; gap: 7px;
+      padding: 5px 0; border-bottom: 0.5px solid var(--b2);
+    }
+    .ph-row:last-of-type { border-bottom: none; }
+
+    .ph-icon {
+      width: 22px; height: 22px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; flex-shrink: 0;
+    }
+    .ph-icon.f { background: rgba(196,96,58,0.18); }
+    .ph-icon.t { background: rgba(74,122,184,0.18); }
+    .ph-icon.s { background: rgba(164,143,255,0.18); }
+
+    .ph-row-info { flex: 1; min-width: 0; }
+    .ph-row-name { font-size: 0.58rem; font-weight: 500; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ph-row-cat  { font-size: 0.5rem; color: var(--t3); }
+    .ph-row-amt  { font-size: 0.58rem; font-weight: 600; color: var(--t2); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+
+    .ph-budget-block {
+      margin-top: 9px; padding: 8px 9px;
+      background: var(--bg-3); border-radius: 8px;
+    }
+    .ph-bgt-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .ph-bgt-name   { font-size: 0.52rem; font-weight: 600; color: var(--t2); }
+    .ph-bgt-pct    { font-size: 0.52rem; font-weight: 700; color: var(--purple); }
+    .ph-bgt-track  { height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+    .ph-bgt-fill   { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--violet), var(--purple)); }
+
+    .ph-ai {
+      position: absolute; bottom: -8px; right: -24px;
+      background: var(--bg-3);
+      border: 0.5px solid rgba(108,79,255,0.35);
+      border-radius: 10px; padding: 8px 11px;
+      font-size: 0.57rem; font-weight: 600; color: var(--purple);
+      width: 122px; line-height: 1.5;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+    }
+    .ph-ai::before { content: '✦ '; color: var(--violet); }
+
+    /* ── Trust ── */
+    .trust {
+      border-top: 0.5px solid var(--b1); border-bottom: 0.5px solid var(--b1);
+      background: var(--bg-1);
+      padding: 14px clamp(20px, 5vw, 64px);
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(16px, 3vw, 36px); flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.74rem; font-weight: 500; color: var(--t3);
+      white-space: nowrap;
+    }
+    .trust-icon { color: var(--violet); font-size: 0.75rem; }
+    .trust-sep  { width: 1px; height: 12px; background: var(--b1); }
+
+    /* ── Features ── */
+    .features {
+      padding: clamp(64px, 10vw, 100px) clamp(20px, 5vw, 64px);
+      background: var(--bg-1);
+    }
+    .features-inner { max-width: 1200px; margin: 0 auto; }
+
+    .section-tag {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px;
+      color: var(--violet); text-transform: uppercase;
+      display: block; margin-bottom: 10px;
+    }
+
+    .features-hd {
+      font-size: clamp(1.85rem, 4vw, 2.85rem);
+      font-weight: 800; letter-spacing: -1.5px; line-height: 1.1;
+      color: var(--t1); margin-bottom: 10px;
+    }
+    .features-sub {
+      font-size: 0.9rem; color: var(--t2); line-height: 1.65;
+      max-width: 400px; margin-bottom: 48px;
+    }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .feat {
+      background: var(--bg-2);
+      border: 0.5px solid var(--b1);
+      border-radius: 16px; padding: 26px 26px 22px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.2s, transform 0.22s;
+    }
+    .feat:hover { border-color: rgba(108,79,255,0.28); transform: translateY(-3px); }
+
+    .feat-num {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px;
+      color: var(--t4); text-transform: uppercase; margin-bottom: 14px;
+    }
+    .feat-icon { font-size: 1.4rem; margin-bottom: 10px; display: block; }
+    .feat-title {
+      font-size: 1.08rem; font-weight: 700; color: var(--t1);
+      letter-spacing: -0.4px; margin-bottom: 8px;
+    }
+    .feat-desc {
+      font-size: 0.84rem; color: var(--t2); line-height: 1.62; max-width: 320px;
+    }
+    .feat-vis { margin-top: 20px; }
+
+    /* Mini expense list */
+    .mini-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; background: var(--bg-3);
+      border-radius: 8px; margin-bottom: 5px;
+    }
+    .mini-row:last-child { margin-bottom: 0; }
+    .mini-dot {
+      width: 26px; height: 26px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; flex-shrink: 0;
+    }
+    .mini-dot.f { background: rgba(196,96,58,0.2); }
+    .mini-dot.t { background: rgba(74,122,184,0.2); }
+    .mini-dot.s { background: rgba(164,143,255,0.2); }
+    .mini-info  { flex: 1; }
+    .mini-name  { font-size: 0.72rem; font-weight: 500; color: var(--t1); }
+    .mini-cat   { font-size: 0.62rem; color: var(--t3); }
+    .mini-amt   { font-size: 0.72rem; font-weight: 600; color: var(--t2); font-variant-numeric: tabular-nums; }
+
+    /* Mini budget bars */
+    .mini-budget { margin-bottom: 10px; }
+    .mini-budget:last-child { margin-bottom: 0; }
+    .mini-bgt-hd {
+      display: flex; justify-content: space-between; margin-bottom: 4px;
+    }
+    .mini-bgt-label { font-size: 0.72rem; font-weight: 500; color: var(--t2); }
+    .mini-bgt-pct   { font-size: 0.7rem; font-weight: 700; }
+    .mini-bgt-track { height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+    .mini-bgt-fill  { height: 100%; border-radius: 3px; }
+    .mini-bgt-fill.ok   { background: linear-gradient(90deg, var(--green), rgba(0,184,148,0.65)); }
+    .mini-bgt-fill.warn { background: linear-gradient(90deg, var(--amber), rgba(253,203,110,0.65)); }
+    .mini-bgt-fill.over { background: linear-gradient(90deg, var(--red),   rgba(255,118,117,0.65)); }
+
+    /* Mini AI card */
+    .mini-ai {
+      background: var(--bg-3);
+      border: 0.5px solid rgba(108,79,255,0.25);
+      border-radius: 10px; padding: 12px 14px;
+    }
+    .mini-ai-hd {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 7px;
+    }
+    .mini-ai-badge {
+      width: 18px; height: 18px; border-radius: 5px;
+      background: var(--violet-a);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem;
+    }
+    .mini-ai-tag { font-size: 0.62rem; font-weight: 700; color: var(--purple); letter-spacing: 0.5px; }
+    .mini-ai-body { font-size: 0.75rem; color: var(--t2); line-height: 1.55; }
+    .mini-ai-score {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px; padding-top: 8px; border-top: 0.5px solid var(--b1);
+    }
+    .mini-score-lbl { font-size: 0.62rem; color: var(--t3); }
+    .mini-score-val { font-size: 1.05rem; font-weight: 800; color: var(--green); letter-spacing: -0.5px; }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: clamp(64px, 10vw, 100px) clamp(20px, 5vw, 64px);
+      background: var(--bg-0);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 65% 65% at 50% 50%, rgba(108,79,255,0.08) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .cta-inner { max-width: 560px; margin: 0 auto; position: relative; z-index: 1; }
+
+    .cta-tag {
+      display: inline-block;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px;
+      color: var(--violet); text-transform: uppercase; margin-bottom: 14px;
+    }
+    .cta-hd {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800; letter-spacing: clamp(-1.5px,-0.04em,-3px); line-height: 1.05;
+      color: var(--t1); margin-bottom: 12px;
+    }
+    .cta-hd .acc { color: var(--purple); }
+    .cta-sub { font-size: 0.9rem; color: var(--t2); line-height: 1.65; margin-bottom: 34px; }
+
+    .cta-btns { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+    .btn-cta-main {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--violet); color: #fff;
+      padding: 14px 30px; border-radius: 11px;
+      font-family: var(--font); font-size: 0.95rem; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.15s, box-shadow 0.2s, transform 0.12s;
+      box-shadow: 0 4px 24px var(--violet-g);
+    }
+    .btn-cta-main:hover { background: var(--violet-d); box-shadow: 0 6px 32px rgba(108,79,255,0.52); transform: translateY(-2px); }
+    .btn-cta-main:active { transform: scale(0.97); }
+
+    .btn-cta-out {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--t2);
+      padding: 14px 24px; border-radius: 11px;
+      font-family: var(--font); font-size: 0.95rem; font-weight: 500;
+      text-decoration: none; border: 0.5px solid var(--b1); cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .btn-cta-out:hover { color: var(--t1); border-color: rgba(255,255,255,0.14); background: var(--b2); }
+
+    .cta-note { margin-top: 14px; font-size: 0.73rem; color: var(--t3); }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 26px clamp(20px, 5vw, 64px);
+      border-top: 0.5px solid var(--b1);
+      background: var(--bg-1);
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 8px; }
+    .footer-badge {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: var(--violet);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; font-weight: 800; color: #fff;
+    }
+    .footer-name { font-size: 0.8rem; font-weight: 700; color: var(--t2); }
+    .footer-name em { font-style: normal; color: var(--purple); }
+    .footer-copy { font-size: 0.72rem; color: var(--t3); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-link { font-size: 0.75rem; color: var(--t3); text-decoration: none; transition: color 0.15s; }
+    .footer-link:hover { color: var(--t2); }
+
+    /* ── Scroll reveal ── */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .rev-1 { transition-delay: 0.1s; }
+    .rev-2 { transition-delay: 0.2s; }
+    .rev-3 { transition-delay: 0.3s; }
+
+    /* ── Responsive ── */
+    @media (min-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr auto; gap: 44px; }
+      .hero-visual { display: flex; }
+
+      .feat-grid { grid-template-columns: 1fr 1fr; }
+      .feat:first-child {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 40px;
+        grid-template-rows: auto auto auto 1fr;
+      }
+      .feat:first-child .feat-num,
+      .feat:first-child .feat-icon,
+      .feat:first-child .feat-title,
+      .feat:first-child .feat-desc { grid-column: 1; }
+      .feat:first-child .feat-vis  { grid-column: 2; grid-row: 1 / -1; align-self: center; margin-top: 0; }
+    }
+
+    @media (min-width: 1024px) {
+      .feat-grid { grid-template-columns: 1fr 1fr 1fr; }
+      .feat:first-child {
+        grid-column: auto;
+        display: block;
+      }
+      .feat:first-child .feat-vis { margin-top: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" aria-label="Main navigation">
+  <a class="nav-logo" href="/">
+    <div class="logo-badge" aria-hidden="true">₱</div>
+    <div class="logo-text">Smart<em>Expense</em></div>
+  </a>
+  <div class="nav-actions">
+    <a href="{{ url_for('auth.login') }}" class="btn-ghost">Sign in</a>
+    <a href="{{ url_for('auth.register') }}" class="btn-nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <div class="hero-copy">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot" aria-hidden="true"></span>
+        Free to use &nbsp;·&nbsp; Made for Filipinos
+      </div>
+
+      <h1 class="hero-heading">
+        Finally know<br>where your money
+        <span class="h-accent">goes.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Log expenses in seconds, set budgets that stick,
+        and get AI-powered insights about your spending —
+        without the spreadsheets.
+      </p>
+
+      <div class="hero-actions">
+        <a href="{{ url_for('auth.register') }}" class="btn-hero-main">
+          Get Started Free
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a href="{{ url_for('auth.login') }}" class="btn-hero-sec">Sign in</a>
+      </div>
+
+      <p class="hero-note">No credit card required &nbsp;·&nbsp; Works offline &nbsp;·&nbsp; Free forever</p>
+    </div>
+
+    <!-- Phone mockup -->
+    <div class="hero-visual" aria-hidden="true">
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+          <div class="phone-body">
+            <div class="ph-balance">
+              <div class="ph-bal-label">Total Balance</div>
+              <div class="ph-bal-amount">₱12,450</div>
+              <div class="ph-bal-chips">
+                <div class="ph-chip g">↑ ₱18,000</div>
+                <div class="ph-chip r">↓ ₱5,550</div>
+              </div>
+            </div>
+
+            <div class="ph-section">Recent</div>
+            <div class="ph-row">
+              <div class="ph-icon f">🍔</div>
+              <div class="ph-row-info">
+                <div class="ph-row-name">Jollibee</div>
+                <div class="ph-row-cat">Food &amp; Dining</div>
+              </div>
+              <div class="ph-row-amt">−₱185</div>
+            </div>
+            <div class="ph-row">
+              <div class="ph-icon t">🚗</div>
+              <div class="ph-row-info">
+                <div class="ph-row-name">Grab</div>
+                <div class="ph-row-cat">Transportation</div>
+              </div>
+              <div class="ph-row-amt">−₱95</div>
+            </div>
+            <div class="ph-row">
+              <div class="ph-icon s">📦</div>
+              <div class="ph-row-info">
+                <div class="ph-row-name">Shopee</div>
+                <div class="ph-row-cat">Shopping</div>
+              </div>
+              <div class="ph-row-amt">−₱1,250</div>
+            </div>
+
+            <div class="ph-budget-block">
+              <div class="ph-bgt-header">
+                <span class="ph-bgt-name">Monthly Budget</span>
+                <span class="ph-bgt-pct">62%</span>
+              </div>
+              <div class="ph-bgt-track">
+                <div class="ph-bgt-fill" style="width:62%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-ai">You're on track this month</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust" aria-label="Key features">
+  <div class="trust-item"><span class="trust-icon" aria-hidden="true">✓</span> Free forever</div>
+  <div class="trust-sep" aria-hidden="true"></div>
+  <div class="trust-item"><span class="trust-icon" aria-hidden="true">✓</span> Works offline</div>
+  <div class="trust-sep" aria-hidden="true"></div>
+  <div class="trust-item"><span class="trust-icon" aria-hidden="true">✓</span> No credit card</div>
+  <div class="trust-sep" aria-hidden="true"></div>
+  <div class="trust-item"><span class="trust-icon" aria-hidden="true">✓</span> Built for the Philippines</div>
+</div>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-inner">
+    <span class="section-tag">Features</span>
+    <h2 class="features-hd">Everything your wallet needs.</h2>
+    <p class="features-sub">Designed for quick phone sessions — log in 5 seconds, understand in 10.</p>
+
+    <div class="feat-grid">
+
+      <!-- Feature 1 -->
+      <div class="feat reveal">
+        <span class="feat-num">01</span>
+        <span class="feat-icon" aria-hidden="true">🧾</span>
+        <div class="feat-title">Track every expense</div>
+        <p class="feat-desc">Log purchases in seconds. Categories are assigned automatically — just enter the amount and move on.</p>
+        <div class="feat-vis">
+          <div class="mini-row">
+            <div class="mini-dot f" aria-hidden="true">🍔</div>
+            <div class="mini-info">
+              <div class="mini-name">Jollibee drive-thru</div>
+              <div class="mini-cat">Food &amp; Dining</div>
+            </div>
+            <div class="mini-amt">−₱185</div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-dot t" aria-hidden="true">🚗</div>
+            <div class="mini-info">
+              <div class="mini-name">Grab to Makati</div>
+              <div class="mini-cat">Transportation</div>
+            </div>
+            <div class="mini-amt">−₱95</div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-dot s" aria-hidden="true">📦</div>
+            <div class="mini-info">
+              <div class="mini-name">Shopee order</div>
+              <div class="mini-cat">Shopping</div>
+            </div>
+            <div class="mini-amt">−₱1,250</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feat reveal rev-1">
+        <span class="feat-num">02</span>
+        <span class="feat-icon" aria-hidden="true">🎯</span>
+        <div class="feat-title">Set budgets that stick</div>
+        <p class="feat-desc">Monthly limits per category. Get alerted before you overspend — not after the damage is done.</p>
+        <div class="feat-vis">
+          <div class="mini-budget">
+            <div class="mini-bgt-hd">
+              <span class="mini-bgt-label">Food &amp; Dining</span>
+              <span class="mini-bgt-pct" style="color:var(--green)">48%</span>
+            </div>
+            <div class="mini-bgt-track"><div class="mini-bgt-fill ok" style="width:48%"></div></div>
+          </div>
+          <div class="mini-budget">
+            <div class="mini-bgt-hd">
+              <span class="mini-bgt-label">Shopping</span>
+              <span class="mini-bgt-pct" style="color:var(--amber)">74%</span>
+            </div>
+            <div class="mini-bgt-track"><div class="mini-bgt-fill warn" style="width:74%"></div></div>
+          </div>
+          <div class="mini-budget">
+            <div class="mini-bgt-hd">
+              <span class="mini-bgt-label">Transportation</span>
+              <span class="mini-bgt-pct" style="color:var(--red)">93%</span>
+            </div>
+            <div class="mini-bgt-track"><div class="mini-bgt-fill over" style="width:93%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feat reveal rev-2">
+        <span class="feat-num">03</span>
+        <span class="feat-icon" aria-hidden="true">✦</span>
+        <div class="feat-title">AI-powered insights</div>
+        <p class="feat-desc">A financial health score and personalized advice based on your actual spending — not generic tips.</p>
+        <div class="feat-vis">
+          <div class="mini-ai">
+            <div class="mini-ai-hd">
+              <div class="mini-ai-badge" aria-hidden="true">✦</div>
+              <span class="mini-ai-tag">AI Insight</span>
+            </div>
+            <p class="mini-ai-body">Food spending is 22% higher than last month. Cooking at home 3× a week could save ₱1,200.</p>
+            <div class="mini-ai-score">
+              <span class="mini-score-lbl">Financial Health</span>
+              <span class="mini-score-val">72</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner reveal">
+    <span class="cta-tag">Get started</span>
+    <h2 class="cta-hd">Take control of<br><span class="acc">your money today.</span></h2>
+    <p class="cta-sub">Free to use. No setup needed. Start tracking expenses in under a minute.</p>
+    <div class="cta-btns">
+      <a href="{{ url_for('auth.register') }}" class="btn-cta-main">
+        Create Free Account
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <a href="{{ url_for('auth.login') }}" class="btn-cta-out">Already have an account?</a>
+    </div>
+    <p class="cta-note">Free forever &nbsp;·&nbsp; Works offline &nbsp;·&nbsp; No credit card required</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">
+    <div class="footer-badge" aria-hidden="true">₱</div>
+    <div class="footer-name">Smart<em>Expense</em> AI Pro</div>
+  </div>
+  <p class="footer-copy">© 2025 SmartExpense AI Pro</p>
+  <nav class="footer-links" aria-label="Footer navigation">
+    <a href="{{ url_for('auth.login') }}" class="footer-link">Sign In</a>
+    <a href="{{ url_for('auth.register') }}" class="footer-link">Register</a>
+  </nav>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+</script>
+
+</body>
+</html>
