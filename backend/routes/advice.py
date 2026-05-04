@@ -53,19 +53,6 @@ def get_financial_data(user_id):
         b['amount_limit'] = float(b['amount_limit'])
         b['spent']        = float(b['spent'])
 
-    # Get goals
-    goals = query_all("""
-        SELECT title, target_amount, saved_amount, target_date, status
-        FROM goals
-        WHERE user_id = %s AND status = 'active'
-    """, (user_id,))
-
-    for g in goals:
-        g['target_amount'] = float(g['target_amount'])
-        g['saved_amount']  = float(g['saved_amount'])
-        if isinstance(g.get('target_date'), date):
-            g['target_date'] = g['target_date'].strftime('%Y-%m-%d')
-
     # Get user income
     user = query_one(
         "SELECT monthly_income FROM users WHERE id = %s", (user_id,)
@@ -75,7 +62,6 @@ def get_financial_data(user_id):
     return {
         'expenses'      : expenses,
         'budgets'       : budgets,
-        'goals'         : goals,
         'monthly_income': monthly_income,
     }
 
@@ -88,7 +74,6 @@ def generate_advice(data):
     """
     expenses       = data['expenses']
     budgets        = data['budgets']
-    goals          = data['goals']
     monthly_income = data['monthly_income']
 
     advice_list  = []
@@ -255,75 +240,33 @@ def generate_advice(data):
                     'priority': 3,
                 })
 
-    # ── 4. GOAL PROGRESS ──────────────────────────────────
-    if goals:
-        for goal in goals:
-            target  = goal['target_amount']
-            saved   = goal['saved_amount']
-            pct     = (saved / target * 100) if target > 0 else 0
-            remaining = target - saved
+    # ── 4. FINANCIAL GOAL REMINDER ────────────────────────
+    advice_list.append({
+        'type'    : 'info',
+        'title'   : 'Set a Financial Goal',
+        'message' : (
+            'Setting a goal — emergency fund, gadget, travel, '
+            'or tuition — gives your saving a clear target and '
+            'keeps you motivated. Try setting one this week.'
+        ),
+        'icon'    : 'info',
+        'priority': 5,
+    })
 
-            if pct < 25 and goal.get('target_date'):
-                target_date = date.fromisoformat(goal['target_date'])
-                days_left   = (target_date - date.today()).days
-                if days_left > 0:
-                    needed_per_day = remaining / days_left
-                    advice_list.append({
-                        'type'    : 'warning',
-                        'title'   : f'Goal Behind Schedule: {goal["title"]}',
-                        'message' : (
-                            f'You have saved P{saved:,.0f} of '
-                            f'P{target:,.0f} ({pct:.1f}%). '
-                            f'Save P{needed_per_day:,.0f}/day to reach '
-                            f'your goal by {goal["target_date"]}.'
-                        ),
-                        'icon'    : 'goal',
-                        'priority': 3,
-                    })
-            elif pct >= 75:
-                advice_list.append({
-                    'type'    : 'success',
-                    'title'   : f'Almost There: {goal["title"]}',
-                    'message' : (
-                        f'You are {pct:.1f}% toward your goal! '
-                        f'Just P{remaining:,.0f} more to go. '
-                        f'Keep saving!'
-                    ),
-                    'icon'    : 'success',
-                    'priority': 4,
-                })
-    else:
+    # ── 5. EMERGENCY FUND REMINDER ─────────────────────────
+    if monthly_income > 0:
+        emergency_target = monthly_income * 3
         advice_list.append({
             'type'    : 'info',
-            'title'   : 'Set a Financial Goal',
+            'title'   : 'Build an Emergency Fund',
             'message' : (
-                'You have no active savings goals. '
-                'Setting a goal (emergency fund, gadget, travel) '
-                'helps you stay motivated to save.'
+                f'Aim to save 3 months of expenses '
+                f'(~P{emergency_target:,.0f}) as an emergency fund. '
+                f'Start with a small automatic transfer each payday.'
             ),
             'icon'    : 'info',
             'priority': 4,
         })
-
-    # ── 5. EMERGENCY FUND CHECK ────────────────────────────
-    if monthly_income > 0:
-        emergency_target = monthly_income * 3
-        emergency_goal   = next(
-            (g for g in goals
-             if 'emergency' in g['title'].lower()), None
-        )
-        if not emergency_goal:
-            advice_list.append({
-                'type'    : 'info',
-                'title'   : 'Build an Emergency Fund',
-                'message' : (
-                    f'Aim to save 3 months of expenses '
-                    f'(~P{emergency_target:,.0f}) as an emergency fund. '
-                    f'Start with a small automatic transfer each payday.'
-                ),
-                'icon'    : 'info',
-                'priority': 3,
-            })
 
     # ── 6. SMART WEEKLY TIP ────────────────────────────────
     week_tips = [

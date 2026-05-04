@@ -1,6 +1,7 @@
 import logging
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
 from models.user import create_user, get_user_by_email, get_user_by_id, check_password
+from models.db import execute
 from security.jwt_auth import generate_token
 from functools import wraps
 
@@ -107,6 +108,25 @@ def register():
             flash('Something went wrong. Please try again.', 'error')
 
     return render_template('auth/register.html')
+
+
+# -----------------------------
+# UPDATE MONTHLY INCOME
+# -----------------------------
+@auth_bp.route('/api/user/income', methods=['POST'])
+def update_income():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    data = request.get_json() or {}
+    try:
+        income = float(data.get('monthly_income', 0))
+        if income < 0:
+            raise ValueError()
+    except (ValueError, TypeError):
+        return jsonify({'status': 'error', 'message': 'Invalid amount'}), 400
+    execute("UPDATE users SET monthly_income = %s WHERE id = %s", (income, user_id))
+    return jsonify({'status': 'success'})
 
 
 # -----------------------------

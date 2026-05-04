@@ -1,6 +1,6 @@
 # anomaly.py — Anomaly Detection Engine
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from models.db import query_all, query_one
 from datetime import date, timedelta
 from collections import defaultdict
@@ -202,8 +202,10 @@ def detect_anomalies(expenses):
 # ── GET /api/anomaly/detect ────────────────────────────────
 @anomaly_bp.route('/anomaly/detect', methods=['GET'])
 def detect():
-    user_id  = request.args.get('user_id', 1)
-    days     = int(request.args.get('days', 90))
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    days = int(request.args.get('days', 90))
 
     expenses  = get_recent_expenses(user_id, days)
     anomalies = detect_anomalies(expenses)
@@ -251,7 +253,7 @@ def detect():
                 ],
                 'severity'    : 'high',
             })
-        elif pct >= 80:
+        elif pct >= 70:
             anomalies.insert(0, {
                 'expense_id'  : None,
                 'title'       : f'Budget Warning: {budget["category"]}',
@@ -292,10 +294,12 @@ def check_single():
     """
     Checks if a SINGLE new expense is anomalous
     before saving. Called from the Add Expense form.
-    Body: { title, amount, category, user_id }
+    Body: { title, amount, category }
     """
-    data    = request.get_json()
-    user_id = data.get('user_id', 1)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    data = request.get_json() or {}
     amount  = float(data.get('amount', 0))
     category = data.get('category', 'Others')
 

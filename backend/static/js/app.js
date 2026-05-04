@@ -358,7 +358,7 @@ function setupIncomeModal() {
   if (btnCancel) btnCancel.addEventListener('click', close);
   modal.addEventListener('click', e => { if (e.target === modal) close(); });
 
-  btnSave.addEventListener('click', () => {
+  btnSave.addEventListener('click', async () => {
     const val = parseFloat(input.value);
     if (isNaN(val) || val < 0) {
       showToast('Please enter a valid amount', 'warning');
@@ -368,6 +368,12 @@ function setupIncomeModal() {
     close();
     renderBalance();
     showToast('Income updated!');
+    // Sync to DB so Advice savings-rate analysis works
+    fetch('/api/user/income', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ monthly_income: val }),
+    }).catch(() => {});
   });
 
   input.addEventListener('keydown', e => { if (e.key === 'Enter') btnSave.click(); });
