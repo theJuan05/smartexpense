@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (storedUid !== null && storedUid !== authData.user_id) {
           await clearAllExpensesLocal();
           await saveSetting('last_sync', null);
+          localStorage.removeItem('se_income');
         }
         await saveSetting('current_user_id', authData.user_id);
       }
