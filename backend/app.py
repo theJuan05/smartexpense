@@ -68,7 +68,10 @@ def add_security_headers(response):
 @app.route('/')
 def index():
     if 'user_id' in session:
-        return render_template("index.html")
+        from models.user import get_user_by_id
+        if get_user_by_id(session['user_id']):
+            return render_template("index.html")
+        session.clear()
     return render_template("landing.html")
 
 # -----------------------------
