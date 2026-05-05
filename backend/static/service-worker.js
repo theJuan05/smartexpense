@@ -1,6 +1,5 @@
-const CACHE_NAME = 'smartexpense-v24';
+const CACHE_NAME = 'smartexpense-v25';
 const STATIC_ASSETS = [
-  '/',
   '/frontend/index.html',
   '/frontend/css/style.css',
   '/frontend/js/db.js',
@@ -47,9 +46,15 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
   const url = event.request.url;
 
+  const path = new URL(url).pathname;
   if (url.includes('/api/') ||
       url.includes('cdnjs.cloudflare.com') ||
-      url.includes('generativelanguage.googleapis.com')) {
+      url.includes('generativelanguage.googleapis.com') ||
+      path === '/' ||
+      path === '/login' ||
+      path === '/register' ||
+      path === '/logout' ||
+      path.startsWith('/verify-email')) {
     return;
   }
 
