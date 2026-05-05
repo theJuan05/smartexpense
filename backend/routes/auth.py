@@ -1,7 +1,7 @@
 import logging
 import secrets
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
-from models.user import create_user, get_user_by_email, get_user_by_id, get_user_by_token, verify_user, check_password
+from models.user import create_user, get_user_by_email, get_user_by_token, verify_user, check_password
 from models.db import execute
 from security.jwt_auth import generate_token
 from config import Config
@@ -104,13 +104,15 @@ def register():
         user_id = create_user(name, email, password, token)
         if user_id:
             verify_url = f"{Config.APP_URL}/verify-email/{token}"
-            try:
-                from routes.email_alert import send_verification_email
-                send_verification_email(email, name, verify_url)
-                flash(f'Account created! Check {email} for a verification link before logging in.', 'info')
-            except Exception as e:
-                logger.error("Verification email failed for %s: %s", email, e)
-                flash('Account created but we could not send the verification email. Contact support.', 'error')
+            import threading
+            from routes.email_alert import send_verification_email
+            def _send():
+                try:
+                    send_verification_email(email, name, verify_url)
+                except Exception as e:
+                    logger.error("Verification email failed for %s: %s", email, e)
+            threading.Thread(target=_send, daemon=True).start()
+            flash(f'Account created! Check {email} for a verification link before logging in.', 'info')
             return redirect(url_for('auth.login'))
         else:
             logger.error("create_user returned None for email=%s — check DB connection and credentials", email)
