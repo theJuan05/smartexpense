@@ -1819,47 +1819,173 @@ body {
   cursor: pointer;
 }
 
-/* ── Dashboard empty state ───────────────────────────────────────── */
-.dashboard-empty {
-  background: var(--card-bg);
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 40px 24px;
-  text-align: center;
-  margin-bottom: 14px;
+/* ── Onboarding overlay ──────────────────────────────────────────── */
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 12, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 20px;
+  animation: ob-fade-in 0.25s ease-out;
 }
 
-.dashboard-empty-icon {
-  width: 52px;
-  height: 52px;
+@keyframes ob-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.onboarding-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 28px 28px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  animation: ob-slide-up 0.28s cubic-bezier(0.22,1,0.36,1);
+}
+
+@keyframes ob-slide-up {
+  from { transform: translateY(28px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.onboarding-logo {
+  width: 48px;
+  height: 48px;
   background: var(--purple-light);
-  border: 0.5px solid var(--purple-mid);
-  border-radius: var(--radius);
+  border: 1px solid var(--purple-mid);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 18px;
   color: var(--purple);
+  font-size: 1.35rem;
 }
 
-.dashboard-empty-title {
-  font-size: 1rem;
+.onboarding-title {
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 8px;
-  letter-spacing: -0.2px;
+  margin: 0 0 6px;
+  letter-spacing: -0.3px;
 }
 
-.dashboard-empty-body {
-  font-size: 0.88rem;
+.onboarding-sub {
+  font-size: 0.875rem;
   color: var(--text-muted);
-  line-height: 1.6;
-  max-width: 320px;
-  margin: 0 auto 22px;
+  margin: 0 0 26px;
 }
 
-.dashboard-empty-cta {
-  margin: 0 auto;
+.onboarding-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.onboarding-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  color: var(--text);
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.onboarding-step:hover {
+  border-color: var(--purple-mid);
+  background: var(--purple-light);
+}
+
+.ob-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--purple-light);
+  border: 1px solid var(--purple-mid);
+  color: var(--purple);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ob-step-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.ob-step-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ob-step-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ob-step-desc {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+}
+
+.ob-step-arrow {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.ob-step-primary {
+  background: var(--purple-light);
+  border-color: var(--purple-mid);
+}
+
+.ob-step-primary .ob-step-num {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #fff;
+}
+
+.ob-step-primary:hover {
+  background: var(--purple-light);
+  border-color: var(--purple);
+}
+
+.onboarding-skip {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.onboarding-skip:hover {
+  color: var(--text);
 }
 
 /* ── Screen-reader only utility ──────────────────────────────────── */
@@ -2348,7 +2474,7 @@ textarea:focus-visible {
     column-gap: 24px;
     align-items: start;
   }
-  #tab-dashboard > #dashboard-empty { grid-column: 1 / -1; }
+  /* onboarding overlay is fixed-position, no grid placement needed */
 
   /* Main column: charts side-by-side in nested grid */
   .dash-main {

@@ -208,7 +208,7 @@ async function loadExpenseList(filter = '') {
 
   if (countEl) countEl.textContent = `(${expenses.length})`;
 
-  const emptyStateEl = document.getElementById('dashboard-empty');
+  const onboardingEl = document.getElementById('onboarding-overlay');
 
   if (expenses.length === 0) {
     listEl.innerHTML = filter
@@ -224,16 +224,47 @@ async function loadExpenseList(filter = '') {
              Add your first expense
            </button>
          </div>`;
-    if (emptyStateEl && !filter) emptyStateEl.style.display = 'block';
+    if (onboardingEl && !filter && !sessionStorage.getItem('ob_skipped')) {
+      showOnboarding();
+    }
     return;
   }
 
-  if (emptyStateEl) emptyStateEl.style.display = 'none';
+  if (onboardingEl) onboardingEl.style.display = 'none';
   listEl.innerHTML = '';
   const container = document.createElement('div');
   container.className = 'expense-list';
   expenses.forEach(exp => container.appendChild(createExpenseItem(exp)));
   listEl.appendChild(container);
+}
+
+// ── Onboarding overlay ─────────────────────────────────────
+function showOnboarding() {
+  const el = document.getElementById('onboarding-overlay');
+  if (!el) return;
+  el.style.display = 'flex';
+
+  const hide = () => { el.style.display = 'none'; };
+
+  document.getElementById('ob-step-income')?.addEventListener('click', () => {
+    hide();
+    document.getElementById('btn-set-income')?.click();
+  }, { once: true });
+
+  document.getElementById('ob-step-budget')?.addEventListener('click', () => {
+    hide();
+    document.querySelector('[data-tab=budget]')?.click();
+  }, { once: true });
+
+  document.getElementById('ob-step-expense')?.addEventListener('click', () => {
+    hide();
+    document.querySelector('[data-tab=add]')?.click();
+  }, { once: true });
+
+  document.getElementById('ob-skip')?.addEventListener('click', () => {
+    sessionStorage.setItem('ob_skipped', '1');
+    hide();
+  }, { once: true });
 }
 
 // ── Expose renderExpenses so edit-expense.js can call it ───
