@@ -131,6 +131,21 @@ def update_income():
 
 
 # -----------------------------
+# DELETE ACCOUNT
+# -----------------------------
+@auth_bp.route('/api/user/delete', methods=['DELETE'])
+def delete_account():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    execute("DELETE FROM expenses WHERE user_id = %s", (user_id,))
+    execute("DELETE FROM budgets  WHERE user_id = %s", (user_id,))
+    execute("DELETE FROM users    WHERE id = %s",      (user_id,))
+    session.clear()
+    return jsonify({'status': 'success'})
+
+
+# -----------------------------
 # LOGOUT
 # -----------------------------
 @auth_bp.route('/logout')

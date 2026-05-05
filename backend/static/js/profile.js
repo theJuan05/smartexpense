@@ -369,6 +369,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     ));
 
+  document.getElementById('btn-delete-account')
+    ?.addEventListener('click', () => confirmDanger(
+      'This will permanently delete your account, all expenses, and all budgets. You cannot undo this.',
+      async () => {
+        const res = await API.request('/user/delete', 'DELETE');
+        if (res && res.status === 'success') {
+          await clearAllExpensesLocal();
+          localStorage.clear();
+          window.location.href = '/';
+        } else {
+          showToast('Failed to delete account. Try again.', 'warning');
+        }
+      }
+    ));
+
   document.getElementById('btn-confirm-danger-action')
     ?.addEventListener('click', executeDangerAction);
 
