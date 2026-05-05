@@ -8,6 +8,7 @@ from datetime import datetime
 
 
 def send_verification_email(to_email, name, verify_url):
+    import requests as _requests
     html = f"""
     <div style="font-family:'Segoe UI',sans-serif;max-width:480px;margin:auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
       <div style="background:linear-gradient(135deg,#6c4fff,#3b37b8);padding:2rem;text-align:center;color:white;">
@@ -29,15 +30,22 @@ def send_verification_email(to_email, name, verify_url):
       </div>
     </div>
     """
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = 'Verify your SmartExpense account'
-    msg['From']    = Config.GMAIL_USER
-    msg['To']      = to_email
-    msg.attach(MIMEText(html, 'html'))
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login(Config.GMAIL_USER, Config.GMAIL_APP_PASSWORD)
-        smtp.sendmail(Config.GMAIL_USER, to_email, msg.as_string())
+    resp = _requests.post(
+        'https://api.brevo.com/v3/smtp/email',
+        headers={
+            'api-key': Config.BREVO_API_KEY,
+            'Content-Type': 'application/json'
+        },
+        json={
+            'sender': {'email': Config.GMAIL_USER, 'name': 'SmartExpense'},
+            'to': [{'email': to_email, 'name': name}],
+            'subject': 'Verify your SmartExpense account',
+            'htmlContent': html
+        },
+        timeout=15
+    )
+    if resp.status_code >= 400:
+        raise Exception(f'Brevo error {resp.status_code}: {resp.text}')
 
 email_alert_bp = Blueprint('email_alert', __name__)
 
