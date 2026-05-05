@@ -6,6 +6,39 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 
+
+def send_verification_email(to_email, name, verify_url):
+    html = f"""
+    <div style="font-family:'Segoe UI',sans-serif;max-width:480px;margin:auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+      <div style="background:linear-gradient(135deg,#6c4fff,#3b37b8);padding:2rem;text-align:center;color:white;">
+        <h1 style="margin:0;font-size:1.5rem;">Verify your email</h1>
+        <p style="margin:0.5rem 0 0;opacity:0.85;">SmartExpense AI Pro</p>
+      </div>
+      <div style="background:#fff;padding:2rem;">
+        <p style="color:#333;">Hi <strong>{name}</strong>,</p>
+        <p style="color:#555;">Thanks for signing up! Click the button below to verify your email address and activate your account.</p>
+        <div style="text-align:center;margin:1.75rem 0;">
+          <a href="{verify_url}" style="background:#6c4fff;color:white;padding:0.85rem 2rem;border-radius:10px;text-decoration:none;font-weight:700;font-size:1rem;">
+            Verify Email Address
+          </a>
+        </div>
+        <p style="color:#888;font-size:0.85rem;">Or copy this link into your browser:</p>
+        <p style="color:#6c4fff;font-size:0.82rem;word-break:break-all;">{verify_url}</p>
+        <p style="color:#aaa;font-size:0.78rem;margin-top:1.5rem;text-align:center;">If you did not create an account, you can ignore this email.</p>
+        <p style="color:#bbb;font-size:0.78rem;text-align:center;">SmartExpense AI Pro — Email Verification</p>
+      </div>
+    </div>
+    """
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = 'Verify your SmartExpense account'
+    msg['From']    = Config.GMAIL_USER
+    msg['To']      = to_email
+    msg.attach(MIMEText(html, 'html'))
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(Config.GMAIL_USER, Config.GMAIL_APP_PASSWORD)
+        smtp.sendmail(Config.GMAIL_USER, to_email, msg.as_string())
+
 email_alert_bp = Blueprint('email_alert', __name__)
 
 

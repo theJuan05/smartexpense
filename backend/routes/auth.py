@@ -1,8 +1,10 @@
 import logging
+import secrets
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
-from models.user import create_user, get_user_by_email, get_user_by_id, check_password
+from models.user import create_user, get_user_by_email, get_user_by_id, get_user_by_token, verify_user, check_password
 from models.db import execute
 from security.jwt_auth import generate_token
+from config import Config
 from functools import wraps
 
 logger = logging.getLogger(__name__)
@@ -37,6 +39,9 @@ def login():
         user = get_user_by_email(email)
 
         if user and check_password(user, password):
+            if not user.get('is_verified'):
+                flash('Please verify your email before logging in. Check your inbox for the confirmation link.', 'error')
+                return render_template('auth/login.html')
             session['user_id']    = user['id']
             session['user_name']  = user['name']
             session['user_email'] = user['email']
@@ -95,20 +100,37 @@ def register():
             flash('An account with that email already exists.', 'error')
             return render_template('auth/register.html')
 
-        user_id = create_user(name, email, password)
+        token   = secrets.token_urlsafe(32)
+        user_id = create_user(name, email, password, token)
         if user_id:
-            session['user_id']    = user_id
-            session['user_name']  = name
-            session['user_email'] = email
-            session['jwt']        = generate_token(user_id, name)
-            session.permanent     = True
-            flash(f'Welcome, {name}! Your account has been created.', 'success')
-            return redirect(url_for('index'))
+            verify_url = f"{Config.APP_URL}/verify-email/{token}"
+            try:
+                from routes.email_alert import send_verification_email
+                send_verification_email(email, name, verify_url)
+                flash(f'Account created! Check {email} for a verification link before logging in.', 'info')
+            except Exception as e:
+                logger.error("Verification email failed for %s: %s", email, e)
+                flash('Account created but we could not send the verification email. Contact support.', 'error')
+            return redirect(url_for('auth.login'))
         else:
             logger.error("create_user returned None for email=%s — check DB connection and credentials", email)
             flash('Something went wrong. Please try again.', 'error')
 
     return render_template('auth/register.html')
+
+
+# -----------------------------
+# VERIFY EMAIL
+# -----------------------------
+@auth_bp.route('/verify-email/<token>')
+def verify_email(token):
+    user = get_user_by_token(token)
+    if not user:
+        flash('Invalid or expired verification link.', 'error')
+        return redirect(url_for('auth.login'))
+    verify_user(user['id'])
+    flash('Email verified! You can now log in.', 'success')
+    return redirect(url_for('auth.login'))
 
 
 # -----------------------------
