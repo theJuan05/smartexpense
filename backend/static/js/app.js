@@ -12,7 +12,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Initialize DB
     await initDB();
 
-    // 3. Pull server expenses into IndexedDB (fills dashboard on first load / new device)
+    // 3. Detect account switch — wipe local data if a different user logs in
+    try {
+      const authRes  = await fetch('/api/auth/status');
+      const authData = await authRes.json();
+      if (authData.logged_in && authData.user_id) {
+        const storedUid = await getSetting('current_user_id');
+        if (storedUid !== null && storedUid !== authData.user_id) {
+          await clearAllExpensesLocal();
+          await saveSetting('last_sync', null);
+        }
+        await saveSetting('current_user_id', authData.user_id);
+      }
+    } catch (_) {}
+
+    // 4. Pull server expenses into IndexedDB (fills dashboard on first load / new device)
     await pullExpensesFromServer();
 
     // 4. Set today's date in form

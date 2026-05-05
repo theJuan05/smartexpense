@@ -57,6 +57,7 @@ def auth_status():
     if 'user_id' in session:
         return jsonify({
             'logged_in':  True,
+            'user_id':    session.get('user_id'),
             'user_name':  session.get('user_name', ''),
             'user_email': session.get('user_email', ''),
             'token':      session.get('jwt', '')
