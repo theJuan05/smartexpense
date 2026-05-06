@@ -1,5 +1,5 @@
 <!-- ── EXPENSES TAB ───────────────────────────── -->
-<div id="tab-expenses" class="tab-content">
+<div id="tab-expenses" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-expenses" tabindex="0">
   <div class="card">
     <h2>Recent Expenses
       <span id="expense-count-badge" class="card-count-badge"></span>
@@ -29,11 +29,11 @@
 </div>
 
 <!-- ── EDIT EXPENSE MODAL ─────────────────────────────────── -->
-<div id="modal-edit-expense" class="modal-overlay">
+<div id="modal-edit-expense" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-edit-expense-title">
   <div class="modal-box">
 
     <div class="modal-header">
-      <h2><span aria-hidden="true">✏️ </span>Edit Expense</h2>
+      <h2 id="modal-edit-expense-title"><span aria-hidden="true">✏️ </span>Edit Expense</h2>
       <button class="modal-close" id="btn-close-edit-expense" aria-label="Close">✕</button>
     </div>
 
@@ -102,11 +102,11 @@
 </div>
 
 <!-- ── CONFIRM DELETE MODAL ───────────────────────────────── -->
-<div id="modal-confirm-delete" class="modal-overlay">
+<div id="modal-confirm-delete" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-delete-title">
   <div class="modal-box">
 
     <div class="modal-header">
-      <h2 class="modal-heading-danger"><span aria-hidden="true">🗑️ </span>Delete Expense</h2>
+      <h2 id="modal-confirm-delete-title" class="modal-heading-danger"><span aria-hidden="true">🗑️ </span>Delete Expense</h2>
       <button class="modal-close" id="btn-close-delete-expense" aria-label="Close">✕</button>
     </div>
 

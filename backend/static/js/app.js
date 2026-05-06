@@ -134,6 +134,11 @@ function setupTabs() {
       buttons.forEach(b => { if (b.dataset.tab === target) b.classList.add('active'); });
       document.getElementById(`tab-${target}`).classList.add('active');
 
+      // Sync aria-selected on tab-bar role="tab" buttons only
+      document.querySelectorAll('[role="tab"]').forEach(b => {
+        b.setAttribute('aria-selected', b.dataset.tab === target ? 'true' : 'false');
+      });
+
       setPageTitle(target);
 
       // Wait for DOM to update before loading data

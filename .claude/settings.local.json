@@ -26,7 +26,13 @@
       "Bash(taskkill /F /IM python.exe)",
       "Bash(curl -s \"http://127.0.0.1:5000/service-worker.js\" -o /dev/null -w \"SW route: %{http_code}\\\\n\")",
       "Bash(curl -s \"http://127.0.0.1:5000/api/budgets/summary?user_id=1\" -o /dev/null -w \"Budget API: %{http_code}\\\\n\")",
-      "PowerShell(node .agents/skills/impeccable/scripts/load-context.mjs)"
+      "PowerShell(node .agents/skills/impeccable/scripts/load-context.mjs)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\\\\frontend\" -Recurse -File | Where-Object { $_.Extension -match '\\\\.\\(html|css|js|svg|png|jpg|gif|woff|woff2|ttf|otf\\)$' })",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\\\\backend\\\\static\" -Recurse -Force | ForEach-Object { $_.FullName })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\\\\backend\\\\templates\" -Recurse -Force | ForEach-Object { $_.FullName })",
+      "Bash(curl -s \"https://api.cdnjs.com/libraries/Chart.js/4.4.1?fields=sri\")",
+      "Bash(python -m json.tool)"
     ]
   }
 }

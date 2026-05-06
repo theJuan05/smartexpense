@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#6c63ff" />
+  <meta name="theme-color" content="#6c4fff" />
   <title>SmartExpense AI Pro</title>
   <link rel="manifest" href="/static/manifest.json" />
 
@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='pinlock.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='scanner.css') }}">
 
 </head>
 <body>
@@ -106,13 +105,13 @@
 
   <!-- Tab Navigation -->
   <div class="tab-bar" role="tablist" aria-label="Main navigation">
-    <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true" aria-controls="tab-dashboard">Dashboard</button>
-    <button class="tab-btn" data-tab="expenses" role="tab" aria-selected="false" aria-controls="tab-expenses">Expenses</button>
-    <button class="tab-btn" data-tab="add" role="tab" aria-selected="false" aria-controls="tab-add">+ Add</button>
-    <button class="tab-btn" data-tab="budget" role="tab" aria-selected="false" aria-controls="tab-budget">Budget</button>
-    <button class="tab-btn" data-tab="insights" role="tab" aria-selected="false" aria-controls="tab-insights">Insights</button>
-    <button class="tab-btn" data-tab="advice" role="tab" aria-selected="false" aria-controls="tab-advice">Advice</button>
-    <button class="tab-btn" data-tab="profile" role="tab" aria-selected="false" aria-controls="tab-profile">Settings</button>
+    <button id="tab-btn-dashboard" class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true" aria-controls="tab-dashboard">Dashboard</button>
+    <button id="tab-btn-expenses" class="tab-btn" data-tab="expenses" role="tab" aria-selected="false" aria-controls="tab-expenses">Expenses</button>
+    <button id="tab-btn-add" class="tab-btn" data-tab="add" role="tab" aria-selected="false" aria-controls="tab-add">+ Add</button>
+    <button id="tab-btn-budget" class="tab-btn" data-tab="budget" role="tab" aria-selected="false" aria-controls="tab-budget">Budget</button>
+    <button id="tab-btn-insights" class="tab-btn" data-tab="insights" role="tab" aria-selected="false" aria-controls="tab-insights">Insights</button>
+    <button id="tab-btn-advice" class="tab-btn" data-tab="advice" role="tab" aria-selected="false" aria-controls="tab-advice">Advice</button>
+    <button id="tab-btn-profile" class="tab-btn" data-tab="profile" role="tab" aria-selected="false" aria-controls="tab-profile">Settings</button>
   </div>
 
   <!-- ── Skeleton Loader ──────────────────────────────────────── -->
@@ -211,7 +210,7 @@
   <!-- ─────────────────────────────────────────────────────────── -->
 
   <!-- Main Container -->
-  <div class="container" id="main-content">
+  <main class="container" id="main-content">
     {% include 'partials/dashboard.html' %}
     {% include 'partials/expense.html' %}
     {% include 'partials/add.html' %}
@@ -219,10 +218,10 @@
     {% include 'partials/insights.html' %}
     {% include 'partials/advice.html' %}
     {% include 'partials/profile.html' %}
-  </div><!-- end .container -->
+  </main><!-- end .container -->
 
   <!-- Bottom Navigation (mobile only) -->
-  <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+  <nav class="bottom-nav" aria-label="Bottom navigation">
     <button class="tab-btn bottom-nav-item active" data-tab="dashboard" aria-label="Dashboard">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       <span>Home</span>
@@ -283,18 +282,18 @@
   <p id="backend-status" style="display:none;"></p>
 
   <!-- Toast -->
-  <div id="toast"></div>
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <!-- ── ALL MODALS/OVERLAYS OUTSIDE CONTAINER ─────────────── -->
   {% include 'partials/scanner.html' %}
   {% include 'partials/pin-overlay.html' %}
 
   <!-- Set Income Modal -->
-  <div id="modal-set-income" class="modal-overlay">
+  <div id="modal-set-income" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-income-title">
     <div class="modal-box">
       <div class="modal-header">
-        <h2><span aria-hidden="true">💰 </span>Set Monthly Income</h2>
-        <button class="modal-close" id="btn-close-income-modal">✕</button>
+        <h2 id="modal-income-title"><span aria-hidden="true">💰 </span>Set Monthly Income</h2>
+        <button class="modal-close" id="btn-close-income-modal" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
@@ -311,24 +310,26 @@
   <!-- ─────────────────────────────────────────────────────── -->
 
   <!-- Chart.js CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+          integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw=="
+          crossorigin="anonymous"></script>
 
-  <!-- Scripts — darkmode MUST be first -->
-  <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/db.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/api.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/budget.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/predict.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/anomaly.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/advice.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/export.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/edit-expense.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/pinlock.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <!-- Scripts — defer preserves order; darkmode still runs first -->
+  <script defer src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/db.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/api.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/charts.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/budget.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/predict.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/anomaly.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/advice.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/export.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/edit-expense.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/profile.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/pinlock.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 
 </body>

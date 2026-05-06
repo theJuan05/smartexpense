@@ -100,7 +100,10 @@ async function processReceiptImage() {
       body: formData
     });
 
-    if (!response.ok) throw new Error('AI processing failed');
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.details || errData.error || 'AI processing failed');
+    }
     
     const data = await response.json();
     

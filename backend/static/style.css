@@ -368,7 +368,10 @@ body {
 }
 
 /* ── Balance Hero Card ───────────────────────────────────────── */
+/* Income/expense colors are intentionally brighter on this dark surface */
 .balance-card {
+  --balance-income:  #00b894;
+  --balance-expense: #ff7675;
   background: linear-gradient(135deg, #2d1b8a 0%, #1a1040 60%, #0d0d20 100%);
   border-radius: var(--radius-xl);
   padding: 22px 22px 18px;
@@ -447,7 +450,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.balance-amount.negative { color: #ff7675; }
+.balance-amount.negative { color: var(--balance-expense); }
 
 .balance-footer {
   display: flex;
@@ -479,8 +482,8 @@ body {
   flex-shrink: 0;
 }
 
-.balance-col-icon.income  { background: rgba(0,184,148,0.2);  color: #00b894; }
-.balance-col-icon.expense { background: rgba(255,118,117,0.2); color: #ff7675; }
+.balance-col-icon.income  { background: rgba(0,184,148,0.2);  color: var(--balance-income); }
+.balance-col-icon.expense { background: rgba(255,118,117,0.2); color: var(--balance-expense); }
 
 .balance-col-label {
   font-size: 0.72rem;
@@ -496,8 +499,8 @@ body {
   color: #ffffff;
 }
 
-.balance-col-val.income  { color: #00b894; }
-.balance-col-val.expense { color: #ff7675; }
+.balance-col-val.income  { color: var(--balance-income); }
+.balance-col-val.expense { color: var(--balance-expense); }
 
 .balance-sep {
   width: 0.5px;
@@ -993,7 +996,7 @@ body {
 .recent-tx-amount {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #ff7675;
+  color: var(--red);
   flex-shrink: 0;
 }
 
@@ -1265,6 +1268,7 @@ body {
 /* ── PWA Install ─────────────────────────────────────────────── */
 #btn-install {
   padding: 5px 14px;
+  min-height: 44px;
   background: var(--purple-light);
   color: var(--purple);
   border: 0.5px solid var(--purple-mid);
@@ -1338,8 +1342,8 @@ body {
   cursor: pointer;
   color: var(--text-muted);
   padding: 0;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: 44px;
+  min-width: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1538,7 +1542,7 @@ body {
     border-radius: 0;
     background: none;
     font-family: inherit;
-    font-size: 0.64rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--text-muted);
     cursor: pointer;
@@ -2290,17 +2294,17 @@ textarea:focus-visible {
 /* ═══════════════════════════════════════════════════════════════════
    SIDEBAR STYLES
    ═══════════════════════════════════════════════════════════════════ */
-/* ── Sidebar base (fixed width, no hover expand) ──────────────── */
+/* ── Sidebar base (fixed width, always dark) ──────────────────── */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
-  width: 220px;
-  background: var(--card-bg);
-  border-right: 0.5px solid var(--border);
+  width: 240px;
+  background: #0d0d18;
+  border-right: 0.5px solid rgba(255,255,255,0.06);
   z-index: 150;
   flex-direction: column;
   overflow: hidden;
-  transition: background 0.3s, border-color 0.3s;
+  transition: none;
 }
 
 /* Logo row */
@@ -2308,31 +2312,31 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 18px 18px 16px;
-  border-bottom: 0.5px solid var(--border);
+  padding: 24px 20px 22px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
   flex-shrink: 0;
-  min-width: 220px;
+  min-width: 240px;
 }
 
 .sidebar-logo-img {
-  width: 28px; height: 28px;
-  border-radius: 7px;
+  width: 42px; height: 42px;
+  border-radius: 11px;
   flex-shrink: 0;
 }
 
 .sidebar-logo-text {
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.2px;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: -0.3px;
   white-space: nowrap;
 }
-.sidebar-logo-text span { color: var(--purple); }
+.sidebar-logo-text span { color: #a48fff; }
 
 /* Profile top section */
 .sidebar-profile-top {
-  padding: 10px 8px;
-  border-bottom: 0.5px solid var(--border);
+  padding: 10px 10px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
   flex-shrink: 0;
 }
 
@@ -2341,20 +2345,20 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 12px 8px;
+  padding: 12px 10px;
   flex: 1;
-  min-width: 220px;
+  min-width: 240px;
 }
 
 .sidebar-item {
   display: flex !important;
   align-items: center;
   gap: 12px;
-  padding: 11px 12px;
+  padding: 11px 14px;
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.45);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -2370,32 +2374,32 @@ textarea:focus-visible {
 .sidebar-item svg { flex-shrink: 0; width: 18px; height: 18px; }
 
 .sidebar-item:hover {
-  background: var(--purple-light);
-  color: var(--purple);
+  background: rgba(108,79,255,0.12);
+  color: rgba(255,255,255,0.9);
 }
 
 .sidebar-item.active {
-  background: var(--purple-light);
-  color: var(--purple);
+  background: rgba(108,79,255,0.2);
+  color: #fff;
   font-weight: 600;
 }
 
 /* Bottom section */
 .sidebar-bottom {
-  padding: 10px 8px;
-  border-top: 0.5px solid var(--border);
+  padding: 10px 10px;
+  border-top: 0.5px solid rgba(255,255,255,0.06);
   display: flex;
   flex-direction: column;
   gap: 2px;
   flex-shrink: 0;
-  min-width: 220px;
+  min-width: 240px;
 }
 
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   border: none;
@@ -2404,22 +2408,22 @@ textarea:focus-visible {
   width: 100%;
   white-space: nowrap;
   transition: background 0.15s, color 0.15s;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.45);
 }
 
 .sidebar-user:hover {
-  background: var(--purple-light);
-  color: var(--purple);
+  background: rgba(108,79,255,0.12);
+  color: rgba(255,255,255,0.9);
 }
 
 .sidebar-avatar-icon {
   width: 28px; height: 28px;
   border-radius: 50%;
-  background: var(--purple-light);
+  background: rgba(108,79,255,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--purple);
+  color: #a48fff;
   flex-shrink: 0;
 }
 
@@ -2436,11 +2440,11 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.3);
   text-decoration: none;
   white-space: nowrap;
   transition: background 0.15s, color 0.15s;
@@ -2449,8 +2453,8 @@ textarea:focus-visible {
 .sidebar-signout span { white-space: nowrap; }
 
 .sidebar-signout:hover {
-  background: rgba(231,76,60,0.08);
-  color: var(--red);
+  background: rgba(231,76,60,0.12);
+  color: #ff6b6b;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -2463,9 +2467,9 @@ textarea:focus-visible {
   .tab-bar  { display: none; }
 
   /* Shift navbar and content right of sidebar */
-  .navbar    { margin-left: 220px; }
-  .container { margin-left: 220px; margin-right: 0; max-width: none; padding: 28px 32px; }
-  #page-skeleton { left: 220px; }
+  .navbar    { margin-left: 240px; }
+  .container { margin-left: 240px; margin-right: 0; max-width: none; padding: 28px 32px; }
+  #page-skeleton { left: 240px; }
 
   /* ── Dashboard: main column + sticky aside ──────────────────── */
   #tab-dashboard.active {
