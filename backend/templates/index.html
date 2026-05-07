@@ -314,6 +314,10 @@
           integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw=="
           crossorigin="anonymous"></script>
 
+  <!-- Firebase SDK (compat — must load before firebase.js) -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.0.0/firebase-messaging-compat.js"></script>
+
   <!-- Scripts — defer preserves order; darkmode still runs first -->
   <script defer src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
   <script defer src="{{ url_for('static', filename='js/db.js') }}"></script>
@@ -329,6 +333,7 @@
   <script defer src="{{ url_for('static', filename='js/edit-expense.js') }}"></script>
   <script defer src="{{ url_for('static', filename='js/profile.js') }}"></script>
   <script defer src="{{ url_for('static', filename='js/pinlock.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/firebase.js') }}"></script>
   <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
 
 

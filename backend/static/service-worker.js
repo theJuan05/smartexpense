@@ -1,20 +1,32 @@
-const CACHE_NAME = 'smartexpense-v26';
+const CACHE_NAME = 'smartexpense-v27';
 const STATIC_ASSETS = [
-  '/frontend/index.html',
-  '/frontend/css/style.css',
-  '/frontend/js/db.js',
-  '/frontend/js/api.js',
-  '/frontend/js/charts.js',
-  '/frontend/js/budget.js',
-  '/frontend/js/predict.js',
-  '/frontend/js/anomaly.js',
-  '/frontend/js/advice.js',
-  '/frontend/js/app.js',
-  '/frontend/manifest.json'
+  '/static/style.css',
+  '/static/profile.css',
+  '/static/pinlock.css',
+  '/static/js/darkmode.js',
+  '/static/js/db.js',
+  '/static/js/api.js',
+  '/static/js/charts.js',
+  '/static/js/budget.js',
+  '/static/js/predict.js',
+  '/static/js/anomaly.js',
+  '/static/js/advice.js',
+  '/static/js/pwa.js',
+  '/static/js/scanner.js',
+  '/static/js/export.js',
+  '/static/js/edit-expense.js',
+  '/static/js/profile.js',
+  '/static/js/pinlock.js',
+  '/static/js/firebase.js',
+  '/static/js/app.js',
+  '/static/manifest.json',
+  '/static/icons/icon-192.png',
+  '/static/icons/icon-512.png',
+  '/static/icons/logo-icon.svg',
 ];
 
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installing...');
+  console.log('[SW] Installing v27...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       console.log('[SW] Caching static assets');
@@ -31,12 +43,11 @@ self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(keys) {
       return Promise.all(
-        keys.filter(function(key) {
-          return key !== CACHE_NAME;
-        }).map(function(key) {
-          console.log('[SW] Deleting old cache:', key);
-          return caches.delete(key);
-        })
+        keys.filter(function(key) { return key !== CACHE_NAME; })
+            .map(function(key) {
+              console.log('[SW] Deleting old cache:', key);
+              return caches.delete(key);
+            })
       );
     })
   );
@@ -44,13 +55,14 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  const url = event.request.url;
-
+  const url  = event.request.url;
   const path = new URL(url).pathname;
+
+  // Never cache: API calls, auth routes, CDNs, AI endpoints
   if (url.includes('/api/') ||
       url.includes('cdnjs.cloudflare.com') ||
+      url.includes('gstatic.com') ||
       url.includes('generativelanguage.googleapis.com') ||
-      path === '/' ||
       path === '/login' ||
       path === '/register' ||
       path === '/logout' ||
@@ -58,33 +70,19 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
+  // Stale-while-revalidate for everything else
   event.respondWith(
     caches.match(event.request).then(function(cached) {
-      if (cached) {
-        fetch(event.request).then(function(response) {
-          if (response && response.status === 200) {
-            caches.open(CACHE_NAME).then(function(cache) {
-              cache.put(event.request, response);
-            });
-          }
-        }).catch(function() {});
-        return cached;
-      }
-
-      return fetch(event.request).then(function(response) {
-        if (!response || response.status !== 200) {
-          return response;
+      const networkFetch = fetch(event.request).then(function(response) {
+        if (response && response.status === 200) {
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, response.clone());
+          });
         }
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(function(cache) {
-          cache.put(event.request, copy);
-        });
         return response;
-      }).catch(function() {
-        if (event.request.destination === 'document') {
-          return caches.match('/frontend/index.html');
-        }
-      });
+      }).catch(function() {});
+
+      return cached || networkFetch || caches.match('/');
     })
   );
 });
@@ -102,23 +100,23 @@ self.addEventListener('notificationclick', function(event) {
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(function(clientList) {
         for (var i = 0; i < clientList.length; i++) {
-          var c = clientList[i];
-          if ('focus' in c) return c.focus();
+          if ('focus' in clientList[i]) return clientList[i].focus();
         }
         if (self.clients.openWindow) return self.clients.openWindow('/');
       })
   );
 });
 
-// Handle future server-push payloads
+// Handle server push payloads
 self.addEventListener('push', function(event) {
   var data  = event.data ? event.data.json() : {};
   var title = data.title || 'SmartExpense';
   var opts  = {
-    body:  data.body  || '',
-    icon:  '/static/icons/logo-icon.svg',
-    badge: '/static/icons/logo-icon.svg',
-    tag:   data.tag   || 'smartexpense',
+    body:    data.body  || '',
+    icon:    '/static/icons/icon-192.png',
+    badge:   '/static/icons/icon-192.png',
+    tag:     data.tag   || 'smartexpense',
+    vibrate: [200, 100, 200],
   };
   event.waitUntil(self.registration.showNotification(title, opts));
 });

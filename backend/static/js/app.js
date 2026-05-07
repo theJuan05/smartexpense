@@ -243,34 +243,100 @@ async function loadExpenseList(filter = '') {
   listEl.appendChild(container);
 }
 
-// ── Onboarding overlay ─────────────────────────────────────
-function showOnboarding() {
-  const el = document.getElementById('onboarding-overlay');
-  if (!el) return;
-  el.style.display = 'flex';
+// ── Onboarding wizard ──────────────────────────────────────
+(function () {
+  const TOTAL = 4; // slides 0-3
+  let current = 0;
 
-  const hide = () => { el.style.display = 'none'; };
+  const PROGRESS = ['', 'Step 1 of 2', 'Step 2 of 2', ''];
+  const FILL     = [0, 33, 66, 100];
 
-  document.getElementById('ob-step-income')?.addEventListener('click', () => {
-    hide();
-    document.getElementById('btn-set-income')?.click();
-  }, { once: true });
+  function goTo(idx) {
+    const slides = document.querySelectorAll('.ob-slide');
+    if (!slides.length) return;
 
-  document.getElementById('ob-step-budget')?.addEventListener('click', () => {
-    hide();
-    document.querySelector('[data-tab=budget]')?.click();
-  }, { once: true });
+    const leaving = slides[current];
+    leaving.classList.remove('ob-slide--active');
+    leaving.classList.add('ob-slide--exit');
 
-  document.getElementById('ob-step-expense')?.addEventListener('click', () => {
-    hide();
-    document.querySelector('[data-tab=add]')?.click();
-  }, { once: true });
+    setTimeout(() => {
+      leaving.classList.remove('ob-slide--exit');
+      current = idx;
+      slides[current].classList.add('ob-slide--active');
+      updateProgress();
+    }, 200);
+  }
 
-  document.getElementById('ob-skip')?.addEventListener('click', () => {
+  function updateProgress() {
+    const fill  = document.getElementById('ob-progress-fill');
+    const label = document.getElementById('ob-progress-label');
+    if (fill)  fill.style.width  = FILL[current] + '%';
+    if (label) label.textContent = PROGRESS[current];
+  }
+
+  function closeOnboarding() {
+    const el = document.getElementById('onboarding-overlay');
+    if (el) el.style.display = 'none';
     sessionStorage.setItem('ob_skipped', '1');
-    hide();
-  }, { once: true });
-}
+  }
+
+  window.showOnboarding = function () {
+    const el = document.getElementById('onboarding-overlay');
+    if (!el) return;
+    current = 0;
+
+    // Activate first slide
+    document.querySelectorAll('.ob-slide').forEach((s, i) => {
+      s.classList.toggle('ob-slide--active', i === 0);
+      s.classList.remove('ob-slide--exit');
+    });
+    updateProgress();
+    el.style.display = 'flex';
+
+    // Pre-fill income if already saved
+    const savedIncome = localStorage.getItem('se_income');
+    if (savedIncome) {
+      const inp = document.getElementById('ob-income-val');
+      if (inp) inp.value = savedIncome;
+    }
+
+    // ── Step 0 buttons ──
+    document.getElementById('ob-start')?.addEventListener('click', () => goTo(1), { once: true });
+    document.getElementById('ob-skip-all')?.addEventListener('click', () => closeOnboarding(), { once: true });
+
+    // ── Step 1 — income ──
+    document.getElementById('ob-income-next')?.addEventListener('click', () => {
+      const val = parseFloat(document.getElementById('ob-income-val')?.value);
+      if (val > 0) {
+        localStorage.setItem('se_income', val.toString());
+        // Also update the hint on budget step
+        const hint = document.getElementById('ob-budget-hint');
+        if (hint) hint.textContent = `Based on your ₱${val.toLocaleString()} income, a common rule is to budget 80%.`;
+        const budgetInp = document.getElementById('ob-budget-val');
+        if (budgetInp && !budgetInp.value) budgetInp.value = Math.round(val * 0.8);
+      }
+      goTo(2);
+    }, { once: true });
+    document.getElementById('ob-income-skip')?.addEventListener('click', () => goTo(2), { once: true });
+
+    // ── Step 2 — budget ──
+    document.getElementById('ob-budget-next')?.addEventListener('click', () => {
+      const val = parseFloat(document.getElementById('ob-budget-val')?.value);
+      if (val > 0) {
+        localStorage.setItem('se_total_budget', val.toString());
+      }
+      goTo(3);
+    }, { once: true });
+    document.getElementById('ob-budget-skip')?.addEventListener('click', () => goTo(3), { once: true });
+
+    // ── Step 3 — done ──
+    document.getElementById('ob-go-add')?.addEventListener('click', () => {
+      closeOnboarding();
+      document.querySelector('[data-tab=add]')?.click();
+    }, { once: true });
+    document.getElementById('ob-go-dash')?.addEventListener('click', () => closeOnboarding(), { once: true });
+  };
+}());
 
 // ── Expose renderExpenses so edit-expense.js can call it ───
 async function renderExpenses() {
@@ -476,11 +542,17 @@ function registerServiceWorker() {
 // ── Push Notifications ─────────────────────────────────────
 async function requestNotificationPermission() {
   if (!('Notification' in window)) return;
-  if (Notification.permission === 'granted') return;
   if (Notification.permission === 'denied') return;
+  if (Notification.permission === 'granted') {
+    if (typeof initFirebaseMessaging === 'function') initFirebaseMessaging();
+    return;
+  }
   if (localStorage.getItem('se-notif-asked')) return;
   localStorage.setItem('se-notif-asked', '1');
-  await Notification.requestPermission();
+  const result = await Notification.requestPermission();
+  if (result === 'granted' && typeof initFirebaseMessaging === 'function') {
+    initFirebaseMessaging();
+  }
 }
 
 async function showPushNotification(title, body, tag) {

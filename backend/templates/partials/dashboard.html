@@ -108,43 +108,81 @@
       </div>
       <!-- ── End dash-aside ─────────────────────────────────── -->
 
-      <!-- Onboarding overlay — centered fixed layer for new users with no expenses -->
+      <!-- Onboarding wizard — multi-step flow for new users -->
       <div id="onboarding-overlay" class="onboarding-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Getting started">
         <div class="onboarding-panel">
-          <div class="onboarding-logo" aria-hidden="true">✦</div>
-          <h2 class="onboarding-title">Welcome to SmartExpense</h2>
-          <p class="onboarding-sub">3 quick steps to unlock everything</p>
-          <div class="onboarding-steps">
-            <button class="onboarding-step" id="ob-step-income">
-              <span class="ob-step-num" aria-hidden="true">1</span>
-              <span class="ob-step-icon" aria-hidden="true">💰</span>
-              <span class="ob-step-body">
-                <span class="ob-step-title">Set your monthly income</span>
-                <span class="ob-step-desc">Needed for savings rate &amp; AI advice</span>
-              </span>
-              <span class="ob-step-arrow" aria-hidden="true">→</span>
-            </button>
-            <button class="onboarding-step" id="ob-step-budget">
-              <span class="ob-step-num" aria-hidden="true">2</span>
-              <span class="ob-step-icon" aria-hidden="true">📊</span>
-              <span class="ob-step-body">
-                <span class="ob-step-title">Create a budget</span>
-                <span class="ob-step-desc">Get alerts before you overspend</span>
-              </span>
-              <span class="ob-step-arrow" aria-hidden="true">→</span>
-            </button>
-            <button class="onboarding-step ob-step-primary" id="ob-step-expense">
-              <span class="ob-step-num" aria-hidden="true">3</span>
-              <span class="ob-step-icon" aria-hidden="true">➕</span>
-              <span class="ob-step-body">
-                <span class="ob-step-title">Add your first expense</span>
-                <span class="ob-step-desc">Charts &amp; insights unlock here</span>
-              </span>
-              <span class="ob-step-arrow" aria-hidden="true">→</span>
-            </button>
+
+          <!-- Progress bar -->
+          <div class="ob-progress" aria-hidden="true">
+            <div class="ob-progress-track">
+              <div class="ob-progress-fill" id="ob-progress-fill"></div>
+            </div>
+            <span class="ob-progress-label" id="ob-progress-label"></span>
           </div>
-          <button class="onboarding-skip" id="ob-skip">Skip for now</button>
-        </div>
+
+          <!-- Slides wrapper -->
+          <div class="ob-slides" id="ob-slides">
+
+            <!-- Step 1: Welcome -->
+            <div class="ob-slide" id="ob-slide-0">
+              <div class="ob-hero-icon">
+                <img src="/static/icons/logo-icon.svg" alt="" aria-hidden="true" class="ob-logo-img">
+              </div>
+              <h2 class="ob-title">Welcome to SmartExpense</h2>
+              <p class="ob-desc">Your AI-powered budget tracker built for everyday Filipino spending. Let's get you set up — takes under 2 minutes.</p>
+              <ul class="ob-features" aria-label="Key features">
+                <li><span class="ob-feat-icon">🤖</span><span>AI receipt scanner — just snap a photo</span></li>
+                <li><span class="ob-feat-icon">📊</span><span>Smart budgets with overspend alerts</span></li>
+                <li><span class="ob-feat-icon">✨</span><span>Personalized financial advice</span></li>
+              </ul>
+              <button class="ob-btn ob-btn-primary" id="ob-start">Get started →</button>
+              <button class="ob-link" id="ob-skip-all">I'll explore on my own</button>
+            </div>
+
+            <!-- Step 2: Monthly income -->
+            <div class="ob-slide" id="ob-slide-1">
+              <div class="ob-step-icon-wrap" aria-hidden="true">💰</div>
+              <h2 class="ob-title">What's your monthly income?</h2>
+              <p class="ob-desc">Used to calculate your savings rate and give you realistic advice. You can update this anytime.</p>
+              <div class="ob-input-group">
+                <span class="ob-input-prefix">₱</span>
+                <input class="ob-input" id="ob-income-val" type="number" min="0" step="100"
+                       placeholder="e.g. 30,000" inputmode="numeric" aria-label="Monthly income in pesos">
+              </div>
+              <button class="ob-btn ob-btn-primary" id="ob-income-next">Save &amp; continue →</button>
+              <button class="ob-link" id="ob-income-skip">Skip for now</button>
+            </div>
+
+            <!-- Step 3: Monthly budget -->
+            <div class="ob-slide" id="ob-slide-2">
+              <div class="ob-step-icon-wrap" aria-hidden="true">🎯</div>
+              <h2 class="ob-title">Set a monthly spending limit</h2>
+              <p class="ob-desc">SmartExpense will warn you before you exceed this. You can set per-category budgets later.</p>
+              <div class="ob-input-group">
+                <span class="ob-input-prefix">₱</span>
+                <input class="ob-input" id="ob-budget-val" type="number" min="0" step="100"
+                       placeholder="e.g. 25,000" inputmode="numeric" aria-label="Monthly budget in pesos">
+              </div>
+              <p class="ob-hint" id="ob-budget-hint"></p>
+              <button class="ob-btn ob-btn-primary" id="ob-budget-next">Save &amp; continue →</button>
+              <button class="ob-link" id="ob-budget-skip">Skip for now</button>
+            </div>
+
+            <!-- Step 4: Done -->
+            <div class="ob-slide" id="ob-slide-3">
+              <div class="ob-done-check" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h2 class="ob-title">You're all set!</h2>
+              <p class="ob-desc">Start tracking your first expense now — that's when the insights and predictions kick in.</p>
+              <div class="ob-done-actions">
+                <button class="ob-btn ob-btn-primary" id="ob-go-add">Add first expense →</button>
+                <button class="ob-btn ob-btn-secondary" id="ob-go-dash">Go to dashboard</button>
+              </div>
+            </div>
+
+          </div><!-- /ob-slides -->
+        </div><!-- /onboarding-panel -->
       </div>
 
     </div>

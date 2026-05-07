@@ -11,24 +11,21 @@ async function compressImage(file) {
       img.src = event.target.result;
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200; // Good balance for OCR clarity vs speed
+        const MAX_DIM = 800; // receipts are narrow — 800px is plenty for OCR
         let width = img.width;
         let height = img.height;
-
-        if (width > MAX_WIDTH) {
-          height *= MAX_WIDTH / width;
-          width = MAX_WIDTH;
-        }
+        const scale = Math.min(MAX_DIM / width, MAX_DIM / height, 1);
+        width  = Math.round(width  * scale);
+        height = Math.round(height * scale);
 
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Convert to blob with 0.7 quality (smaller file size for faster upload)
         canvas.toBlob((blob) => {
           resolve(blob);
-        }, 'image/jpeg', 0.7);
+        }, 'image/jpeg', 0.65);
       };
     };
   });
