@@ -74,12 +74,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('btn-add-expense')
     .addEventListener('click', handleAddExpense);
 
-  document.getElementById('btn-sync')
-    .addEventListener('click', async () => {
-      showToast('Syncing...');
-      await runSync();
-    });
-
   const addBudgetBtn = document.getElementById('btn-add-budget');
   if (addBudgetBtn) {
     addBudgetBtn.addEventListener('click', handleAddBudget);
@@ -173,7 +167,8 @@ async function handleAddExpense() {
   // Check for anomaly before saving
   await checkExpenseAnomaly(title, amount, category);
   await addExpenseLocal(expense);
-  showToast('Expense saved!');
+  const catLabel = category || 'Uncategorized';
+  showToast(`₱${amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} · ${catLabel} saved!`);
   clearForm();
 
   await loadExpenseList();
@@ -668,8 +663,16 @@ async function renderRecentTransactions() {
   const recent   = expenses.slice(0, 12);
 
   if (recent.length === 0) {
-    container.innerHTML =
-      '<div style="text-align:center;padding:24px 0;color:var(--text-muted);font-size:0.85rem;">No expenses yet.</div>';
+    container.innerHTML = `
+      <div style="text-align:center;padding:32px 16px;">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🧾</div>
+        <div style="font-weight:600;margin-bottom:6px;color:var(--text);">No expenses yet</div>
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:18px;">Log your first expense to start seeing insights and trends.</div>
+        <button class="btn btn-primary" style="padding:10px 24px;"
+                onclick="document.querySelector('[data-tab=add]').click()">
+          + Log First Expense
+        </button>
+      </div>`;
     return;
   }
 

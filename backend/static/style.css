@@ -679,6 +679,17 @@ body {
   color: white;
 }
 
+.btn-secondary {
+  background: var(--bg-secondary, var(--bg));
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--purple-mid);
+  color: var(--text);
+}
+
 /* ── Form ────────────────────────────────────────────────────── */
 .form-grid {
   display: grid;

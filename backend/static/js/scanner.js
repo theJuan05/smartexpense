@@ -131,11 +131,18 @@ async function processReceiptImage() {
           <strong>${data.date || 'Today'}</strong>
         </div>
         
-        <button class="btn btn-primary" 
-                style="width:100%; padding:12px; font-weight: bold;"
-                onclick="applyScannedData('${safeStore}', '${data.total}', '${safeCat}', '${data.date}')">
-          ✅ Apply to Form
-        </button>
+        <div style="display:flex; gap:8px; margin-top:4px;">
+          <button class="btn btn-secondary"
+                  style="flex:1; padding:12px;"
+                  onclick="applyScannedData('${safeStore}', '${data.total}', '${safeCat}', '${data.date}')">
+            Edit First
+          </button>
+          <button class="btn btn-primary"
+                  style="flex:1; padding:12px; font-weight:bold;"
+                  onclick="applyAndSave('${safeStore}', '${data.total}', '${safeCat}', '${data.date}')">
+            Save Now
+          </button>
+        </div>
       </div>
     `;
 
@@ -205,6 +212,12 @@ function applyScannedData(encodedStore, total, encodedCategory, date) {
 
   closeScannerModal();
   if (typeof showToast === 'function') showToast('✅ Data imported from receipt!');
+}
+
+// ── APPLY + SAVE IN ONE TAP ───────────────────────────────────
+async function applyAndSave(encodedStore, total, encodedCategory, date) {
+  applyScannedData(encodedStore, total, encodedCategory, date);
+  if (typeof handleAddExpense === 'function') await handleAddExpense();
 }
 
 // ── EVENT LISTENERS ───────────────────────────────────────────
