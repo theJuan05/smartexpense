@@ -14,6 +14,25 @@ FCM_ENDPOINT = f"https://fcm.googleapis.com/v1/projects/{os.getenv('FIREBASE_PRO
 
 # ── Get short-lived OAuth2 token from service account ─────────
 def _get_access_token():
+    from google.oauth2 import service_account
+    from google.auth.transport.requests import Request as GoogleRequest
+
+    # Prefer env var (for Render / cloud deployments where file can't be committed)
+    sa_json = os.getenv('FIREBASE_SERVICE_ACCOUNT_JSON')
+    if sa_json:
+        try:
+            sa_info = json.loads(sa_json)
+            creds = service_account.Credentials.from_service_account_info(
+                sa_info,
+                scopes=['https://www.googleapis.com/auth/firebase.messaging'],
+            )
+            creds.refresh(GoogleRequest())
+            return creds.token
+        except Exception as e:
+            logger.error('[Push] Failed to load service account from env var: %s', e)
+            return None
+
+    # Fallback: load from file (local dev)
     sa_path = os.getenv('FIREBASE_SERVICE_ACCOUNT_PATH',
                         os.path.join(os.path.dirname(__file__), '..', 'firebase-service-account.json'))
     sa_path = os.path.abspath(sa_path)
@@ -21,9 +40,6 @@ def _get_access_token():
     if not os.path.exists(sa_path):
         logger.error('[Push] Service account file not found: %s', sa_path)
         return None
-
-    from google.oauth2 import service_account
-    from google.auth.transport.requests import Request as GoogleRequest
 
     creds = service_account.Credentials.from_service_account_file(
         sa_path,
