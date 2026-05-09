@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v30';
+const CACHE_NAME = 'smartexpense-v31';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -19,6 +19,7 @@ const STATIC_ASSETS = [
   '/static/js/pinlock.js',
   '/static/js/firebase.js',
   '/static/js/templates.js',
+  '/static/js/goals.js',
   '/static/js/app.js',
   '/static/manifest.json',
   '/static/icons/icon-192.png',
@@ -27,7 +28,7 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installing v27...');
+  console.log('[SW] Installing v31...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       console.log('[SW] Caching static assets');

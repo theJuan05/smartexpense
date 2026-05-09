@@ -105,6 +105,7 @@ const TAB_TITLES = {
   budget:    'Budget',
   insights:  'Insights',
   advice:    'Advice',
+  goals:     'Goals',
   profile:   'Settings',
 };
 
@@ -138,9 +139,10 @@ function setupTabs() {
       // Wait for DOM to update before loading data
       await new Promise(resolve => setTimeout(resolve, 50));
 
-      if (target === 'dashboard') await renderAllCharts();
+      if (target === 'dashboard') { await renderAllCharts(); await renderHeatmap(); }
       if (target === 'budget')    await loadBudgetSummary();
       if (target === 'advice')    await loadAdvice();
+      if (target === 'goals')     await loadGoals();
       if (target === 'insights') {
         await Promise.all([loadPrediction(), loadAnomalies()]);
       }
@@ -423,6 +425,7 @@ async function refreshStats() {
     el('stat-count').textContent = stats.count;
   await renderBalance();
   await renderMonthComparison();
+  await renderHeatmap();
 }
 
 // ── Month-over-month comparison card ───────────────────────
@@ -472,6 +475,81 @@ async function renderMonthComparison() {
       </div>
       ${badgeHtml}
     </div>`;
+}
+
+// ── Spending Heatmap Calendar ──────────────────────────────
+async function renderHeatmap() {
+  const card = document.getElementById('heatmap-card');
+  if (!card) return;
+
+  const expenses = await getAllExpensesLocal();
+  const now      = new Date();
+  const year     = now.getFullYear();
+  const month    = now.getMonth();
+  const todayStr = now.toISOString().slice(0, 10);
+
+  const monthStr = `${year}-${String(month + 1).padStart(2, '0')}`;
+  const dayMap   = {};
+  expenses.forEach(e => {
+    if (e.expense_date && e.expense_date.startsWith(monthStr)) {
+      dayMap[e.expense_date] = (dayMap[e.expense_date] || 0) + parseFloat(e.amount || 0);
+    }
+  });
+
+  const vals       = Object.values(dayMap);
+  const maxAmt     = vals.length ? Math.max(...vals) : 1;
+  const daysInMon  = new Date(year, month + 1, 0).getDate();
+  const firstDow   = new Date(year, month, 1).getDay();
+  const monthName  = now.toLocaleString('en-PH', { month: 'long', year: 'numeric' });
+
+  function lvl(amt) {
+    if (!amt) return 0;
+    const r = amt / maxAmt;
+    if (r > 0.75) return 4;
+    if (r > 0.5)  return 3;
+    if (r > 0.25) return 2;
+    return 1;
+  }
+
+  let cells = '';
+  for (let i = 0; i < firstDow; i++) cells += '<div class="hm-cell hm-cell--empty"></div>';
+  for (let d = 1; d <= daysInMon; d++) {
+    const ds    = `${monthStr}-${String(d).padStart(2, '0')}`;
+    const amt   = dayMap[ds] || 0;
+    const label = amt > 0
+      ? `₱${Number(amt).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`
+      : 'No spending';
+    cells += `<div class="hm-cell hm-cell--l${lvl(amt)}${ds === todayStr ? ' hm-cell--today' : ''}" data-date="${ds}" data-amt="${amt}" role="gridcell" aria-label="${ds}: ${label}"><span class="hm-day-num">${d}</span></div>`;
+  }
+
+  card.innerHTML = `
+    <div class="hm-header">
+      <h2>Spending Heatmap</h2>
+      <span class="hm-month-label">${monthName}</span>
+    </div>
+    <div class="hm-dow-row" aria-hidden="true">
+      <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+    </div>
+    <div class="hm-grid" role="grid" aria-label="Daily spending heatmap">${cells}</div>
+    <div class="hm-legend" aria-hidden="true">
+      <span class="hm-legend-label">Less</span>
+      <div class="hm-cell hm-cell--l0 hm-legend-cell"></div>
+      <div class="hm-cell hm-cell--l1 hm-legend-cell"></div>
+      <div class="hm-cell hm-cell--l2 hm-legend-cell"></div>
+      <div class="hm-cell hm-cell--l3 hm-legend-cell"></div>
+      <div class="hm-cell hm-cell--l4 hm-legend-cell"></div>
+      <span class="hm-legend-label">More</span>
+    </div>`;
+
+  card.querySelectorAll('.hm-cell[data-date]').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const amt  = parseFloat(cell.dataset.amt || 0);
+      const date = cell.dataset.date;
+      showToast(amt > 0
+        ? `${date}: ₱${Number(amt).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`
+        : `${date}: No spending`);
+    });
+  });
 }
 
 // ── Balance Card ───────────────────────────────────────────

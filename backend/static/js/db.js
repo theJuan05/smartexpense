@@ -1,7 +1,7 @@
 // db.js — Complete IndexedDB Manager for SmartExpense AI Pro
 
 const DB_NAME    = 'SmartExpenseDB';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 let db = null;
 
 // ============================================================
@@ -61,6 +61,12 @@ function initDB() {
       if (!db.objectStoreNames.contains('templates')) {
         db.createObjectStore('templates', { keyPath: 'id', autoIncrement: true });
         console.log('[IndexedDB] templates store created ✅');
+      }
+
+      // ── goals store (financial savings goals) ────────────
+      if (!db.objectStoreNames.contains('goals')) {
+        db.createObjectStore('goals', { keyPath: 'id', autoIncrement: true });
+        console.log('[IndexedDB] goals store created ✅');
       }
     };
 
@@ -346,15 +352,26 @@ async function pullExpensesFromServer() {
     if (!res.ok) return 0;
     const json = await res.json();
     serverData = json.data;
-    if (!Array.isArray(serverData) || serverData.length === 0) return 0;
+    if (!Array.isArray(serverData)) return 0;
   } catch (_) { return 0; }
 
-  // Collect server_ids already stored locally
   const local     = await getAllExpensesLocal();
-  const localIds  = new Set(local.map(e => e.server_id).filter(Boolean));
+  const serverIds = new Set(serverData.map(e => e.id));
 
-  // Only import expenses the local DB doesn't know about
-  const toImport = serverData.filter(e => !localIds.has(e.id));
+  // Remove local records that were deleted on the server
+  const toDelete = local.filter(e => e.server_id && !serverIds.has(e.server_id));
+  for (const exp of toDelete) {
+    await deleteExpenseLocal(exp.local_id);
+  }
+  if (toDelete.length > 0) {
+    console.log(`[Sync] Removed ${toDelete.length} deleted expense(s) from local DB ✅`);
+  }
+
+  if (serverData.length === 0) return 0;
+
+  // Import expenses the local DB doesn't know about yet
+  const localServerIds = new Set(local.map(e => e.server_id).filter(Boolean));
+  const toImport = serverData.filter(e => !localServerIds.has(e.id));
   if (toImport.length === 0) return 0;
 
   const tx    = db.transaction('expenses', 'readwrite');
