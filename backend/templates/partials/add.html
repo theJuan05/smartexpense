@@ -1,5 +1,14 @@
  <!-- ── ADD EXPENSE TAB ───────────────────────── -->
     <div id="tab-add" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-add" tabindex="0">
+
+      <!-- Quick templates (hidden when empty) -->
+      <div id="templates-section" class="templates-section" style="display:none;">
+        <div class="templates-header">
+          <span class="templates-label">Quick Add</span>
+        </div>
+        <div id="templates-row" class="templates-row" role="list" aria-label="Saved templates"></div>
+      </div>
+
       <div class="card"><!-- form card -->
         <h2>Log an Expense</h2>
         <div class="form-grid">
@@ -67,6 +76,9 @@
           <div class="form-actions">
             <button class="btn btn-primary" id="btn-add-expense">
               + Add Expense
+            </button>
+            <button class="btn" id="btn-save-template" title="Save current form as a quick-add template">
+              Save as Template
             </button>
           </div>
 

@@ -10,23 +10,16 @@ async function loadBudgetSummary() {
   const result = await API.request('/budgets/summary');
 
   if (!result) {
-    renderBudgetHero(null);
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">⚠️</div>
-        <p style="font-weight:600;">Could not reach server</p>
-        <p style="font-size:0.85rem;margin-top:6px;color:var(--text-muted);">
-          Make sure the app is running, then retry.
-        </p>
-        <button onclick="loadBudgetSummary()"
-                style="margin-top:12px;padding:8px 20px;background:var(--primary);
-                       color:#fff;border:none;border-radius:8px;cursor:pointer;
-                       font-size:0.85rem;">
-          Retry
-        </button>
-      </div>`;
+    await renderBudgetOffline(container);
     return;
   }
+
+  // Cache the budget definitions for offline use (amounts only, not computed spent)
+  const cacheable = (result.data || []).map(b => ({
+    id: b.id, category: b.category, category_icon: b.category_icon,
+    amount_limit: b.amount_limit, period: b.period
+  }));
+  await saveSetting('budget_cache', cacheable);
 
   if (result.status !== 'success' || !result.data.length) {
     renderBudgetHero(null);
@@ -227,6 +220,59 @@ async function handleDeleteBudget(budget_id) {
   } else {
     showToast('Failed to delete budget', 'warning');
   }
+}
+
+// ── Offline budget rendering (computed from local expenses) ──
+async function renderBudgetOffline(container) {
+  const cached = await getSetting('budget_cache');
+
+  if (!cached || cached.length === 0) {
+    renderBudgetHero(null);
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📡</div>
+        <p style="font-weight:600;">No cached budgets yet</p>
+        <p style="font-size:0.85rem;margin-top:6px;color:var(--text-muted);">
+          Connect once to load your budgets, then they'll show here offline.
+        </p>
+      </div>`;
+    return;
+  }
+
+  const expenses = await getAllExpensesLocal();
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const budgets = cached.map(b => {
+    let spent = 0;
+    if (b.category === 'Overall Budget') {
+      spent = expenses
+        .filter(e => new Date(e.expense_date + 'T00:00:00') >= startOfMonth)
+        .reduce((s, e) => s + parseFloat(e.amount || 0), 0);
+    } else {
+      spent = expenses
+        .filter(e => e.category === b.category &&
+                     new Date(e.expense_date + 'T00:00:00') >= startOfMonth)
+        .reduce((s, e) => s + parseFloat(e.amount || 0), 0);
+    }
+    const pct = b.amount_limit > 0 ? Math.round(spent / b.amount_limit * 100) : 0;
+    return {
+      ...b, spent,
+      percentage: pct,
+      status: pct >= 100 ? 'danger' : pct >= 80 ? 'warning' : 'ok'
+    };
+  });
+
+  const overall = budgets.find(b => b.category === 'Overall Budget');
+  renderBudgetHero(overall || null);
+  container.innerHTML = '';
+  budgets.forEach(b => container.appendChild(createBudgetCard(b)));
+  await renderBudgetProgress({ status: 'success', data: budgets });
+
+  const note = document.createElement('p');
+  note.style.cssText = 'text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:10px;';
+  note.textContent = 'Offline — showing locally computed data';
+  container.appendChild(note);
 }
 
 // ── Check budgets after adding expense ────────────────────

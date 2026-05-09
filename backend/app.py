@@ -83,6 +83,7 @@ def service_worker():
         send_from_directory(app.static_folder, 'service-worker.js')
     )
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Service-Worker-Allowed'] = '/'
     return response
 
 

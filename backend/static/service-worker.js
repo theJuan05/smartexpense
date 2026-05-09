@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v27';
+const CACHE_NAME = 'smartexpense-v29';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -18,6 +18,7 @@ const STATIC_ASSETS = [
   '/static/js/profile.js',
   '/static/js/pinlock.js',
   '/static/js/firebase.js',
+  '/static/js/templates.js',
   '/static/js/app.js',
   '/static/manifest.json',
   '/static/icons/icon-192.png',
@@ -73,16 +74,21 @@ self.addEventListener('fetch', function(event) {
   // Stale-while-revalidate for everything else
   event.respondWith(
     caches.match(event.request).then(function(cached) {
-      const networkFetch = fetch(event.request).then(function(response) {
+      var networkPromise = fetch(event.request).then(function(response) {
         if (response && response.status === 200) {
           caches.open(CACHE_NAME).then(function(cache) {
             cache.put(event.request, response.clone());
           });
         }
         return response;
-      }).catch(function() {});
+      }).catch(function() {
+        // Network failed — serve cached app shell for navigation requests
+        if (event.request.mode === 'navigate') {
+          return caches.match('/');
+        }
+      });
 
-      return cached || networkFetch || caches.match('/');
+      return cached || networkPromise;
     })
   );
 });

@@ -1,7 +1,7 @@
 // db.js — Complete IndexedDB Manager for SmartExpense AI Pro
 
 const DB_NAME    = 'SmartExpenseDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 let db = null;
 
 // ============================================================
@@ -55,6 +55,12 @@ function initDB() {
       if (!db.objectStoreNames.contains('settings')) {
         db.createObjectStore('settings', { keyPath: 'key' });
         console.log('[IndexedDB] settings store created ✅');
+      }
+
+      // ── templates store (quick expense templates) ────────
+      if (!db.objectStoreNames.contains('templates')) {
+        db.createObjectStore('templates', { keyPath: 'id', autoIncrement: true });
+        console.log('[IndexedDB] templates store created ✅');
       }
     };
 
@@ -409,4 +415,35 @@ async function getLocalStats() {
     thisMonth:  thisMonthTotal.toFixed(2),
     count:      expenses.length
   };
+}
+
+// ============================================================
+// 8. TEMPLATES — Quick expense templates (fully offline)
+// ============================================================
+
+function addTemplateLocal(template) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction('templates', 'readwrite');
+    const req = tx.objectStore('templates').add(template);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+function getTemplatesLocal() {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction('templates', 'readonly');
+    const req = tx.objectStore('templates').getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+function deleteTemplateLocal(id) {
+  return new Promise((resolve, reject) => {
+    const tx  = db.transaction('templates', 'readwrite');
+    const req = tx.objectStore('templates').delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror   = () => reject(req.error);
+  });
 }

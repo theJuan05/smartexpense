@@ -422,6 +422,56 @@ async function refreshStats() {
   if (el('stat-count'))
     el('stat-count').textContent = stats.count;
   await renderBalance();
+  await renderMonthComparison();
+}
+
+// ── Month-over-month comparison card ───────────────────────
+async function renderMonthComparison() {
+  const card = document.getElementById('month-comparison-card');
+  if (!card) return;
+
+  const expenses = await getAllExpensesLocal();
+  const now = new Date();
+  const thisYear  = now.getFullYear();
+  const thisMonth = now.getMonth();
+  const lastMonthDate = new Date(thisYear, thisMonth - 1, 1);
+  const lastYear  = lastMonthDate.getFullYear();
+  const lastMonth = lastMonthDate.getMonth();
+
+  let thisTotal = 0, lastTotal = 0;
+  expenses.forEach(e => {
+    if (!e.expense_date) return;
+    const d = new Date(e.expense_date + 'T00:00:00');
+    if (d.getFullYear() === thisYear && d.getMonth() === thisMonth)
+      thisTotal += parseFloat(e.amount || 0);
+    else if (d.getFullYear() === lastYear && d.getMonth() === lastMonth)
+      lastTotal += parseFloat(e.amount || 0);
+  });
+
+  const fmt = v => '₱' + v.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const thisName = now.toLocaleDateString('en-PH', { month: 'short' });
+  const lastName = lastMonthDate.toLocaleDateString('en-PH', { month: 'short' });
+
+  let badgeHtml = '';
+  if (lastTotal > 0) {
+    const pct  = ((thisTotal - lastTotal) / lastTotal * 100).toFixed(0);
+    const isUp = thisTotal > lastTotal;
+    badgeHtml  = `<span class="mcmp-badge ${isUp ? 'up' : 'down'}">${isUp ? '▲' : '▼'} ${Math.abs(pct)}%</span>`;
+  }
+
+  card.innerHTML = `
+    <div class="mcmp-row">
+      <div class="mcmp-col">
+        <div class="mcmp-label">${thisName} (now)</div>
+        <div class="mcmp-val">${fmt(thisTotal)}</div>
+      </div>
+      <div class="mcmp-sep"></div>
+      <div class="mcmp-col">
+        <div class="mcmp-label">${lastName}</div>
+        <div class="mcmp-val mcmp-muted">${fmt(lastTotal)}</div>
+      </div>
+      ${badgeHtml}
+    </div>`;
 }
 
 // ── Balance Card ───────────────────────────────────────────

@@ -2791,3 +2791,82 @@ textarea:focus-visible {
   color: var(--text-muted);
   white-space: nowrap;
 }
+
+/* ── Month comparison card ─────────────────────────────── */
+.mcmp-card { padding: 14px 18px; }
+.mcmp-row  { display: flex; align-items: center; gap: 0; }
+.mcmp-col  { flex: 1; }
+.mcmp-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: .4px; }
+.mcmp-val   { font-size: 1.15rem; font-weight: 700; color: var(--text); }
+.mcmp-val.mcmp-muted { color: var(--text-muted); font-weight: 500; }
+.mcmp-sep   { width: 1px; height: 36px; background: var(--border); margin: 0 16px; flex-shrink: 0; }
+.mcmp-badge {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mcmp-badge.up   { background: rgba(255,118,117,0.13); color: #ff7675; }
+.mcmp-badge.down { background: rgba(0,184,148,0.13);   color: #00b894; }
+
+/* ── Quick expense templates ───────────────────────────── */
+.templates-section {
+  margin-bottom: 10px;
+  padding: 10px 0 4px;
+}
+.templates-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+.templates-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted);
+}
+.templates-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.templates-row::-webkit-scrollbar { display: none; }
+.tpl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 10px 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.tpl-chip:hover { background: var(--bg); border-color: var(--primary); }
+.tpl-chip-name { font-weight: 600; color: var(--text); }
+.tpl-chip-amt  { color: var(--text-muted); font-size: 0.75rem; }
+.tpl-chip-del  {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+  margin-left: 2px;
+  transition: background 0.15s;
+}
+.tpl-chip-del:hover { background: #ff7675; color: #fff; }
