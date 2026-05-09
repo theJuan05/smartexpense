@@ -1,18 +1,43 @@
-<svg viewBox="190 20 300 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SmartExpense logo">
-  <!-- Purple badge background — matches system primary color -->
-  <rect x="190" y="20" width="300" height="360" rx="24" fill="#6c63ff"/>
+<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SmartExpense icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e0834"/>
+      <stop offset="100%" stop-color="#5a30d2"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
 
-  <!-- S letterform -->
-  <path d="M310,112 C310,112 268,108 254,128 C240,148 254,168 278,172 C302,176 322,188 318,210 C314,232 290,248 258,244"
-        fill="none" stroke="white" stroke-width="26"
-        stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Background -->
+  <rect width="80" height="80" rx="18" fill="url(#bg)"/>
 
-  <!-- E vertical bar -->
-  <line x1="342" y1="112" x2="342" y2="248" stroke="white" stroke-width="26" stroke-linecap="round"/>
-  <!-- E top bar -->
-  <line x1="342" y1="112" x2="418" y2="112" stroke="white" stroke-width="26" stroke-linecap="round"/>
-  <!-- E middle bar -->
-  <line x1="342" y1="180" x2="405" y2="180" stroke="white" stroke-width="26" stroke-linecap="round"/>
-  <!-- E bottom bar -->
-  <line x1="342" y1="248" x2="418" y2="248" stroke="white" stroke-width="26" stroke-linecap="round"/>
+  <!-- Outer glow ring -->
+  <circle cx="40" cy="38" r="26" fill="none" stroke="rgba(130,110,255,0.35)" stroke-width="3"/>
+
+  <!-- Coin ring -->
+  <circle cx="40" cy="38" r="22" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2"/>
+
+  <!-- ₱ symbol -->
+  <text x="40" y="50" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="28"
+        fill="white" filter="url(#glow)">₱</text>
+
+  <!-- Teal sparkle dots -->
+  <circle cx="62" cy="20" r="3.5" fill="#00d2a0" opacity="0.9"/>
+  <circle cx="18" cy="22" r="2.5" fill="#00d2a0" opacity="0.8"/>
+  <circle cx="64" cy="57" r="2.5" fill="#00d2a0" opacity="0.8"/>
+
+  <!-- Mini bar chart -->
+  <rect x="22" y="64" width="5" height="9"  rx="1.5" fill="#00d2a0" opacity="0.6"/>
+  <rect x="29" y="61" width="5" height="12" rx="1.5" fill="#00d2a0" opacity="0.75"/>
+  <rect x="36" y="66" width="5" height="7"  rx="1.5" fill="#00d2a0" opacity="0.6"/>
+  <rect x="43" y="58" width="5" height="15" rx="1.5" fill="#00d2a0" opacity="0.9"/>
+  <rect x="50" y="63" width="5" height="10" rx="1.5" fill="#00d2a0" opacity="0.75"/>
+
+  <!-- Trend line over bars -->
+  <polyline points="24.5,64 31.5,61 38.5,66 45.5,58 52.5,63"
+            fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"
+            stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
