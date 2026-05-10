@@ -145,6 +145,7 @@ async function saveNewGoal() {
   });
   closeAddGoalModal();
   await loadGoals();
+  if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
   showToast('Goal created!', 'success');
 }
 
@@ -179,6 +180,7 @@ async function confirmFund() {
   await updateGoalLocal(goalId, { savedAmount: newSaved });
   closeFundGoalModal();
   await loadGoals();
+  if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
 
   if (newSaved >= goal.targetAmount) {
     showToast(`🎉 Goal "${goal.name}" achieved!`, 'success');
@@ -192,6 +194,7 @@ async function deleteGoalUI(id) {
   if (!confirm('Delete this goal?')) return;
   await deleteGoalLocal(id);
   await loadGoals();
+  if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
   showToast('Goal deleted');
 }
 

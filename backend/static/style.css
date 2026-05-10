@@ -3087,3 +3087,33 @@ textarea:focus-visible {
   transition: background 0.15s;
 }
 .tpl-chip-del:hover { background: #ff7675; color: #fff; }
+
+/* ── Goals summary widget (dashboard) ─────────────────────── */
+.gs-item { margin-bottom: 14px; }
+.gs-item:last-child { margin-bottom: 0; }
+.gs-row  { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+.gs-icon { font-size: 1rem; flex-shrink: 0; }
+.gs-name {
+  flex: 1;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gs-pct { font-size: 0.75rem; font-weight: 700; color: var(--primary); flex-shrink: 0; }
+.gs-track {
+  height: 6px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.gs-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #a78bfa);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.gs-amounts { font-size: 0.73rem; color: var(--text); }

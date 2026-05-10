@@ -150,7 +150,7 @@ function setupTabs() {
       // Wait for DOM to update before loading data
       await new Promise(resolve => setTimeout(resolve, 50));
 
-      if (target === 'dashboard') { await renderAllCharts(); await renderHeatmap(); }
+      if (target === 'dashboard') { await renderAllCharts(); await renderHeatmap(); await renderGoalsSummary(); }
       if (target === 'budget')    await loadBudgetSummary();
       if (target === 'advice')    await loadAdvice();
       if (target === 'goals')     await loadGoals();
@@ -437,6 +437,57 @@ async function refreshStats() {
   await renderBalance();
   await renderMonthComparison();
   await renderHeatmap();
+  await renderGoalsSummary();
+}
+
+// ── Goals summary widget (dashboard) ──────────────────────
+async function renderGoalsSummary() {
+  const container = document.getElementById('goals-summary-list');
+  if (!container) return;
+
+  const goals  = await getGoalsLocal();
+  const active = goals
+    .filter(g => {
+      const pct = g.targetAmount > 0 ? (parseFloat(g.savedAmount) / parseFloat(g.targetAmount)) * 100 : 0;
+      return pct < 100;
+    })
+    .slice(0, 3);
+
+  if (goals.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:12px 0;">
+        <div style="font-size:1.6rem;margin-bottom:6px;">🎯</div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:10px;">No goals yet</p>
+        <button class="btn btn-primary" style="font-size:0.8rem;padding:7px 14px;"
+          onclick="document.querySelector('[data-tab=goals]').click();setTimeout(showAddGoalModal,100)">+ New Goal</button>
+      </div>`;
+    return;
+  }
+
+  if (active.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:12px 0;">
+        <div style="font-size:1.4rem;margin-bottom:4px;">🎉</div>
+        <p style="font-size:0.8rem;color:var(--text-muted);">All goals achieved!</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = active.map(goal => {
+    const saved  = parseFloat(goal.savedAmount  || 0);
+    const target = parseFloat(goal.targetAmount || 0);
+    const pct    = target > 0 ? Math.min(100, Math.round((saved / target) * 100)) : 0;
+    return `
+      <div class="gs-item">
+        <div class="gs-row">
+          <span class="gs-icon">${goal.icon || '🎯'}</span>
+          <span class="gs-name">${_esc(goal.name)}</span>
+          <span class="gs-pct">${pct}%</span>
+        </div>
+        <div class="gs-track"><div class="gs-fill" style="width:${pct}%"></div></div>
+        <div class="gs-amounts">₱${saved.toLocaleString()} <span style="color:var(--text-muted)">of ₱${target.toLocaleString()}</span></div>
+      </div>`;
+  }).join('');
 }
 
 // ── Month-over-month comparison card ───────────────────────
