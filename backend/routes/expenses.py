@@ -36,12 +36,14 @@ def get_expenses():
     """
     rows = query_all(sql, (user_id,))
 
-    # Convert date objects to strings; decrypt encrypted fields
+    # Convert date objects to strings; decrypt AES-256 encrypted fields
     for row in rows:
         if isinstance(row.get('expense_date'), date):
             row['expense_date'] = row['expense_date'].strftime('%Y-%m-%d')
         if row.get('created_at'):
             row['created_at'] = str(row['created_at'])
+        if row.get('title'):
+            row['title'] = decrypt(row['title'])
         if row.get('notes'):
             row['notes'] = decrypt(row['notes'])
 
@@ -95,7 +97,7 @@ def add_expense():
     params = (
         user_id,
         category_id,
-        data['title'].strip(),
+        encrypt(data['title'].strip()),
         amount,
         data['expense_date'],
         encrypt(data.get('notes', '')),
