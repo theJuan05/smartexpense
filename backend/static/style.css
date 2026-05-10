@@ -2750,6 +2750,7 @@ textarea:focus-visible {
 
 .sidebar-item {
   display: flex !important;
+  flex: none !important;
   align-items: center;
   gap: 9px;
   padding: 8px 10px;
@@ -2793,6 +2794,7 @@ textarea:focus-visible {
 
 .sidebar-user {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 9px;
   padding: 8px 10px;
