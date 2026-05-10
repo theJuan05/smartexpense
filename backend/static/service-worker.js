@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v31';
+const CACHE_NAME = 'smartexpense-v32';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -28,7 +28,7 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installing v31...');
+  console.log('[SW] Installing v32...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       console.log('[SW] Caching static assets');
@@ -92,6 +92,23 @@ self.addEventListener('fetch', function(event) {
       return cached || networkPromise;
     })
   );
+});
+
+// Cache URLs on demand (called from app.js when online)
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'CACHE_URLS') {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then(function(cache) {
+        return Promise.all(
+          event.data.urls.map(function(url) {
+            return fetch(url).then(function(resp) {
+              if (resp && resp.status === 200) return cache.put(url, resp);
+            }).catch(function() {});
+          })
+        );
+      })
+    );
+  }
 });
 
 self.addEventListener('sync', function(event) {

@@ -93,6 +93,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   registerServiceWorker();
   initPWA();
 
+  // Proactively cache the app shell so offline works after SW updates
+  if (navigator.onLine && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(function(reg) {
+      if (reg.active) reg.active.postMessage({ type: 'CACHE_URLS', urls: ['/'] });
+    }).catch(function() {});
+  }
+
   // Ask for notification permission once, after a short delay
   setTimeout(requestNotificationPermission, 3000);
 });
