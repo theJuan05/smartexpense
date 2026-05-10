@@ -2693,68 +2693,75 @@ textarea:focus-visible {
 /* ═══════════════════════════════════════════════════════════════════
    SIDEBAR STYLES
    ═══════════════════════════════════════════════════════════════════ */
-/* ── Sidebar base (theme-reactive) ────────────────────────────── */
+/* ── Sidebar base — icon-rail, expands on hover ───────────────── */
 .sidebar {
   position: fixed;
   left: 0; top: 0; bottom: 0;
-  width: 200px;
+  width: 60px;
   background: var(--sidebar-bg);
   border-right: 0.5px solid var(--sidebar-border);
   z-index: 150;
   flex-direction: column;
   overflow: hidden;
-  transition: background 0.25s, border-color 0.25s;
+  transition: width 0.22s ease, background 0.25s, border-color 0.25s;
 }
+
+.sidebar:hover { width: 210px; }
 
 /* Logo row */
 .sidebar-logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 22px 16px 20px;
+  padding: 18px 11px 16px;
   border-bottom: 0.5px solid var(--sidebar-border);
   flex-shrink: 0;
+  min-width: 210px;
 }
 
 .sidebar-logo-img {
-  width: 38px; height: 38px;
-  border-radius: 10px;
+  width: 34px; height: 34px;
+  border-radius: 9px;
   flex-shrink: 0;
 }
 
 .sidebar-logo-text {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--sidebar-logo-color);
   letter-spacing: -0.3px;
   white-space: nowrap;
-  transition: color 0.25s;
+  opacity: 0;
+  transition: opacity 0.12s ease;
 }
+.sidebar:hover .sidebar-logo-text { opacity: 1; transition-delay: 0.08s; }
 .sidebar-logo-text span { color: var(--sidebar-logo-accent); }
 
 /* Profile top section */
 .sidebar-profile-top {
-  padding: 8px 8px;
+  padding: 6px 6px;
   border-bottom: 0.5px solid var(--sidebar-border);
   flex-shrink: 0;
+  min-width: 210px;
 }
 
 /* Nav section */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 10px 8px;
+  gap: 1px;
+  padding: 8px 6px;
   flex: 1;
+  min-width: 210px;
 }
 
 .sidebar-item {
   display: flex !important;
   align-items: center;
   gap: 11px;
-  padding: 10px 12px;
+  padding: 9px 11px;
   border-radius: var(--radius-sm);
-  font-size: 0.855rem;
+  font-size: 0.845rem;
   font-weight: 500;
   color: var(--sidebar-item-color);
   background: transparent;
@@ -2767,7 +2774,12 @@ textarea:focus-visible {
   transition: background 0.15s, color 0.15s;
 }
 
-.sidebar-item span { white-space: nowrap; }
+.sidebar-item span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.sidebar:hover .sidebar-item span { opacity: 1; transition-delay: 0.08s; }
 
 .sidebar-item svg { flex-shrink: 0; width: 17px; height: 17px; }
 
@@ -2784,19 +2796,20 @@ textarea:focus-visible {
 
 /* Bottom section */
 .sidebar-bottom {
-  padding: 8px 8px;
+  padding: 6px 6px;
   border-top: 0.5px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   flex-shrink: 0;
+  min-width: 210px;
 }
 
 .sidebar-user {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 9px 12px;
+  padding: 8px 11px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   border: none;
@@ -2832,13 +2845,16 @@ textarea:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  opacity: 0;
+  transition: opacity 0.12s ease;
 }
+.sidebar:hover .sidebar-user-name { opacity: 1; transition-delay: 0.08s; }
 
 .sidebar-signout {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 9px 12px;
+  padding: 8px 11px;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 500;
@@ -2848,7 +2864,12 @@ textarea:focus-visible {
   transition: background 0.15s, color 0.15s;
 }
 
-.sidebar-signout span { white-space: nowrap; }
+.sidebar-signout span {
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.sidebar:hover .sidebar-signout span { opacity: 1; transition-delay: 0.08s; }
 
 .sidebar-signout:hover {
   background: var(--sidebar-signout-hover-bg);
@@ -2864,10 +2885,10 @@ textarea:focus-visible {
   .sidebar  { display: flex; }
   .tab-bar  { display: none; }
 
-  /* Shift navbar and content right of sidebar */
-  .navbar    { margin-left: 200px; }
-  .container { margin-left: 200px; margin-right: 0; max-width: none; padding: 28px 32px; }
-  #page-skeleton { left: 200px; }
+  /* Shift navbar and content right of icon-rail sidebar */
+  .navbar    { margin-left: 60px; }
+  .container { margin-left: 60px; margin-right: 0; max-width: none; padding: 28px 32px; }
+  #page-skeleton { left: 60px; }
 
   /* ── Dashboard: main column + sticky aside ──────────────────── */
   #tab-dashboard.active {
