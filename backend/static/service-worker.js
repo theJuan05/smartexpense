@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v34';
+const CACHE_NAME = 'smartexpense-v35';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -28,13 +28,18 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installing v34...');
+  console.log('[SW] Installing v35...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      console.log('[SW] Caching static assets');
-      return cache.addAll(STATIC_ASSETS).catch(function(err) {
-        console.warn('[SW] Some assets failed to cache:', err);
-      });
+      console.log('[SW] Caching static assets individually...');
+      // Cache each asset independently — one failure won't block the rest
+      return Promise.all(
+        STATIC_ASSETS.map(function(url) {
+          return cache.add(url).catch(function(err) {
+            console.warn('[SW] Failed to cache:', url, err);
+          });
+        })
+      );
     })
   );
   self.skipWaiting();
