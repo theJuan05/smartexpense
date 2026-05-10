@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v32';
+const CACHE_NAME = 'smartexpense-v33';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -28,7 +28,7 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installing v32...');
+  console.log('[SW] Installing v33...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       console.log('[SW] Caching static assets');
@@ -51,6 +51,16 @@ self.addEventListener('activate', function(event) {
               return caches.delete(key);
             })
       );
+    }).then(function() {
+      // Immediately cache the app shell after clearing old caches
+      return caches.open(CACHE_NAME).then(function(cache) {
+        return fetch('/').then(function(resp) {
+          if (resp && resp.status === 200) {
+            console.log('[SW] App shell cached ✅');
+            return cache.put('/', resp);
+          }
+        }).catch(function() {});
+      });
     })
   );
   self.clients.claim();

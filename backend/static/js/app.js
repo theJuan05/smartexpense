@@ -93,11 +93,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   registerServiceWorker();
   initPWA();
 
-  // Proactively cache the app shell so offline works after SW updates
-  if (navigator.onLine && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(function(reg) {
-      if (reg.active) reg.active.postMessage({ type: 'CACHE_URLS', urls: ['/'] });
-    }).catch(function() {});
+  // Re-cache app shell whenever a new SW takes over
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (navigator.onLine && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'CACHE_URLS', urls: ['/'] });
+      }
+    });
   }
 
   // Ask for notification permission once, after a short delay
