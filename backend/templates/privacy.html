@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — SmartExpense AI Pro</title>
+  <link rel="icon" href="/static/icons/icon-192.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5ff;
+      color: #1a1a2e;
+      line-height: 1.7;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #e5e5f0;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+      color: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .topbar-logo img { width: 28px; height: 28px; border-radius: 7px; }
+    .topbar-logo span { color: #6c4fff; }
+    .topbar-back {
+      font-size: 0.82rem;
+      color: #6c4fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .topbar-back:hover { text-decoration: underline; }
+
+    /* ── Page layout ── */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .page-hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .page-hero h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 10px;
+    }
+    .page-hero p {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(108,79,255,0.1);
+      color: #6c4fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Security highlights ── */
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+    .sec-card {
+      background: #fff;
+      border: 1px solid #e5e5f0;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .sec-icon {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      background: rgba(108,79,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .sec-title { font-size: 0.82rem; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .sec-desc  { font-size: 0.76rem; color: #666; line-height: 1.45; }
+
+    /* ── Sections ── */
+    .section {
+      background: #fff;
+      border: 1px solid #e5e5f0;
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+    }
+    .section h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section h2 .s-num {
+      width: 24px; height: 24px;
+      background: #6c4fff;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section p  { font-size: 0.875rem; color: #444; margin-bottom: 10px; }
+    .section p:last-child { margin-bottom: 0; }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+    .data-table th {
+      background: #f5f5ff;
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      border-bottom: 1px solid #e5e5f0;
+    }
+    .data-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f0f0f8;
+      color: #444;
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .tag--red    { background: rgba(255,71,87,0.1);  color: #ff4757; }
+    .tag--orange { background: rgba(255,165,2,0.1);  color: #ffa502; }
+    .tag--green  { background: rgba(0,184,148,0.1);  color: #00b894; }
+
+    .threat-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f8;
+    }
+    .threat-item:last-child { border-bottom: none; }
+    .threat-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ff4757;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .threat-name { font-size: 0.83rem; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+    .threat-desc { font-size: 0.78rem; color: #666; line-height: 1.45; }
+    .threat-fix  { font-size: 0.76rem; color: #00b894; font-weight: 600; margin-top: 4px; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #999;
+      margin-top: 48px;
+    }
+    .footer a { color: #6c4fff; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="topbar-logo" href="/">
+      <img src="/static/icons/logo-icon.svg" alt="SmartExpense">
+      Smart<span>Expense</span>
+    </a>
+    <a class="topbar-back" href="/">← Back to App</a>
+  </div>
+
+  <div class="page">
+
+    <div class="page-hero">
+      <div class="badge">Privacy &amp; Security</div>
+      <h1>Privacy Policy</h1>
+      <p>Effective date: May 10, 2026 &nbsp;·&nbsp; SmartExpense AI Pro</p>
+    </div>
+
+    <!-- Security highlights -->
+    <div class="security-grid">
+      <div class="sec-card">
+        <div class="sec-icon">🔒</div>
+        <div>
+          <div class="sec-title">AES-256-GCM Encryption</div>
+          <div class="sec-desc">Sensitive data is encrypted at rest in the database using AES-256-GCM.</div>
+        </div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🔐</div>
+        <div>
+          <div class="sec-title">TLS in Transit</div>
+          <div class="sec-desc">All data between your device and our servers is protected by HTTPS/TLS.</div>
+        </div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🪪</div>
+        <div>
+          <div class="sec-title">JWT Authentication</div>
+          <div class="sec-desc">Sessions are secured with signed JWT tokens (HS256) that expire automatically.</div>
+        </div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🛡️</div>
+        <div>
+          <div class="sec-title">SQL Injection Prevention</div>
+          <div class="sec-desc">All database queries use parameterized statements — no raw input is ever executed.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Data we collect -->
+    <div class="section">
+      <h2><span class="s-num">1</span> Data We Collect</h2>
+      <p>We only collect data that is necessary to provide the SmartExpense service. No data is sold or shared with third parties.</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Classification</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Name &amp; Email</td>
+            <td><span class="tag tag--orange">Confidential</span></td>
+            <td>Account creation and authentication</td>
+          </tr>
+          <tr>
+            <td>Expense titles &amp; notes</td>
+            <td><span class="tag tag--red">Critical</span></td>
+            <td>Expense tracking — encrypted with AES-256-GCM at rest</td>
+          </tr>
+          <tr>
+            <td>Expense amounts &amp; dates</td>
+            <td><span class="tag tag--orange">Confidential</span></td>
+            <td>Budget analysis and AI-powered insights</td>
+          </tr>
+          <tr>
+            <td>Device push token</td>
+            <td><span class="tag tag--orange">Confidential</span></td>
+            <td>Budget alert notifications via FCM</td>
+          </tr>
+          <tr>
+            <td>Profile photo</td>
+            <td><span class="tag tag--green">Public</span></td>
+            <td>Displayed on your profile — stored as base64 in your account</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. Threat Modeling -->
+    <div class="section">
+      <h2><span class="s-num">2</span> Threat Modeling &amp; Defenses</h2>
+      <p>We identified the following major threats and implemented specific countermeasures for each.</p>
+
+      <div class="threat-item">
+        <div class="threat-dot"></div>
+        <div>
+          <div class="threat-name">SQL Injection</div>
+          <div class="threat-desc">An attacker submits malicious SQL through form inputs to read or destroy the database.</div>
+          <div class="threat-fix">✅ Defense: All queries use parameterized statements via PyMySQL — user input is never concatenated into SQL.</div>
+        </div>
+      </div>
+
+      <div class="threat-item">
+        <div class="threat-dot"></div>
+        <div>
+          <div class="threat-name">Man-in-the-Middle Attack</div>
+          <div class="threat-desc">An attacker intercepts network traffic between your device and the server to read or modify data.</div>
+          <div class="threat-fix">✅ Defense: All connections are encrypted with HTTPS/TLS. HTTP requests are rejected.</div>
+        </div>
+      </div>
+
+      <div class="threat-item">
+        <div class="threat-dot"></div>
+        <div>
+          <div class="threat-name">Database Breach</div>
+          <div class="threat-desc">An attacker gains direct access to the database and reads stored financial data.</div>
+          <div class="threat-fix">✅ Defense: Expense titles and notes are encrypted with AES-256-GCM. Even with raw DB access, data is unreadable without the server-side key.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Encryption details -->
+    <div class="section">
+      <h2><span class="s-num">3</span> Encryption Details</h2>
+      <p><strong>Data at Rest:</strong> Sensitive expense fields (title, notes) are encrypted using AES-256-GCM via Python's <code>cryptography</code> library. A 256-bit key is derived from a server-side secret using SHA-256. Each value is encrypted with a unique 96-bit random nonce, making ciphertexts non-deterministic.</p>
+      <p><strong>Data in Transit:</strong> All API communication is secured with TLS 1.2+ (HTTPS). The app is deployed on Render, which enforces HTTPS on all endpoints.</p>
+      <p><strong>Passwords:</strong> User passwords are never stored in plaintext. They are hashed using a secure one-way algorithm (bcrypt/PBKDF2) before storage.</p>
+      <p><strong>Authentication:</strong> Sessions are protected with signed JWT tokens (algorithm: HS256). Tokens carry an expiry and are verified on every authenticated request.</p>
+    </div>
+
+    <!-- 4. Your rights -->
+    <div class="section">
+      <h2><span class="s-num">4</span> Your Rights &amp; Data Control</h2>
+      <p>You have full control over your data at all times:</p>
+      <p>• <strong>Access:</strong> All your expense data is visible in the app at any time.</p>
+      <p>• <strong>Delete:</strong> You can delete individual expenses or clear all your data from the Settings page.</p>
+      <p>• <strong>Account deletion:</strong> Deleting your account permanently removes all associated data from our servers.</p>
+      <p>• <strong>No third-party sharing:</strong> Your financial data is never sold, shared, or disclosed to any third party.</p>
+    </div>
+
+    <!-- 5. Contact -->
+    <div class="section">
+      <h2><span class="s-num">5</span> Contact</h2>
+      <p>For any privacy-related concerns, contact the SmartExpense team at <a href="mailto:amiguelll0513@gmail.com" style="color:#6c4fff;">amiguelll0513@gmail.com</a>.</p>
+      <p>This policy was last updated on <strong>May 10, 2026</strong>.</p>
+    </div>
+
+    <div class="footer">
+      &copy; 2026 SmartExpense AI Pro &nbsp;·&nbsp;
+      <a href="/">Back to App</a>
+    </div>
+
+  </div>
+</body>
+</html>
