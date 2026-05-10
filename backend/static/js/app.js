@@ -106,7 +106,75 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Ask for notification permission once, after a short delay
   setTimeout(requestNotificationPermission, 3000);
+
+  // Notification bell
+  setupNotificationBell();
+  loadNotifications();
 });
+
+// ── Notification Bell ──────────────────────────────────────
+function setupNotificationBell() {
+  const btn   = document.getElementById('btn-notif-bell');
+  const panel = document.getElementById('notif-panel');
+  if (!btn || !panel) return;
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = panel.style.display !== 'none';
+    panel.style.display = open ? 'none' : 'block';
+    if (!open) loadNotifications();
+  });
+
+  document.addEventListener('click', e => {
+    if (!document.getElementById('notif-bell-wrap')?.contains(e.target)) {
+      panel.style.display = 'none';
+    }
+  });
+}
+
+async function loadNotifications() {
+  const list  = document.getElementById('notif-list');
+  const badge = document.getElementById('notif-badge');
+  const btn   = document.getElementById('btn-notif-bell');
+  if (!list || !badge) return;
+
+  try {
+    const res  = await fetch('/api/budgets/summary');
+    if (!res.ok) throw new Error();
+    const data = (await res.json()).data || [];
+
+    const alerts = data.filter(b => b.status === 'danger' || b.status === 'warning');
+
+    if (alerts.length === 0) {
+      badge.style.display = 'none';
+      btn?.classList.remove('has-alerts');
+      list.innerHTML = `
+        <div class="notif-empty">
+          <div class="notif-empty-icon">✅</div>
+          All budgets on track
+        </div>`;
+      return;
+    }
+
+    badge.textContent    = alerts.length;
+    badge.style.display  = 'flex';
+    btn?.classList.add('has-alerts');
+
+    list.innerHTML = alerts.map(b => {
+      const isDanger = b.status === 'danger';
+      return `
+        <div class="notif-item">
+          <div class="notif-dot notif-dot--${b.status}"></div>
+          <div class="notif-item-body">
+            <div class="notif-item-title">${isDanger ? 'Over budget' : 'Budget warning'}: ${_esc(b.category)}</div>
+            <div class="notif-item-desc">₱${Number(b.spent).toLocaleString()} spent — ${b.percentage}% of ₱${Number(b.amount_limit).toLocaleString()} limit</div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch (_) {
+    list.innerHTML = '<div class="notif-loading">Could not load notifications</div>';
+  }
+}
 
 // ── Tab System ─────────────────────────────────────────────
 const TAB_TITLES = {
