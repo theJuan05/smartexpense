@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v33';
+const CACHE_NAME = 'smartexpense-v34';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -28,7 +28,7 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installing v33...');
+  console.log('[SW] Installing v34...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       console.log('[SW] Caching static assets');
@@ -52,7 +52,7 @@ self.addEventListener('activate', function(event) {
             })
       );
     }).then(function() {
-      // Immediately cache the app shell after clearing old caches
+      // Cache the app shell immediately after clearing old caches
       return caches.open(CACHE_NAME).then(function(cache) {
         return fetch('/').then(function(resp) {
           if (resp && resp.status === 200) {
@@ -70,7 +70,7 @@ self.addEventListener('fetch', function(event) {
   const url  = event.request.url;
   const path = new URL(url).pathname;
 
-  // Never cache: API calls, auth routes, CDNs, AI endpoints
+  // Never intercept: API calls, auth routes, CDNs, AI endpoints
   if (url.includes('/api/') ||
       url.includes('cdnjs.cloudflare.com') ||
       url.includes('gstatic.com') ||
@@ -82,7 +82,53 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // Stale-while-revalidate for everything else
+  // ── Navigation requests (opening the app) ─────────────────
+  // Handle separately: use ignoreSearch so query params added by
+  // Android (e.g. ?source=pwa) don't prevent a cache hit.
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      caches.match('/', { ignoreSearch: true }).then(function(cached) {
+        // Refresh cache in background regardless
+        fetch('/').then(function(resp) {
+          if (resp && resp.status === 200) {
+            caches.open(CACHE_NAME).then(function(cache) { cache.put('/', resp); });
+          }
+        }).catch(function() {});
+
+        if (cached) return cached;
+
+        // Not cached yet — try network
+        return fetch(event.request).then(function(resp) {
+          if (resp && resp.status === 200) {
+            caches.open(CACHE_NAME).then(function(cache) { cache.put('/', resp.clone()); });
+          }
+          return resp;
+        }).catch(function() {
+          // Fully offline, nothing cached — show minimal offline page
+          // so the SW always responds (never lets Chrome show its own error)
+          return new Response(
+            '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+            '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+            '<title>SmartExpense — Offline</title>' +
+            '<style>body{font-family:sans-serif;display:flex;align-items:center;' +
+            'justify-content:center;min-height:100vh;margin:0;background:#f0f0ff;}' +
+            '.box{text-align:center;padding:32px;}h2{color:#6c4fff;}' +
+            'p{color:#666;}button{background:#6c4fff;color:#fff;border:none;' +
+            'padding:12px 24px;border-radius:8px;font-size:1rem;cursor:pointer;}' +
+            '</style></head><body><div class="box">' +
+            '<h2>You\'re offline</h2>' +
+            '<p>Open SmartExpense while connected at least once<br>to enable full offline access.</p>' +
+            '<button onclick="location.reload()">Try again</button>' +
+            '</div></body></html>',
+            { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+          );
+        });
+      })
+    );
+    return;
+  }
+
+  // ── Static assets: stale-while-revalidate ─────────────────
   event.respondWith(
     caches.match(event.request).then(function(cached) {
       var networkPromise = fetch(event.request).then(function(response) {
@@ -92,13 +138,7 @@ self.addEventListener('fetch', function(event) {
           });
         }
         return response;
-      }).catch(function() {
-        // Network failed — serve cached app shell for navigation requests
-        if (event.request.mode === 'navigate') {
-          return caches.match('/');
-        }
-      });
-
+      }).catch(function() {});
       return cached || networkPromise;
     })
   );

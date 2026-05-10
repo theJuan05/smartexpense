@@ -93,12 +93,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   registerServiceWorker();
   initPWA();
 
-  // Re-cache app shell whenever a new SW takes over
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.addEventListener('controllerchange', function() {
-      if (navigator.onLine && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({ type: 'CACHE_URLS', urls: ['/'] });
-      }
+  // Cache the app shell on every online load so offline always works
+  if (navigator.onLine && 'caches' in window) {
+    caches.keys().then(function(keys) {
+      var swCache = keys.find(function(k) { return k.startsWith('smartexpense-'); });
+      if (!swCache) return;
+      fetch('/').then(function(resp) {
+        if (resp && resp.ok) caches.open(swCache).then(function(c) { c.put('/', resp); });
+      }).catch(function() {});
     });
   }
 
