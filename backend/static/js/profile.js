@@ -413,18 +413,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ── PUSH NOTIFICATION PERMISSION ─────────────────────────────
+function _isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+function _isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+         window.navigator.standalone === true;
+}
+
 function updateNotifPermissionStatus() {
   const el = document.getElementById('notif-permission-status');
   if (!el) return;
   if (!('Notification' in window)) {
-    el.textContent = 'Not supported on this device';
+    if (_isIOS() && !_isStandalone()) {
+      el.textContent = 'Open from home screen icon first';
+    } else {
+      el.textContent = 'Not supported — try Chrome';
+    }
+    el.style.color = 'var(--color-danger, #ef4444)';
     return;
   }
   if (Notification.permission === 'granted') {
     el.textContent = 'Enabled';
     el.style.color = 'var(--color-success, #22c55e)';
   } else if (Notification.permission === 'denied') {
-    el.textContent = 'Blocked — allow in browser settings';
+    el.textContent = 'Blocked — allow in phone settings';
     el.style.color = 'var(--color-danger, #ef4444)';
   } else {
     el.textContent = 'Tap to enable';
@@ -434,18 +447,23 @@ function updateNotifPermissionStatus() {
 
 async function requestNotificationPermission() {
   if (!('Notification' in window)) {
-    showToast('Push notifications are not supported on this browser.');
+    if (_isIOS() && !_isStandalone()) {
+      showToast('Open SmartExpense from your home screen icon, then try again.');
+    } else if (_isIOS()) {
+      showToast('iOS 16.4+ is required for push notifications.');
+    } else {
+      showToast('Try opening the app in Chrome to enable notifications.');
+    }
     return;
   }
   if (Notification.permission === 'denied') {
-    showToast('Notifications are blocked. Please allow them in your browser/phone settings.');
+    showToast('Notifications blocked. Go to phone Settings → Notifications → allow SmartExpense.');
     return;
   }
   const permission = await Notification.requestPermission();
   updateNotifPermissionStatus();
   if (permission === 'granted') {
     showToast('✅ Notifications enabled!');
-    // Re-register FCM token now that permission is granted
     if (typeof registerFCMToken === 'function') {
       registerFCMToken();
     } else if (typeof initFirebaseMessaging === 'function') {
