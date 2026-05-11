@@ -348,7 +348,7 @@ async function pullExpensesFromServer() {
 
   let serverData;
   try {
-    const res = await fetch('/api/expenses');
+    const res = await fetch('/api/v1/expenses');
     if (!res.ok) return 0;
     const json = await res.json();
     serverData = json.data;

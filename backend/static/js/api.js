@@ -1,4 +1,4 @@
-const API_BASE = window.location.origin + '/api';  // ← only this line changes
+const API_BASE = window.location.origin + '/api/v1';  // ← only this line changes
 
 const API = {
   async request(endpoint, method = 'GET', body = null) {

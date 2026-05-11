@@ -238,7 +238,7 @@ function backupData() {
 // ── SYNC ACCOUNT EMAIL/NAME FROM SERVER ──────────────────────
 async function syncAccountFromServer() {
   try {
-    const res = await fetch('/api/auth/status');
+    const res = await fetch('/api/v1/auth/status');
     if (!res.ok) return;
     const data = await res.json();
     if (!data.logged_in) return;

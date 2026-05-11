@@ -32,7 +32,8 @@
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\\\\backend\\\\static\" -Recurse -Force | ForEach-Object { $_.FullName })",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\\\\backend\\\\templates\" -Recurse -Force | ForEach-Object { $_.FullName })",
       "Bash(curl -s \"https://api.cdnjs.com/libraries/Chart.js/4.4.1?fields=sri\")",
-      "Bash(python -m json.tool)"
+      "Bash(python -m json.tool)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

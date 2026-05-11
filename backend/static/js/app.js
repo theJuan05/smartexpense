@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 3. Detect account switch — wipe local data if a different user logs in
     try {
-      const authRes  = await fetch('/api/auth/status');
+      const authRes  = await fetch('/api/v1/auth/status');
       const authData = await authRes.json();
       if (authData.logged_in && authData.user_id) {
         const storedUid = await getSetting('current_user_id');
@@ -122,12 +122,14 @@ function setupNotificationBell() {
     e.stopPropagation();
     const open = panel.style.display !== 'none';
     panel.style.display = open ? 'none' : 'block';
+    btn.setAttribute('aria-expanded', open ? 'false' : 'true');
     if (!open) loadNotifications();
   });
 
   document.addEventListener('click', e => {
     if (!document.getElementById('notif-bell-wrap')?.contains(e.target)) {
       panel.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
     }
   });
 }
@@ -139,7 +141,7 @@ async function loadNotifications() {
   if (!list || !badge) return;
 
   try {
-    const res  = await fetch('/api/budgets/summary');
+    const res  = await fetch('/api/v1/budgets/summary');
     if (!res.ok) throw new Error();
     const data = (await res.json()).data || [];
 
@@ -205,7 +207,11 @@ function setupTabs() {
       contents.forEach(c => c.classList.remove('active'));
 
       // Mark ALL nav buttons pointing to the same tab (sidebar + top bar)
-      buttons.forEach(b => { if (b.dataset.tab === target) b.classList.add('active'); });
+      buttons.forEach(b => {
+        const match = b.dataset.tab === target;
+        b.classList.toggle('active', match);
+        if (b.closest('.sidebar-nav')) b.setAttribute('aria-current', match ? 'page' : '');
+      });
       document.getElementById(`tab-${target}`).classList.add('active');
 
       // Sync aria-selected on tab-bar role="tab" buttons only
@@ -260,7 +266,7 @@ async function handleAddExpense() {
   if (navigator.onLine) {
     await runSync();
     // Server-side FCM push for budget thresholds (works even when app later closes)
-    fetch('/api/budgets/notify', { method: 'POST' }).catch(() => {});
+    fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
   }
 
   // In-app toast + local SW notification (immediate feedback while app is open)
@@ -747,7 +753,7 @@ function setupIncomeModal() {
     renderBalance();
     showToast('Income updated!');
     // Sync to DB so Advice savings-rate analysis works
-    fetch('/api/user/income', {
+    fetch('/api/v1/user/income', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ monthly_income: val }),
@@ -787,7 +793,7 @@ function updateOnlineStatus() {
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./service-worker.js')
-      .then(reg  => console.log('[SW] Registered, scope:', reg.scope))
+      .then(() => {})
       .catch(err => console.warn('[SW] Registration failed:', err));
   }
 }

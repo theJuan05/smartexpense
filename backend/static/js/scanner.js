@@ -92,7 +92,7 @@ async function processReceiptImage() {
     formData.append('file', compressedBlob, 'receipt.jpg');
 
     // STEP 2: Send to your Flask backend
-    const response = await fetch('/api/receipt/upload-receipt', {
+    const response = await fetch('/api/v1/receipt/upload-receipt', {
       method: 'POST',
       body: formData
     });

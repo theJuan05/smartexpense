@@ -42,14 +42,14 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 # -----------------------------
 app.register_blueprint(auth_bp)
 app.register_blueprint(email_alert_bp)
-app.register_blueprint(expenses_bp, url_prefix='/api')
-app.register_blueprint(analysis_bp, url_prefix='/api')
-app.register_blueprint(budgets_bp, url_prefix='/api')
-app.register_blueprint(ai_bp, url_prefix='/api')
-app.register_blueprint(anomaly_bp, url_prefix='/api')
-app.register_blueprint(advice_bp, url_prefix='/api')
-app.register_blueprint(receipt_bp, url_prefix='/api/receipt')
-app.register_blueprint(push_bp,    url_prefix='/api')
+app.register_blueprint(expenses_bp, url_prefix='/api/v1')
+app.register_blueprint(analysis_bp, url_prefix='/api/v1')
+app.register_blueprint(budgets_bp,  url_prefix='/api/v1')
+app.register_blueprint(ai_bp,       url_prefix='/api/v1')
+app.register_blueprint(anomaly_bp,  url_prefix='/api/v1')
+app.register_blueprint(advice_bp,   url_prefix='/api/v1')
+app.register_blueprint(receipt_bp,  url_prefix='/api/v1/receipt')
+app.register_blueprint(push_bp,     url_prefix='/api/v1')
 
 # -----------------------------
 # SECURITY HEADERS

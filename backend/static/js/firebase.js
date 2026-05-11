@@ -31,7 +31,7 @@ async function initFirebaseMessaging() {
     }
 
     console.log('[FCM] Token obtained, saving to server...');
-    const res = await fetch('/api/push-token', {
+    const res = await fetch('/api/v1/push-token', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ token }),

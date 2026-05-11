@@ -57,7 +57,7 @@ def login():
 # -----------------------------
 # AUTH STATUS (for login page JS)
 # -----------------------------
-@auth_bp.route('/api/auth/status')
+@auth_bp.route('/api/v1/auth/status')
 def auth_status():
     if 'user_id' in session:
         return jsonify({
@@ -138,7 +138,7 @@ def verify_email(token):
 # -----------------------------
 # UPDATE MONTHLY INCOME
 # -----------------------------
-@auth_bp.route('/api/user/income', methods=['POST'])
+@auth_bp.route('/api/v1/user/income', methods=['POST'])
 def update_income():
     user_id = session.get('user_id')
     if not user_id:
@@ -157,7 +157,7 @@ def update_income():
 # -----------------------------
 # DELETE ACCOUNT
 # -----------------------------
-@auth_bp.route('/api/user/delete', methods=['DELETE'])
+@auth_bp.route('/api/v1/user/delete', methods=['DELETE'])
 def delete_account():
     user_id = session.get('user_id')
     if not user_id:

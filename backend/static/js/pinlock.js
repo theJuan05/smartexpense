@@ -214,7 +214,7 @@ function startLockoutCountdown() {
 // ── SEND PIN ALERT EMAIL ──────────────────────────────────────
 async function sendPinAlert() {
   try {
-    await fetch('/api/pin-alert', {
+    await fetch('/api/v1/pin-alert', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ device: navigator.userAgent })

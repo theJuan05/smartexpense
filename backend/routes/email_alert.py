@@ -50,7 +50,7 @@ def send_verification_email(to_email, name, verify_url):
 email_alert_bp = Blueprint('email_alert', __name__)
 
 
-@email_alert_bp.route('/api/pin-alert', methods=['POST'])
+@email_alert_bp.route('/api/v1/pin-alert', methods=['POST'])
 def pin_alert():
     if 'user_id' not in session:
         return jsonify({'error': 'Not authenticated'}), 401
