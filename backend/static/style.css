@@ -1567,6 +1567,15 @@ body {
   .navbar { display: none; }
   .status-badge, .btn-logout, .btn-install { display: none; }
 
+  /* Bell stays visible on mobile — fixed top-right */
+  .notif-bell-wrap {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 300;
+  }
+  .notif-panel { right: 0; width: 280px; }
+
   /* Hide top tab bar — bottom nav handles navigation */
   .tab-bar { display: none; }
 
