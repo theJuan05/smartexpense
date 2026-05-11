@@ -317,67 +317,19 @@ async function loadLocalAdvice() {
 function createAdviceCard(item) {
   const div = document.createElement('div');
 
-  const styles = {
-    danger : {
-      bg    : '#ffeaea',
-      border: 'var(--danger)',
-      icon  : 'ALERT'
-    },
-    warning: {
-      bg    : '#fff8e1',
-      border: 'var(--warning)',
-      icon  : 'WARNING'
-    },
-    success: {
-      bg    : '#e8f8f0',
-      border: 'var(--success)',
-      icon  : 'GREAT'
-    },
-    info   : {
-      bg    : 'rgba(108,99,255,0.06)',
-      border: 'var(--primary)',
-      icon  : 'TIP'
-    },
-    tip    : {
-      bg    : '#e8f4fd',
-      border: '#0984e3',
-      icon  : 'WEEKLY'
-    },
-  };
+  const typeMap  = { danger: 'danger', warning: 'warning', success: 'success', info: 'info', tip: 'info' };
+  const badgeMap = { danger: 'ALERT', warning: 'WARNING', success: 'GREAT', info: 'TIP', tip: 'WEEKLY' };
 
-  const s = styles[item.type] || styles.info;
+  const typeClass = typeMap[item.type]  || 'info';
+  const badge     = badgeMap[item.type] || 'TIP';
 
-  div.style.cssText = `
-    background: ${s.bg};
-    border: 1px solid ${s.border};
-    border-left: 4px solid ${s.border};
-    border-radius: 10px;
-    padding: 16px 18px;
-    margin-bottom: 12px;
-  `;
-
+  div.className = `alert-card alert-card--${typeClass}`;
   div.innerHTML = `
-    <div style="display:flex;justify-content:space-between;
-                align-items:center;margin-bottom:8px;">
-      <div style="font-weight:700;font-size:0.95rem;
-                  color:var(--text);">
-        ${item.title}
-      </div>
-      <span style="
-        padding: 2px 8px;
-        background: ${s.border};
-        color: white;
-        border-radius: 10px;
-        font-size: 0.68rem;
-        font-weight: 700;
-        flex-shrink: 0;
-        margin-left: 8px;
-      ">${s.icon}</span>
+    <div class="alert-card-header">
+      <div class="alert-card-title">${item.title}</div>
+      <span class="alert-card-badge">${badge}</span>
     </div>
-    <div style="font-size:0.88rem;color:var(--text-muted);
-                line-height:1.6;">
-      ${item.message}
-    </div>
+    <div class="alert-card-body">${item.message}</div>
   `;
 
   return div;

@@ -129,22 +129,17 @@ async function loadPrediction() {
 
   // Category budget alert rows
   const alertRows = alertBudgets.map(b => `
-    <div style="display:flex;justify-content:space-between;align-items:center;
-                padding:8px 12px;border-radius:7px;margin-bottom:6px;
-                background:${b.status === 'danger' ? 'rgba(255,118,117,0.1)' : 'rgba(253,203,110,0.1)'};
-                border-left:3px solid ${b.status === 'danger' ? 'var(--danger)' : 'var(--warning)'};">
-      <span style="font-size:0.85rem;font-weight:600;color:var(--text);">${b.category}</span>
-      <span style="font-size:0.82rem;color:${b.status === 'danger' ? 'var(--danger)' : 'var(--warning)'};">
+    <div class="budget-alert-row budget-alert-row--${b.status}">
+      <span class="budget-alert-row-cat">${b.category}</span>
+      <span class="budget-alert-row-amt">
         ₱${Number(b.spent).toLocaleString()} / ₱${Number(b.amount_limit).toLocaleString()}
         &nbsp;(${b.percentage}%)
       </span>
     </div>`).join('');
 
+  const riskClass = risk === 'high' ? 'danger' : risk === 'medium' ? 'warning' : 'ok';
   container.innerHTML = `
-    <div style="padding:14px 18px;border-radius:10px;
-                background:${riskColor}18;border:2px solid ${riskColor};
-                margin-bottom:16px;color:${riskColor};
-                font-weight:600;font-size:0.95rem;">
+    <div class="predict-risk-banner predict-risk-banner--${riskClass}">
       ${risk === 'high' ? 'HIGH RISK' : risk === 'medium' ? 'WARNING' : 'ON TRACK'}:
       ${riskMessage}
     </div>

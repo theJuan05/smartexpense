@@ -109,55 +109,25 @@ function detectAnomaliesLocal(expenses) {
 function createAnomalyCard(anomaly) {
   const div = document.createElement('div');
 
-  const colors = {
-    high  : { bg: '#ffeaea', border: 'var(--danger)',  text: 'var(--danger)'  },
-    medium: { bg: '#fff3cd', border: 'var(--warning)', text: '#856404'        },
-    low   : { bg: '#e8f4fd', border: '#0984e3',        text: '#0984e3'        },
-  };
-  const c = colors[anomaly.severity] || colors.low;
-
-  div.style.cssText = `
-    background: ${c.bg};
-    border: 1px solid ${c.border};
-    border-left: 4px solid ${c.border};
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-  `;
+  const severityClass = anomaly.severity === 'high' ? 'danger'
+                      : anomaly.severity === 'medium' ? 'warning' : 'info';
+  div.className = `alert-card alert-card--${severityClass}`;
 
   const badge = anomaly.severity.toUpperCase();
   const reasonsList = anomaly.reasons
-    .map(r => `<li style="margin-bottom:4px;">${r}</li>`)
+    .map(r => `<li>${r}</li>`)
     .join('');
 
   div.innerHTML = `
-    <div style="display:flex;justify-content:space-between;
-                align-items:flex-start;margin-bottom:8px;">
+    <div class="alert-card-header">
       <div>
-        <span style="font-weight:700;color:${c.text};
-                     font-size:0.95rem;">
-          ${anomaly.title}
-        </span>
-        <span style="margin-left:8px;padding:2px 8px;
-                     background:${c.border};color:white;
-                     border-radius:10px;font-size:0.7rem;
-                     font-weight:700;">
-          ${badge}
-        </span>
+        <span class="alert-card-title">${anomaly.title}</span>
+        <span class="alert-card-badge">${badge}</span>
       </div>
-      <div style="font-weight:700;color:${c.text};
-                  font-size:1rem;">
-        ₱${Number(anomaly.amount).toLocaleString()}
-      </div>
+      <div class="alert-card-amount">₱${Number(anomaly.amount).toLocaleString()}</div>
     </div>
-    <div style="font-size:0.8rem;color:var(--text-muted);
-                margin-bottom:8px;">
-      ${anomaly.category} &bull; ${anomaly.expense_date || ''}
-    </div>
-    <ul style="margin:0;padding-left:18px;
-               font-size:0.83rem;color:${c.text};">
-      ${reasonsList}
-    </ul>
+    <div class="alert-card-meta">${anomaly.category} &bull; ${anomaly.expense_date || ''}</div>
+    <ul class="alert-card-reasons">${reasonsList}</ul>
   `;
 
   return div;
@@ -192,34 +162,22 @@ async function checkExpenseAnomaly(title, amount, category) {
 
 // ── Show anomaly warning on Add form ──────────────────────
 function showAnomalyWarning(severity, reason, average) {
-  let warningEl = document.getElementById('anomaly-warning');
+  const warningEl = document.getElementById('anomaly-warning');
   if (!warningEl) return;
 
-  const colors = {
-    high  : { bg: '#ffeaea', color: 'var(--danger)',  label: 'HIGH RISK' },
-    medium: { bg: '#fff3cd', color: '#856404',         label: 'WARNING'   },
-  };
-  const c = colors[severity] || colors.medium;
+  const typeClass = severity === 'high' ? 'danger' : 'warning';
+  const label     = severity === 'high' ? 'HIGH RISK' : 'WARNING';
 
-  warningEl.style.cssText = `
-    display: block;
-    padding: 10px 14px;
-    background: ${c.bg};
-    border: 1px solid ${c.color};
-    border-radius: 8px;
-    font-size: 0.85rem;
-    color: ${c.color};
-    margin-top: 10px;
-    font-weight: 600;
-  `;
+  warningEl.className = `alert-card alert-card--${typeClass}`;
+  warningEl.style.display = 'block';
+  warningEl.style.marginTop = '10px';
   warningEl.innerHTML = `
-    ${c.label}: ${reason}
-    <span style="font-weight:400;display:block;margin-top:4px;">
+    <div class="alert-card-title">${label}: ${reason}</div>
+    <div class="alert-card-body" style="margin-top:4px;">
       Your average expense: ₱${Number(average).toLocaleString()}
-    </span>
+    </div>
   `;
 
-  // Auto-hide after 8 seconds
   setTimeout(() => {
     if (warningEl) warningEl.style.display = 'none';
   }, 8000);

@@ -20,11 +20,13 @@ async function loadTemplates() {
 
   section.style.display = 'block';
   row.innerHTML = templates.map(t => `
-    <button class="tpl-chip" onclick="applyTemplate(${t.id})">
-      <span class="tpl-chip-name">${_esc(t.title)}</span>
-      <span class="tpl-chip-amt">₱${Number(t.amount).toLocaleString('en-PH')}</span>
-      <span class="tpl-chip-del" onclick="deleteTemplateUI(${t.id}, event)" role="button" aria-label="Remove template">×</span>
-    </button>
+    <div class="tpl-chip">
+      <button class="tpl-chip-apply" onclick="applyTemplate(${t.id})" aria-label="Apply ${_esc(t.title)} template">
+        <span class="tpl-chip-name">${_esc(t.title)}</span>
+        <span class="tpl-chip-amt">₱${Number(t.amount).toLocaleString('en-PH')}</span>
+      </button>
+      <button class="tpl-chip-del" onclick="deleteTemplateUI(${t.id}, event)" aria-label="Remove ${_esc(t.title)} template">×</button>
+    </div>
   `).join('');
 }
 
