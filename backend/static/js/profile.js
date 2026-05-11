@@ -402,6 +402,56 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('tab-profile').classList.add('active');
       renderProfile();
       if (typeof updateThemePicker === 'function') updateThemePicker();
+      updateNotifPermissionStatus();
     });
 
+  // Push Notifications enable button
+  updateNotifPermissionStatus();
+  document.getElementById('btn-enable-notifications')
+    ?.addEventListener('click', requestNotificationPermission);
+
 });
+
+// ── PUSH NOTIFICATION PERMISSION ─────────────────────────────
+function updateNotifPermissionStatus() {
+  const el = document.getElementById('notif-permission-status');
+  if (!el) return;
+  if (!('Notification' in window)) {
+    el.textContent = 'Not supported on this device';
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    el.textContent = 'Enabled';
+    el.style.color = 'var(--color-success, #22c55e)';
+  } else if (Notification.permission === 'denied') {
+    el.textContent = 'Blocked — allow in browser settings';
+    el.style.color = 'var(--color-danger, #ef4444)';
+  } else {
+    el.textContent = 'Tap to enable';
+    el.style.color = '';
+  }
+}
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    showToast('Push notifications are not supported on this browser.');
+    return;
+  }
+  if (Notification.permission === 'denied') {
+    showToast('Notifications are blocked. Please allow them in your browser/phone settings.');
+    return;
+  }
+  const permission = await Notification.requestPermission();
+  updateNotifPermissionStatus();
+  if (permission === 'granted') {
+    showToast('✅ Notifications enabled!');
+    // Re-register FCM token now that permission is granted
+    if (typeof registerFCMToken === 'function') {
+      registerFCMToken();
+    } else if (typeof initFirebaseMessaging === 'function') {
+      initFirebaseMessaging();
+    }
+  } else {
+    showToast('Notifications permission was not granted.');
+  }
+}
