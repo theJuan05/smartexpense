@@ -41,7 +41,11 @@ def get_budgets():
 # ── POST /api/budgets ──────────────────────────────────────
 @budgets_bp.route('/budgets', methods=['POST'])
 def add_budget():
-    data = request.get_json()
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not logged in"}), 401
+
+    data = request.get_json() or {}
 
     required = ['amount_limit', 'period']
     for field in required:
@@ -74,10 +78,6 @@ def add_budget():
             )
             if new_cat_id:
                 category_id = new_cat_id
-
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({"status": "error", "message": "Not logged in"}), 200
 
     # Check if budget already exists for this category
     existing = query_one("""
