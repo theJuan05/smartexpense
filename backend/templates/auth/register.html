@@ -515,7 +515,7 @@
                 </svg>
               </button>
             </div>
-            <p class="hint" id="pw-hint">At least 6 characters</p>
+            <p class="hint" id="pw-hint">At least 8 characters &amp; one special character (!@#$%...)</p>
           </div>
 
           <div class="field">
@@ -570,6 +570,52 @@
 
     makePwToggle('password',         'pw-toggle-1', 'eye-1', 'eye-off-1');
     makePwToggle('confirm_password', 'pw-toggle-2', 'eye-2', 'eye-off-2');
+
+    // Real-time password validation
+    const pwInput   = document.getElementById('password');
+    const pwHint    = document.getElementById('pw-hint');
+    const pwConfirm = document.getElementById('confirm_password');
+    const form      = document.querySelector('form');
+
+    function validatePassword(val) {
+      const hasLength  = val.length >= 8;
+      const hasSpecial = /[!@#$%^&*()\-_=+\[\]{};\':\"\\|,.<>\/?]/.test(val);
+      return { hasLength, hasSpecial, valid: hasLength && hasSpecial };
+    }
+
+    pwInput.addEventListener('input', function() {
+      const { hasLength, hasSpecial, valid } = validatePassword(this.value);
+      if (!this.value) {
+        pwHint.style.color = '';
+        pwHint.textContent = 'At least 8 characters & one special character (!@#$%...)';
+      } else if (!hasLength) {
+        pwHint.style.color = '#e53e3e';
+        pwHint.textContent = 'Too short — need at least 8 characters';
+      } else if (!hasSpecial) {
+        pwHint.style.color = '#e53e3e';
+        pwHint.textContent = 'Add a special character (e.g. !@#$%)';
+      } else {
+        pwHint.style.color = '#00b894';
+        pwHint.textContent = 'Password looks good!';
+      }
+    });
+
+    form.addEventListener('submit', function(e) {
+      const pw = pwInput.value;
+      const { hasLength, hasSpecial } = validatePassword(pw);
+
+      if (!hasLength || !hasSpecial) {
+        e.preventDefault();
+        pwInput.focus();
+        return;
+      }
+      if (pw !== pwConfirm.value) {
+        e.preventDefault();
+        pwConfirm.style.borderColor = '#e53e3e';
+        pwConfirm.focus();
+        return;
+      }
+    });
 
     // Hide skeleton + redirect if already logged in
     const skel = document.getElementById('reg-skeleton');

@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           localStorage.removeItem('se_income');
         }
         await saveSetting('current_user_id', authData.user_id);
+
+        // Sync income from server if not set locally (e.g. new device)
+        if (!localStorage.getItem('se_income') && authData.monthly_income) {
+          localStorage.setItem('se_income', authData.monthly_income.toString());
+        }
       }
     } catch (_) {}
 
@@ -225,6 +230,7 @@ function setupTabs() {
       await new Promise(resolve => setTimeout(resolve, 50));
 
       if (target === 'dashboard') { await renderAllCharts(); await renderHeatmap(); await renderGoalsSummary(); }
+      if (target === 'expenses')  { await pullExpensesFromServer(); await loadExpenseList(); }
       if (target === 'budget')    await loadBudgetSummary();
       if (target === 'advice')    await loadAdvice();
       if (target === 'goals')     await loadGoals();

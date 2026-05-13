@@ -1,4 +1,5 @@
 import logging
+import re
 import secrets
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
 from models.user import create_user, get_user_by_email, get_user_by_token, verify_user, check_password
@@ -6,6 +7,8 @@ from models.db import execute
 from security.jwt_auth import generate_token
 from config import Config
 from functools import wraps
+
+SPECIAL_CHARS = re.compile(r'[!@#$%^&*()_+\-=\[\]{};\':\"\\|,.<>\/?]')
 
 logger = logging.getLogger(__name__)
 
@@ -60,12 +63,15 @@ def login():
 @auth_bp.route('/api/v1/auth/status')
 def auth_status():
     if 'user_id' in session:
+        from models.user import get_user_by_id
+        user = get_user_by_id(session['user_id'])
         return jsonify({
-            'logged_in':  True,
-            'user_id':    session.get('user_id'),
-            'user_name':  session.get('user_name', ''),
-            'user_email': session.get('user_email', ''),
-            'token':      session.get('jwt', '')
+            'logged_in':      True,
+            'user_id':        session.get('user_id'),
+            'user_name':      session.get('user_name', ''),
+            'user_email':     session.get('user_email', ''),
+            'token':          session.get('jwt', ''),
+            'monthly_income': float(user['monthly_income']) if user and user.get('monthly_income') else 0
         })
     return jsonify({'logged_in': False})
 
@@ -92,8 +98,12 @@ def register():
             flash('Passwords do not match.', 'error')
             return render_template('auth/register.html')
 
-        if len(password) < 6:
-            flash('Password must be at least 6 characters.', 'error')
+        if len(password) < 8:
+            flash('Password must be at least 8 characters.', 'error')
+            return render_template('auth/register.html')
+
+        if not SPECIAL_CHARS.search(password):
+            flash('Password must contain at least one special character (e.g. !@#$%).', 'error')
             return render_template('auth/register.html')
 
         if get_user_by_email(email):

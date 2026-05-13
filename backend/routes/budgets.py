@@ -73,9 +73,9 @@ def add_budget():
             category_id = cat['id']
         else:
             new_cat_id = execute(
-    "INSERT INTO categories (user_id, name, icon, color) VALUES (%s, %s, '', '#7c5cbf')",
-    (user_id, data['category'],)
-)
+                "INSERT INTO categories (name, icon, color) VALUES (%s, '', '#7c5cbf')",
+                (data['category'],)
+            )
             if new_cat_id:
                 category_id = new_cat_id
 

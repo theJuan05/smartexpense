@@ -57,9 +57,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 clamp(20px, 5vw, 64px);
-      background: rgba(13,13,24,0.82);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: #0d0d18;
       border-bottom: 0.5px solid var(--b1);
     }
 
@@ -71,14 +69,10 @@
       color: var(--t1);
     }
 
-    .logo-badge {
+    .logo-img {
       width: 28px; height: 28px;
       border-radius: 7px;
-      background: var(--violet);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.82rem; font-weight: 800; color: #fff;
       flex-shrink: 0;
-      box-shadow: 0 2px 10px var(--violet-g);
     }
 
     .logo-text { font-size: 0.88rem; font-weight: 700; letter-spacing: -0.2px; }
@@ -541,9 +535,6 @@
     .footer-brand { display: flex; align-items: center; gap: 8px; }
     .footer-badge {
       width: 22px; height: 22px; border-radius: 6px;
-      background: var(--violet);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.62rem; font-weight: 800; color: #fff;
     }
     .footer-name { font-size: 0.8rem; font-weight: 700; color: var(--t2); }
     .footer-name em { font-style: normal; color: var(--purple); }
@@ -602,8 +593,8 @@
 <!-- NAV -->
 <nav class="nav" aria-label="Main navigation">
   <a class="nav-logo" href="/">
-    <div class="logo-badge" aria-hidden="true">₱</div>
-    <div class="logo-text">Smart<em>Expense</em></div>
+    <img src="/static/icons/logo-icon.svg" class="logo-img" alt="" aria-hidden="true">
+    <div class="logo-text">Smart<em>Expense</em> AI Pro</div>
   </a>
   <div class="nav-actions">
     <a href="/login" class="btn-ghost">Sign in</a>
@@ -840,7 +831,7 @@
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-brand">
-    <div class="footer-badge" aria-hidden="true">₱</div>
+    <img src="/static/icons/logo-icon.svg" class="footer-badge" alt="" aria-hidden="true">
     <div class="footer-name">Smart<em>Expense</em> AI Pro</div>
   </div>
   <p class="footer-copy">© 2025 SmartExpense AI Pro</p>
