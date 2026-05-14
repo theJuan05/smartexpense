@@ -178,6 +178,60 @@ async function loadPrediction() {
   renderForecastChartLocal(expenses, curKey, today, daysInMonth, spentSoFar, dailyAvg);
 }
 
+// ── ML Forecast (server-side Linear Regression) ────────────
+async function loadMLForecast() {
+  const container = document.getElementById('ml-forecast-card');
+  if (!container) return;
+
+  try {
+    const res = await API.request('/analysis/ml-forecast');
+
+    if (!res || res.status === 'insufficient_data') {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🤖</div>
+          <p style="font-weight:600;margin-bottom:6px;">Not enough data yet.</p>
+          <p style="font-size:0.85rem;color:var(--text-muted);">
+            The ML model needs at least 2 full months of spending history to train.
+          </p>
+        </div>`;
+      return;
+    }
+
+    if (res.status !== 'success') throw new Error('API error');
+
+    const fmt = v => '₱' + Number(v).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+    const trendIcon  = res.trend === 'up' ? '📈 Increasing' : res.trend === 'down' ? '📉 Decreasing' : '➡️ Stable';
+    const confidence = res.r2_score >= 0.8 ? 'High' : res.r2_score >= 0.5 ? 'Moderate' : 'Low';
+    const confColor  = res.r2_score >= 0.8 ? 'var(--success)' : res.r2_score >= 0.5 ? 'var(--warning)' : 'var(--text-muted)';
+
+    container.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div class="predict-stat" style="grid-column:1/-1;">
+          <div class="predict-label">Predicted Spending for ${res.next_month_label}</div>
+          <div class="predict-value" style="font-size:2rem;color:var(--purple)">${fmt(res.predicted)}</div>
+          <div class="predict-sub">Based on ${res.n_months} month${res.n_months !== 1 ? 's' : ''} of training data</div>
+        </div>
+        <div class="predict-stat">
+          <div class="predict-label">Model Confidence</div>
+          <div class="predict-value" style="color:${confColor}">${confidence}</div>
+          <div class="predict-sub">R² = ${res.r2_score}</div>
+        </div>
+        <div class="predict-stat">
+          <div class="predict-label">Spending Trend</div>
+          <div class="predict-value" style="font-size:1rem;">${trendIcon}</div>
+          <div class="predict-sub">₱${Math.abs(res.slope).toLocaleString()} / month slope</div>
+        </div>
+      </div>
+      <div style="padding:10px 14px;background:var(--bg);border-radius:8px;font-size:0.8rem;color:var(--text-muted);line-height:1.6;">
+        <strong>Model:</strong> ${res.model} &nbsp;·&nbsp;
+        <strong>Trained on:</strong> ${res.month_labels.join(', ')}
+      </div>`;
+  } catch (_) {
+    container.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;">Could not load ML forecast.</p>`;
+  }
+}
+
 function renderForecastChartLocal(expenses, curKey, today, daysInMonth, spentSoFar, dailyAvg) {
   const ctx = document.getElementById('chart-forecast');
   if (!ctx) return;

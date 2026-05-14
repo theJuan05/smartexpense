@@ -257,6 +257,62 @@ def forecast_chart():
     })
 
 
+# ── GET /api/analysis/ml-forecast ─────────────────────────
+@analysis_bp.route('/analysis/ml-forecast', methods=['GET'])
+def ml_forecast():
+    """
+    Trains a scikit-learn Linear Regression on the user's monthly
+    spending history and returns next-month predicted total.
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+
+    from ml.forecaster import train_and_predict
+
+    # Fetch up to 12 months of data
+    expenses = get_user_expenses(user_id, months_back=12)
+    monthly  = group_by_month(expenses)
+
+    # Sort months oldest → newest, exclude current partial month
+    today = date.today()
+    current_month_key = today.strftime('%Y-%m')
+    sorted_months = sorted(k for k in monthly if k != current_month_key)
+    monthly_totals = [monthly[m] for m in sorted_months]
+
+    result = train_and_predict(monthly_totals)
+    if result is None:
+        return jsonify({
+            'status':  'insufficient_data',
+            'message': 'Need at least 2 full months of spending history for ML forecast.',
+        })
+
+    # Label months for the response
+    from datetime import datetime as dt
+    month_labels = [
+        dt.strptime(m, '%Y-%m').strftime('%b %Y') for m in sorted_months
+    ]
+
+    # Next month label
+    if today.month == 12:
+        next_month_label = dt(today.year + 1, 1, 1).strftime('%b %Y')
+    else:
+        next_month_label = dt(today.year, today.month + 1, 1).strftime('%b %Y')
+
+    return jsonify({
+        'status':           'success',
+        'month_labels':     month_labels,
+        'monthly_totals':   [round(t, 2) for t in monthly_totals],
+        'next_month_label': next_month_label,
+        'predicted':        result['predicted'],
+        'r2_score':         result['r2_score'],
+        'slope':            result['slope'],
+        'trend':            result['trend'],
+        'n_months':         result['n_months'],
+        'model':            'Linear Regression (scikit-learn)',
+    })
+
+
 # ── GET /api/analysis/category-trend ──────────────────────
 @analysis_bp.route('/analysis/category-trend', methods=['GET'])
 def category_trend():

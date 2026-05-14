@@ -234,7 +234,7 @@ function setupTabs() {
       if (target === 'advice')    await loadAdvice();
       if (target === 'goals')     await loadGoals();
       if (target === 'insights') {
-        await Promise.all([loadPrediction(), loadAnomalies()]);
+        await Promise.all([loadPrediction(), loadAnomalies(), loadMLForecast()]);
       }
     });
   });
