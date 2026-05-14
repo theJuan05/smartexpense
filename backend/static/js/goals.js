@@ -83,12 +83,9 @@ function createGoalCard(goal) {
   }
 
   const contributions = goal.contributions || [];
-  const recent        = contributions.slice(-3).reverse();
-  const extraCount    = contributions.length - 3;
   const logHtml       = contributions.length === 0 ? '' : `
     <div class="goal-log">
-      ${extraCount > 0 ? `<div class="goal-log-more">+ ${extraCount} earlier contribution${extraCount > 1 ? 's' : ''}</div>` : ''}
-      ${recent.map(c => `
+      ${[...contributions].reverse().map(c => `
         <div class="goal-log-entry">
           <span class="goal-log-date">${new Date(c.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}</span>
           <span class="goal-log-amount">+₱${Number(c.amount).toLocaleString()}</span>

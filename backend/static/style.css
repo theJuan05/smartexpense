@@ -1994,7 +1994,6 @@ body {
 .goal-log-entry { display: flex; justify-content: space-between; align-items: center; font-size: var(--text-xs); }
 .goal-log-date { color: var(--text-muted); }
 .goal-log-amount { font-weight: 600; color: var(--green); }
-.goal-log-more { font-size: var(--text-xs); color: var(--text-muted); margin-bottom: 2px; }
 [data-theme="dark"] .goal-log { border-top-color: var(--dark-border); }
 /* Icon picker */
 .goal-icon-picker { display: flex; gap: 8px; flex-wrap: wrap; }
