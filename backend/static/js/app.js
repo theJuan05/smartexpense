@@ -342,33 +342,39 @@ async function loadExpenseList(filter = '') {
 
 // ── Onboarding wizard ──────────────────────────────────────
 (function () {
-  const TOTAL = 4; // slides 0-3
+  // Slides: 0-2 = intro showcase, 3 = income, 4 = budget, 5 = done
+  const ICONS = ['💰', '📊', '🎯', '💵', '📋', '✅'];
   let current = 0;
-
-  const PROGRESS = ['', 'Step 1 of 2', 'Step 2 of 2', ''];
-  const FILL     = [0, 33, 66, 100];
 
   function goTo(idx) {
     const slides = document.querySelectorAll('.ob-slide');
     if (!slides.length) return;
-
-    const leaving = slides[current];
-    leaving.classList.remove('ob-slide--active');
-    leaving.classList.add('ob-slide--exit');
-
+    slides[current].classList.remove('ob-slide--active');
+    slides[current].classList.add('ob-slide--exit');
     setTimeout(() => {
-      leaving.classList.remove('ob-slide--exit');
+      slides[current].classList.remove('ob-slide--exit');
       current = idx;
       slides[current].classList.add('ob-slide--active');
-      updateProgress();
+      updateChrome();
     }, 200);
   }
 
-  function updateProgress() {
-    const fill  = document.getElementById('ob-progress-fill');
-    const label = document.getElementById('ob-progress-label');
-    if (fill)  fill.style.width  = FILL[current] + '%';
-    if (label) label.textContent = PROGRESS[current];
+  function updateChrome() {
+    const isIntro  = current < 3;
+    const dotsEl   = document.getElementById('ob-dots');
+    const arrowEl  = document.getElementById('ob-arrow');
+    const skipEl   = document.getElementById('ob-skip-all');
+    const iconEl   = document.getElementById('ob-visual-icon');
+
+    if (dotsEl)  dotsEl.style.display  = isIntro ? 'flex' : 'none';
+    if (arrowEl) arrowEl.style.display = isIntro ? 'flex' : 'none';
+    if (skipEl)  skipEl.style.display  = isIntro ? 'block' : 'none';
+    if (iconEl)  iconEl.textContent    = ICONS[current];
+
+    // Update active dot
+    document.querySelectorAll('.ob-dot').forEach((dot, i) => {
+      dot.classList.toggle('ob-dot--active', i === current);
+    });
   }
 
   function closeOnboarding() {
@@ -382,12 +388,11 @@ async function loadExpenseList(filter = '') {
     if (!el) return;
     current = 0;
 
-    // Activate first slide
     document.querySelectorAll('.ob-slide').forEach((s, i) => {
       s.classList.toggle('ob-slide--active', i === 0);
       s.classList.remove('ob-slide--exit');
     });
-    updateProgress();
+    updateChrome();
     el.style.display = 'flex';
 
     // Pre-fill income if already saved
@@ -397,36 +402,37 @@ async function loadExpenseList(filter = '') {
       if (inp) inp.value = savedIncome;
     }
 
-    // ── Step 0 buttons ──
-    document.getElementById('ob-start')?.addEventListener('click', () => goTo(1), { once: true });
+    // Arrow button — advances intro slides, enters setup on slide 2
+    document.getElementById('ob-arrow')?.addEventListener('click', () => {
+      goTo(current < 2 ? current + 1 : 3);
+    });
+
+    // Skip — closes from any intro slide
     document.getElementById('ob-skip-all')?.addEventListener('click', () => closeOnboarding(), { once: true });
 
-    // ── Step 1 — income ──
+    // Income step
     document.getElementById('ob-income-next')?.addEventListener('click', () => {
       const val = parseFloat(document.getElementById('ob-income-val')?.value);
       if (val > 0) {
         localStorage.setItem('se_income', val.toString());
-        // Also update the hint on budget step
         const hint = document.getElementById('ob-budget-hint');
         if (hint) hint.textContent = `Based on your ₱${val.toLocaleString()} income, a common rule is to budget 80%.`;
         const budgetInp = document.getElementById('ob-budget-val');
         if (budgetInp && !budgetInp.value) budgetInp.value = Math.round(val * 0.8);
       }
-      goTo(2);
+      goTo(4);
     }, { once: true });
-    document.getElementById('ob-income-skip')?.addEventListener('click', () => goTo(2), { once: true });
+    document.getElementById('ob-income-skip')?.addEventListener('click', () => goTo(4), { once: true });
 
-    // ── Step 2 — budget ──
+    // Budget step
     document.getElementById('ob-budget-next')?.addEventListener('click', () => {
       const val = parseFloat(document.getElementById('ob-budget-val')?.value);
-      if (val > 0) {
-        localStorage.setItem('se_total_budget', val.toString());
-      }
-      goTo(3);
+      if (val > 0) localStorage.setItem('se_total_budget', val.toString());
+      goTo(5);
     }, { once: true });
-    document.getElementById('ob-budget-skip')?.addEventListener('click', () => goTo(3), { once: true });
+    document.getElementById('ob-budget-skip')?.addEventListener('click', () => goTo(5), { once: true });
 
-    // ── Step 3 — done ──
+    // Done step
     document.getElementById('ob-go-add')?.addEventListener('click', () => {
       closeOnboarding();
       document.querySelector('[data-tab=add]')?.click();
