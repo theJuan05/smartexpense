@@ -298,3 +298,118 @@ function renderForecastChartLocal(expenses, curKey, today, daysInMonth, spentSoF
     }
   });
 }
+
+// ── FIES Benchmark ─────────────────────────────────────────
+let fiesChart = null;
+
+async function loadFIESBenchmark() {
+  const card = document.getElementById('fies-benchmark-card');
+  const wrap = document.getElementById('fies-chart-wrap');
+  if (!card) return;
+
+  try {
+    const res = await API.request('/analysis/fies-benchmark');
+    if (res.status !== 'success') {
+      card.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;">Could not load benchmark data.</p>`;
+      return;
+    }
+
+    const cats = res.categories;
+    const hasIncome = res.has_income;
+
+    // Summary header
+    const incomeNote = hasIncome
+      ? `Based on your income of <strong>₱${res.monthly_income.toLocaleString()}/mo</strong> vs. PH median ₱${res.national_median_income.toLocaleString()}/mo`
+      : `Set your monthly income to see income-adjusted predictions. Showing national medians only.`;
+
+    let rows = cats.map(c => {
+      const diffPct = c.vs_predicted_pct != null
+        ? (c.vs_predicted_pct > 0
+            ? `<span style="color:#e05c5c">+${c.vs_predicted_pct}% vs predicted</span>`
+            : `<span style="color:#3dbf82">${c.vs_predicted_pct}% vs predicted</span>`)
+        : '';
+      return `<tr>
+        <td style="padding:6px 8px;font-size:0.85rem;">${c.category}</td>
+        <td style="padding:6px 8px;text-align:right;font-size:0.85rem;font-weight:600;">₱${c.actual.toLocaleString()}</td>
+        <td style="padding:6px 8px;text-align:right;font-size:0.85rem;color:var(--text-muted);">${c.predicted != null ? '₱'+c.predicted.toLocaleString() : '—'}</td>
+        <td style="padding:6px 8px;text-align:right;font-size:0.85rem;color:var(--text-muted);">₱${c.national.toLocaleString()}</td>
+        <td style="padding:6px 8px;font-size:0.78rem;">${diffPct}</td>
+      </tr>`;
+    }).join('');
+
+    card.innerHTML = `
+      <p style="font-size:0.82rem;margin-bottom:12px;">${incomeNote}</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="padding:6px 8px;text-align:left;font-size:0.78rem;color:var(--text-muted);">Category</th>
+              <th style="padding:6px 8px;text-align:right;font-size:0.78rem;color:var(--text-muted);">Your Actual</th>
+              <th style="padding:6px 8px;text-align:right;font-size:0.78rem;color:var(--text-muted);">ML Predicted</th>
+              <th style="padding:6px 8px;text-align:right;font-size:0.78rem;color:var(--text-muted);">PH Median</th>
+              <th style="padding:6px 8px;font-size:0.78rem;color:var(--text-muted);">Variance</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <p style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;">
+        Source: PSA Family Income and Expenditure Survey · ${res.n_households.toLocaleString()} households · ${res.model}
+      </p>`;
+
+    // Bar chart
+    wrap.style.display = 'block';
+    const ctx = document.getElementById('chart-fies');
+    if (!ctx) return;
+    if (fiesChart) { fiesChart.destroy(); fiesChart = null; }
+
+    const labels    = cats.map(c => c.category);
+    const actuals   = cats.map(c => c.actual);
+    const predicted = cats.map(c => c.predicted ?? null);
+    const national  = cats.map(c => c.national);
+
+    const datasets = [
+      {
+        label: 'Your Actual',
+        data: actuals,
+        backgroundColor: 'rgba(124,92,191,0.75)',
+        borderRadius: 4,
+      },
+      {
+        label: 'PH Median (FIES)',
+        data: national,
+        backgroundColor: 'rgba(61,191,130,0.55)',
+        borderRadius: 4,
+      },
+    ];
+
+    if (hasIncome) {
+      datasets.splice(1, 0, {
+        label: 'ML Predicted (your income)',
+        data: predicted,
+        backgroundColor: 'rgba(240,180,50,0.7)',
+        borderRadius: 4,
+      });
+    }
+
+    fiesChart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 } } },
+          tooltip: { callbacks: { label: c => ` ₱${(c.parsed.y ?? 0).toLocaleString()}` } },
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { callback: v => `₱${v.toLocaleString()}` }, grid: { color: 'rgba(0,0,0,0.04)' } },
+          x: { ticks: { font: { size: 10 } }, grid: { display: false } },
+        },
+      },
+    });
+
+  } catch (e) {
+    card.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;">Could not load FIES benchmark.</p>`;
+  }
+}

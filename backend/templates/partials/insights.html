@@ -1,6 +1,22 @@
 <!-- ── INSIGHTS TAB ───────────────────────────── -->
 <div id="tab-insights" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-insights" tabindex="0">
 
+  <!-- PH Spending Benchmark (FIES ML Model) -->
+  <div class="card">
+    <h2>PH Spending Benchmark
+      <span style="font-size:0.72rem;font-weight:500;color:var(--text-muted);margin-left:6px;">Multi-Output Linear Regression · FIES 41,544 households</span>
+    </h2>
+    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
+      How your spending compares to Philippine households — predicted for your income level using the PSA Family Income and Expenditure Survey dataset.
+    </p>
+    <div id="fies-benchmark-card">
+      <div class="spinner">Loading benchmark...</div>
+    </div>
+    <div class="chart-container" id="fies-chart-wrap" style="height:300px;display:none;">
+      <canvas id="chart-fies" role="img" aria-label="PH spending benchmark comparison chart"></canvas>
+    </div>
+  </div>
+
   <!-- Anomaly Detection -->
   <div class="card">
     <h2>Unusual Spending

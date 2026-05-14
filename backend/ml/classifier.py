@@ -1,6 +1,7 @@
 # classifier.py — TF-IDF + Logistic Regression text classifier
 
 import os
+import csv
 import logging
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -9,16 +10,25 @@ import joblib
 
 logger = logging.getLogger(__name__)
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), 'model.pkl')
+_DIR       = os.path.dirname(__file__)
+MODEL_PATH = os.path.join(_DIR, 'model.pkl')
+CSV_PATH   = os.path.join(_DIR, 'training_data.csv')
 
 _pipeline = None
 
 
-def _train():
-    from .train_data import TRAINING_DATA
+def _load_training_data():
+    with open(CSV_PATH, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+    texts  = [r['expense_description'] for r in rows]
+    labels = [r['category'] for r in rows]
+    return texts, labels
 
-    texts  = [t for t, _ in TRAINING_DATA]
-    labels = [l for _, l in TRAINING_DATA]
+
+def _train():
+    texts, labels = _load_training_data()
+    logger.info('[ML] Loaded %d samples from %s', len(texts), CSV_PATH)
 
     pipeline = Pipeline([
         # Character n-grams handle Filipino/English mixed text,

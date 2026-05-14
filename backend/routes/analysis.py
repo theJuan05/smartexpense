@@ -313,6 +313,69 @@ def ml_forecast():
     })
 
 
+# ── GET /api/analysis/fies-benchmark ──────────────────────
+@analysis_bp.route('/analysis/fies-benchmark', methods=['GET'])
+def fies_benchmark():
+    """
+    Uses the FIES-trained ML model to predict expected monthly spending
+    per category for the user's income level, and compares it against
+    their actual spending and the national median.
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+
+    from ml.fies_model import predict, get_national_averages, CATEGORY_COLUMNS
+
+    # Get user's monthly income
+    user = query_one("SELECT monthly_income FROM users WHERE id = %s", (user_id,))
+    monthly_income = float(user['monthly_income']) if user and user.get('monthly_income') else 0
+
+    # Get national averages (always available)
+    national_avgs = get_national_averages()
+
+    # Get user's actual spending this month per category
+    today = date.today()
+    current_month_key = today.strftime('%Y-%m')
+    expenses = get_user_expenses(user_id, months_back=1)
+    current = [e for e in expenses if e['expense_date'].startswith(current_month_key)]
+    actual_by_cat = group_by_category(current)
+
+    # Build response per category
+    categories = list(CATEGORY_COLUMNS.keys())
+    predicted_by_cat = {}
+    if monthly_income > 0:
+        predicted_by_cat = predict(monthly_income)
+
+    result = []
+    for cat in categories:
+        actual  = round(actual_by_cat.get(cat, 0.0), 2)
+        national = national_avgs.get(cat, 0.0)
+        predicted = predicted_by_cat.get(cat, None)
+
+        item = {
+            'category': cat,
+            'actual':   actual,
+            'national': national,
+        }
+        if predicted is not None:
+            item['predicted'] = predicted
+            if predicted > 0:
+                item['vs_predicted_pct'] = round((actual - predicted) / predicted * 100, 1)
+        result.append(item)
+
+    return jsonify({
+        'status':           'success',
+        'month':            today.strftime('%B %Y'),
+        'monthly_income':   monthly_income,
+        'national_median_income': national_avgs.get('_national_median_income', 0),
+        'n_households':     national_avgs.get('_n_households', 0),
+        'categories':       result,
+        'has_income':       monthly_income > 0,
+        'model':            'MultiOutput LinearRegression (scikit-learn) · FIES 41,544 households',
+    })
+
+
 # ── GET /api/analysis/category-trend ──────────────────────
 @analysis_bp.route('/analysis/category-trend', methods=['GET'])
 def category_trend():
