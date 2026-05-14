@@ -272,11 +272,8 @@ async function handleAddExpense() {
   await renderAllCharts();
   renderRecentTransactions();
 
-  // Sync to server in background — doesn't block UI
+  // Sync to server in background — budget alert fires after server confirms
   if (navigator.onLine) _syncNewExpense(localId, expense);
-
-  // In-app toast + local SW notification (immediate feedback while app is open)
-  await checkBudgetAlerts();
 
   // Switch to expenses tab to show new entry
   document.querySelector('[data-tab="expenses"]').click();
@@ -290,6 +287,7 @@ async function _syncNewExpense(localId, expense) {
     if (result && result.status === 'success') {
       await markExpenseSynced(localId, result.id);
       await loadExpenseList();  // refresh to remove Pending badge
+      await checkBudgetAlerts(); // server now has the expense — check is accurate
     }
     fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
   } catch (_) {}
