@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         await saveSetting('current_user_id', authData.user_id);
 
-        // Sync income from server if not set locally (e.g. new device)
-        if (!localStorage.getItem('se_income') && authData.monthly_income) {
+        // Always sync income from server — server is source of truth across devices
+        if (authData.monthly_income) {
           localStorage.setItem('se_income', authData.monthly_income.toString());
         }
       }
@@ -259,7 +259,21 @@ async function handleAddExpense() {
 
   // Check for anomaly before saving
   await checkExpenseAnomaly(title, amount, category);
-  await addExpenseLocal(expense);
+
+  // Save to server first when online so expense is available across all devices.
+  // Fall back to local-only (synced: 0) if offline or server errors.
+  let savedOpts = {};
+  if (navigator.onLine) {
+    try {
+      const result = await API.postExpense(expense);
+      if (result && result.status === 'success') {
+        savedOpts = { synced: 1, server_id: result.id };
+        fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
+      }
+    } catch (_) {}
+  }
+  await addExpenseLocal(expense, savedOpts);
+
   const catLabel = category || 'Uncategorized';
   showToast(`₱${amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} · ${catLabel} saved!`);
   clearForm();
@@ -269,11 +283,8 @@ async function handleAddExpense() {
   await renderAllCharts();
   renderRecentTransactions();
 
-  if (navigator.onLine) {
-    await runSync();
-    // Server-side FCM push for budget thresholds (works even when app later closes)
-    fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
-  }
+  // Sync any remaining unsynced (offline-queued) expenses
+  if (navigator.onLine) await runSync();
 
   // In-app toast + local SW notification (immediate feedback while app is open)
   await checkBudgetAlerts();
