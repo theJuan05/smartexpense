@@ -121,7 +121,7 @@ function createAnomalyCard(anomaly) {
   div.innerHTML = `
     <div class="alert-card-header">
       <div>
-        <span class="alert-card-title">${anomaly.title}</span>
+        <span class="alert-card-title">${safeTitle(anomaly.title)}</span>
         <span class="alert-card-badge">${badge}</span>
       </div>
       <div class="alert-card-amount">₱${Number(anomaly.amount).toLocaleString()}</div>

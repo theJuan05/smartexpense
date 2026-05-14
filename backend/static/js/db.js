@@ -4,6 +4,13 @@ const DB_NAME    = 'SmartExpenseDB';
 const DB_VERSION = 4;
 let db = null;
 
+// Returns a human-readable title, replacing undecryptable ciphertext with a fallback
+function safeTitle(title) {
+  if (!title) return '(no title)';
+  if (typeof title === 'string' && title.startsWith('v2:')) return '(encrypted — title unavailable)';
+  return title;
+}
+
 // ============================================================
 // 1. INITIALIZE DATABASE
 // ============================================================

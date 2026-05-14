@@ -468,7 +468,7 @@ function createExpenseItem(exp) {
   div.innerHTML = `
     <div class="expense-icon">${icon}</div>
     <div class="expense-info">
-      <div class="expense-title">${escapeHtml(exp.title)}</div>
+      <div class="expense-title">${escapeHtml(safeTitle(exp.title))}</div>
       <div class="expense-meta">
         ${exp.category || 'Uncategorized'} &bull; ${dateStr}
       </div>
@@ -1008,7 +1008,7 @@ async function renderRecentTransactions() {
     item.innerHTML = `
       <span class="recent-tx-icon">${icon}</span>
       <div class="recent-tx-body">
-        <div class="recent-tx-title">${escapeHtml(exp.title)}</div>
+        <div class="recent-tx-title">${escapeHtml(safeTitle(exp.title))}</div>
         <div class="recent-tx-meta">${exp.category || 'Uncategorized'} &bull; ${dateStr}</div>
       </div>
       <span class="recent-tx-amount">-&#8369;${Number(exp.amount).toLocaleString()}</span>
