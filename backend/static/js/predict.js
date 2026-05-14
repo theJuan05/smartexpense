@@ -105,16 +105,12 @@ async function loadPrediction() {
     }
   }
 
-  // Escalate risk if any category budget is already in warning/danger
-  if (risk === 'low' && alertBudgets.length > 0) {
+  // If no overall budget is set, use the worst category budget to set overall risk
+  // but only go up to 'medium' — category budgets alone never trigger 'high'
+  if (!budgetLimit && risk === 'low' && alertBudgets.length > 0) {
+    risk = 'medium';
     const worst = alertBudgets.find(b => b.status === 'danger') || alertBudgets[0];
-    if (worst.status === 'danger') {
-      risk = 'high';
-      riskMessage = `${worst.category} is over budget (${worst.percentage}% of ₱${Number(worst.amount_limit).toLocaleString()} limit)!`;
-    } else {
-      risk = 'medium';
-      riskMessage = `${worst.category} is at ${worst.percentage}% of its ₱${Number(worst.amount_limit).toLocaleString()} limit.`;
-    }
+    riskMessage = `${worst.category} is at ${worst.percentage}% of its ₱${Number(worst.amount_limit).toLocaleString()} limit.`;
   }
 
   const riskColor =
