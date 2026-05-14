@@ -2974,6 +2974,7 @@ textarea:focus-visible {
 
   /* Sidebar owns the branding on desktop — hide duplicate navbar logo */
   .navbar .logo { display: none; }
+  .navbar-actions { margin-left: auto; }
 
   /* Shift navbar and content right of sidebar */
   .navbar    { margin-left: 175px; }
