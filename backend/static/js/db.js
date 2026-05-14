@@ -91,12 +91,12 @@ function initDB() {
  * Save a new expense to IndexedDB.
  * synced: false = waiting to be sent to server
  */
-function addExpenseLocal(expense, { synced = 0, server_id = null } = {}) {
+function addExpenseLocal(expense) {
   return new Promise((resolve, reject) => {
     const record = {
       ...expense,
-      synced,
-      server_id,
+      synced:     0,
+      server_id:  null,
       created_at: new Date().toISOString()
     };
 

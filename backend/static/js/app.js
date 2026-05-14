@@ -260,19 +260,8 @@ async function handleAddExpense() {
   // Check for anomaly before saving
   await checkExpenseAnomaly(title, amount, category);
 
-  // Save to server first when online so expense is available across all devices.
-  // Fall back to local-only (synced: 0) if offline or server errors.
-  let savedOpts = {};
-  if (navigator.onLine) {
-    try {
-      const result = await API.postExpense(expense);
-      if (result && result.status === 'success') {
-        savedOpts = { synced: 1, server_id: result.id };
-        fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
-      }
-    } catch (_) {}
-  }
-  await addExpenseLocal(expense, savedOpts);
+  // Save locally first — instant feedback, no waiting for network
+  const localId = await addExpenseLocal(expense);
 
   const catLabel = category || 'Uncategorized';
   showToast(`₱${amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} · ${catLabel} saved!`);
@@ -283,14 +272,27 @@ async function handleAddExpense() {
   await renderAllCharts();
   renderRecentTransactions();
 
-  // Sync any remaining unsynced (offline-queued) expenses
-  if (navigator.onLine) await runSync();
+  // Sync to server in background — doesn't block UI
+  if (navigator.onLine) _syncNewExpense(localId, expense);
 
   // In-app toast + local SW notification (immediate feedback while app is open)
   await checkBudgetAlerts();
 
   // Switch to expenses tab to show new entry
   document.querySelector('[data-tab="expenses"]').click();
+}
+
+// Sends a newly-added local expense to the server in the background.
+// On success, marks it synced so other devices can pull it immediately.
+async function _syncNewExpense(localId, expense) {
+  try {
+    const result = await API.postExpense(expense);
+    if (result && result.status === 'success') {
+      await markExpenseSynced(localId, result.id);
+      await loadExpenseList();  // refresh to remove Pending badge
+    }
+    fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
+  } catch (_) {}
 }
 
 // ── Expense List ───────────────────────────────────────────
