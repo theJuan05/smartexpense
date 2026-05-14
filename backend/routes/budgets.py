@@ -139,13 +139,17 @@ def add_budget():
 # ── DELETE /api/budgets/<id> ───────────────────────────────
 @budgets_bp.route('/budgets/<int:budget_id>', methods=['DELETE'])
 def delete_budget(budget_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+
     existing = query_one(
-        "SELECT id FROM budgets WHERE id = %s", (budget_id,)
+        "SELECT id FROM budgets WHERE id = %s AND user_id = %s", (budget_id, user_id)
     )
     if not existing:
         return jsonify({"status": "error", "message": "Not found"}), 404
 
-    execute("DELETE FROM budgets WHERE id = %s", (budget_id,))
+    execute("DELETE FROM budgets WHERE id = %s AND user_id = %s", (budget_id, user_id))
     return jsonify({"status": "success", "message": f"Budget {budget_id} deleted"})
 
 

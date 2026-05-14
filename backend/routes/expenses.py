@@ -123,8 +123,12 @@ def add_expense():
 # Deletes an expense by ID
 @expenses_bp.route('/expenses/<int:expense_id>', methods=['DELETE'])
 def delete_expense(expense_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+
     existing = query_one(
-        "SELECT id FROM expenses WHERE id = %s", (expense_id,)
+        "SELECT id FROM expenses WHERE id = %s AND user_id = %s", (expense_id, user_id)
     )
     if not existing:
         return jsonify({
@@ -132,7 +136,7 @@ def delete_expense(expense_id):
             "message": "Expense not found"
         }), 404
 
-    execute("DELETE FROM expenses WHERE id = %s", (expense_id,))
+    execute("DELETE FROM expenses WHERE id = %s AND user_id = %s", (expense_id, user_id))
     return jsonify({
         "status" : "success",
         "message": f"Expense {expense_id} deleted"
