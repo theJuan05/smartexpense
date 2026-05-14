@@ -317,44 +317,34 @@ async function loadFIESBenchmark() {
     const cats = res.categories;
     const hasIncome = res.has_income;
 
-    // Summary header
     const incomeNote = hasIncome
-      ? `Based on your income of <strong>₱${res.monthly_income.toLocaleString()}/mo</strong> vs. PH median ₱${res.national_median_income.toLocaleString()}/mo`
-      : `Set your monthly income to see income-adjusted predictions. Showing national medians only.`;
+      ? `Income: <strong>₱${res.monthly_income.toLocaleString()}/mo</strong> &nbsp;·&nbsp; PH median: ₱${res.national_median_income.toLocaleString()}/mo`
+      : `<span style="color:var(--text-muted)">Set your monthly income to see income-adjusted predictions.</span>`;
 
-    let rows = cats.map(c => {
-      const diffPct = c.vs_predicted_pct != null
-        ? (c.vs_predicted_pct > 0
-            ? `<span style="color:#e05c5c">+${c.vs_predicted_pct}% vs predicted</span>`
-            : `<span style="color:#3dbf82">${c.vs_predicted_pct}% vs predicted</span>`)
+    const chips = cats.map(c => {
+      const pct = c.vs_predicted_pct;
+      const badge = pct != null
+        ? `<span style="font-size:0.72rem;padding:2px 7px;border-radius:99px;font-weight:600;
+            background:${pct > 0 ? 'rgba(224,92,92,0.15)' : 'rgba(61,191,130,0.15)'};
+            color:${pct > 0 ? '#e05c5c' : '#3dbf82'}">
+            ${pct > 0 ? '+' : ''}${pct}%
+           </span>`
         : '';
-      return `<tr>
-        <td style="padding:6px 8px;font-size:0.85rem;">${c.category}</td>
-        <td style="padding:6px 8px;text-align:right;font-size:0.85rem;font-weight:600;">₱${c.actual.toLocaleString()}</td>
-        <td style="padding:6px 8px;text-align:right;font-size:0.85rem;color:var(--text-muted);">${c.predicted != null ? '₱'+c.predicted.toLocaleString() : '—'}</td>
-        <td style="padding:6px 8px;text-align:right;font-size:0.85rem;color:var(--text-muted);">₱${c.national.toLocaleString()}</td>
-        <td style="padding:6px 8px;font-size:0.78rem;">${diffPct}</td>
-      </tr>`;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;
+                  padding:7px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:0.83rem;">${c.category}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:0.83rem;font-weight:600;">₱${c.actual.toLocaleString()}</span>
+          ${badge}
+        </div>
+      </div>`;
     }).join('');
 
     card.innerHTML = `
-      <p style="font-size:0.82rem;margin-bottom:12px;">${incomeNote}</p>
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr style="border-bottom:1px solid var(--border);">
-              <th style="padding:6px 8px;text-align:left;font-size:0.78rem;color:var(--text-muted);">Category</th>
-              <th style="padding:6px 8px;text-align:right;font-size:0.78rem;color:var(--text-muted);">Your Actual</th>
-              <th style="padding:6px 8px;text-align:right;font-size:0.78rem;color:var(--text-muted);">ML Predicted</th>
-              <th style="padding:6px 8px;text-align:right;font-size:0.78rem;color:var(--text-muted);">PH Median</th>
-              <th style="padding:6px 8px;font-size:0.78rem;color:var(--text-muted);">Variance</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-      <p style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;">
-        Source: PSA Family Income and Expenditure Survey · ${res.n_households.toLocaleString()} households · ${res.model}
+      <p style="font-size:0.8rem;margin-bottom:10px;">${incomeNote}</p>
+      <div>${chips}</div>
+      <p style="font-size:0.7rem;color:var(--text-muted);margin-top:8px;">
+        PSA FIES · ${res.n_households.toLocaleString()} households · hover chart bars for full values
       </p>`;
 
     // Bar chart

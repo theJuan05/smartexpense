@@ -6,13 +6,13 @@
     <h2>PH Spending Benchmark
       <span style="font-size:0.72rem;font-weight:500;color:var(--text-muted);margin-left:6px;">Multi-Output Linear Regression · FIES 41,544 households</span>
     </h2>
-    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
-      How your spending compares to Philippine households — predicted for your income level using the PSA Family Income and Expenditure Survey dataset.
+    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 12px;">
+      Your spending vs. Philippine households at your income level — PSA Family Income and Expenditure Survey.
     </p>
     <div id="fies-benchmark-card">
       <div class="spinner">Loading benchmark...</div>
     </div>
-    <div class="chart-container" id="fies-chart-wrap" style="height:300px;display:none;">
+    <div class="chart-container" id="fies-chart-wrap" style="height:220px;display:none;margin-top:12px;">
       <canvas id="chart-fies" role="img" aria-label="PH spending benchmark comparison chart"></canvas>
     </div>
   </div>
@@ -23,34 +23,34 @@
       <span id="anomaly-summary" class="label-aside"></span>
     </h2>
     <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
-      Expenses that were unusually large compared to your own spending history — not a budget violation.
+      Expenses that were unusually large compared to your own spending history.
     </p>
     <div id="anomaly-list">
       <div class="spinner">Scanning...</div>
     </div>
   </div>
 
-  <!-- Prediction Card -->
-  <div class="card">
-    <h2>Spending Prediction</h2>
-    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
-      Estimates end-of-month total based on your spending history.
-    </p>
-    <div id="prediction-card">
-      <div class="spinner">Loading prediction...</div>
+  <!-- Prediction + ML Forecast side by side -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="card" style="margin:0;">
+      <h2 style="font-size:1rem;">Spending Prediction</h2>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
+        Estimates end-of-month total from your history.
+      </p>
+      <div id="prediction-card">
+        <div class="spinner">Loading...</div>
+      </div>
     </div>
-  </div>
-
-  <!-- ML Forecast Card -->
-  <div class="card">
-    <h2>ML Spending Forecast
-      <span style="font-size:0.72rem;font-weight:500;color:var(--text-muted);margin-left:6px;">Linear Regression · scikit-learn</span>
-    </h2>
-    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
-      Predicts next month's total spend by training on your historical monthly data.
-    </p>
-    <div id="ml-forecast-card">
-      <div class="spinner">Training model...</div>
+    <div class="card" style="margin:0;">
+      <h2 style="font-size:1rem;">ML Forecast
+        <span style="font-size:0.68rem;font-weight:500;color:var(--text-muted);margin-left:4px;">scikit-learn</span>
+      </h2>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
+        Predicts next month's total from monthly trends.
+      </p>
+      <div id="ml-forecast-card">
+        <div class="spinner">Training...</div>
+      </div>
     </div>
   </div>
 
@@ -60,7 +60,7 @@
     <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
       Projected spend if you continue at your current daily average.
     </p>
-    <div class="chart-container" style="height:300px;">
+    <div class="chart-container" style="height:260px;">
       <canvas id="chart-forecast" role="img" aria-label="Monthly spending forecast chart"></canvas>
     </div>
     <table class="sr-only" aria-label="Monthly forecast data">
