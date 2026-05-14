@@ -46,8 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 6. Load UI data in parallel (faster)
     await Promise.all([
       loadExpenseList(),
-      refreshStats(),
-      renderRecentTransactions()
+      refreshStats()
     ]);
     await renderBalance();
     setupIncomeModal();
@@ -270,7 +269,6 @@ async function handleAddExpense() {
   await loadExpenseList();
   await refreshStats();
   await renderAllCharts();
-  renderRecentTransactions();
 
   // Sync to server in background — budget alert fires after server confirms
   if (navigator.onLine) _syncNewExpense(localId, expense);
@@ -442,7 +440,6 @@ async function renderExpenses() {
   await loadExpenseList();
   await refreshStats();
   await renderAllCharts();
-  renderRecentTransactions();
 }
 
 // ── Search ─────────────────────────────────────────────────
@@ -972,48 +969,6 @@ function getCategoryIcon(category) {
   return icons[category] || '📦';
 }
 
-// ── Recent Transactions (dashboard aside) ──────────────────
-async function renderRecentTransactions() {
-  const container = document.getElementById('recent-tx-list');
-  if (!container) return;
-
-  const expenses = await getAllExpensesLocal();
-  const recent   = expenses.slice(0, 12);
-
-  if (recent.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px 16px;">
-        <div style="font-size:2.5rem;margin-bottom:12px;">🧾</div>
-        <div style="font-weight:600;margin-bottom:6px;color:var(--text);">No expenses yet</div>
-        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:18px;">Log your first expense to start seeing insights and trends.</div>
-        <button class="btn btn-primary" style="padding:10px 24px;"
-                onclick="document.querySelector('[data-tab=add]').click()">
-          + Log First Expense
-        </button>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = '';
-  recent.forEach(exp => {
-    const icon    = getCategoryIcon(exp.category);
-    const dateStr = exp.expense_date
-      ? new Date(exp.expense_date + 'T00:00:00')
-          .toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })
-      : '';
-    const item = document.createElement('div');
-    item.className = 'recent-tx-item';
-    item.innerHTML = `
-      <span class="recent-tx-icon">${icon}</span>
-      <div class="recent-tx-body">
-        <div class="recent-tx-title">${escapeHtml(safeTitle(exp.title))}</div>
-        <div class="recent-tx-meta">${exp.category || 'Uncategorized'} &bull; ${dateStr}</div>
-      </div>
-      <span class="recent-tx-amount">-&#8369;${Number(exp.amount).toLocaleString()}</span>
-    `;
-    container.appendChild(item);
-  });
-}
 
 function showToast(message, type = 'default') {
   const toast = document.getElementById('toast');
