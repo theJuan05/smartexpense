@@ -246,6 +246,20 @@
         <span class="settings-arrow" aria-hidden="true">›</span>
       </button>
 
+      <!-- App Tutorial -->
+      <button type="button" class="settings-item" id="btn-show-tutorial"
+              onclick="sessionStorage.removeItem('ob_skipped'); window.showOnboarding && window.showOnboarding();"
+              aria-label="Replay app tutorial">
+        <div class="settings-item-left">
+          <span class="settings-icon" aria-hidden="true">🎓</span>
+          <div>
+            <div class="settings-label">App Tutorial</div>
+            <div class="settings-value">Replay the getting started guide</div>
+          </div>
+        </div>
+        <span class="settings-arrow" aria-hidden="true">›</span>
+      </button>
+
     </div>
   </div>
 
