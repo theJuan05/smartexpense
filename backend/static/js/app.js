@@ -712,7 +712,11 @@ async function renderBalance() {
   const income = parseFloat(localStorage.getItem('se_income') || '0');
   const stats  = await getLocalStats();
   const totalExpenses = parseFloat(stats.total || 0);
-  const balance = income - totalExpenses;
+
+  const goals      = typeof getGoalsLocal === 'function' ? await getGoalsLocal() : [];
+  const totalGoals = goals.reduce((sum, g) => sum + parseFloat(g.savedAmount || 0), 0);
+
+  const balance = income - totalExpenses - totalGoals;
 
   const fmt = val => '₱' + Math.abs(val).toLocaleString('en-PH', {
     minimumFractionDigits: 2, maximumFractionDigits: 2
@@ -721,6 +725,7 @@ async function renderBalance() {
   const amountEl   = document.getElementById('balance-amount');
   const incomeEl   = document.getElementById('balance-income');
   const expensesEl = document.getElementById('balance-expenses');
+  const goalsEl    = document.getElementById('balance-goals');
 
   if (amountEl) {
     amountEl.textContent = (balance < 0 ? '-' : '') + fmt(balance);
@@ -728,6 +733,7 @@ async function renderBalance() {
   }
   if (incomeEl)   incomeEl.textContent   = fmt(income);
   if (expensesEl) expensesEl.textContent = fmt(totalExpenses);
+  if (goalsEl)    goalsEl.textContent    = fmt(totalGoals);
 
   const encourageEl = document.getElementById('balance-encourage');
   if (encourageEl) {

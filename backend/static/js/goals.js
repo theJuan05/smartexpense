@@ -82,6 +82,19 @@ function createGoalCard(goal) {
     }
   }
 
+  const contributions = goal.contributions || [];
+  const recent        = contributions.slice(-3).reverse();
+  const extraCount    = contributions.length - 3;
+  const logHtml       = contributions.length === 0 ? '' : `
+    <div class="goal-log">
+      ${extraCount > 0 ? `<div class="goal-log-more">+ ${extraCount} earlier contribution${extraCount > 1 ? 's' : ''}</div>` : ''}
+      ${recent.map(c => `
+        <div class="goal-log-entry">
+          <span class="goal-log-date">${new Date(c.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}</span>
+          <span class="goal-log-amount">+₱${Number(c.amount).toLocaleString()}</span>
+        </div>`).join('')}
+    </div>`;
+
   div.innerHTML = `
     <div class="goal-card-header">
       <div class="goal-icon">${goal.icon || '🎯'}</div>
@@ -105,7 +118,8 @@ function createGoalCard(goal) {
         ? `<span class="goal-done-badge">🎉 Achieved!</span>`
         : `<button class="goal-fund-btn" onclick="showFundGoalModal(${goal.id}, '${_esc(goal.name)}', ${remain})">+ Fund</button>`
       }
-    </div>`;
+    </div>
+    ${logHtml}`;
 
   return div;
 }
@@ -176,11 +190,13 @@ async function confirmFund() {
   const goal  = goals.find(g => g.id === goalId);
   if (!goal) return;
 
-  const newSaved = (parseFloat(goal.savedAmount) || 0) + amount;
-  await updateGoalLocal(goalId, { savedAmount: newSaved });
+  const newSaved      = (parseFloat(goal.savedAmount) || 0) + amount;
+  const contributions = [...(goal.contributions || []), { amount, date: new Date().toISOString() }];
+  await updateGoalLocal(goalId, { savedAmount: newSaved, contributions });
   closeFundGoalModal();
   await loadGoals();
   if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
+  if (typeof renderBalance      === 'function') await renderBalance();
 
   if (newSaved >= goal.targetAmount) {
     showToast(`🎉 Goal "${goal.name}" achieved!`, 'success');
