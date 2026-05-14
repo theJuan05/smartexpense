@@ -511,6 +511,21 @@ async function runSync() {
   }
 }
 
+// Returns total goal contributions for the current month (from tracked contributions)
+async function getGoalContribForMonth(year, month) {
+  if (typeof getGoalsLocal !== 'function') return 0;
+  const now   = new Date();
+  const y     = year  ?? now.getFullYear();
+  const m     = month ?? now.getMonth();
+  const prefix = `${y}-${String(m + 1).padStart(2, '0')}`;
+  const goals  = await getGoalsLocal();
+  let total = 0;
+  goals.forEach(g => (g.contributions || []).forEach(c => {
+    if (c.date && c.date.startsWith(prefix)) total += parseFloat(c.amount || 0);
+  }));
+  return total;
+}
+
 // ── Stats ──────────────────────────────────────────────────
 async function refreshStats() {
   const stats = await getLocalStats();
@@ -522,9 +537,10 @@ async function refreshStats() {
     monthLabel.textContent = new Date().toLocaleDateString('en-PH', { month: 'long' }) + ' Spending';
   }
 
+  const goalContribThisMonth = await getGoalContribForMonth();
   if (el('stat-month'))
     el('stat-month').textContent =
-      `₱${Number(stats.thisMonth).toLocaleString()}`;
+      `₱${Number(stats.thisMonth + goalContribThisMonth).toLocaleString()}`;
   if (el('stat-count'))
     el('stat-count').textContent = stats.count;
   await renderBalance();
@@ -606,6 +622,9 @@ async function renderMonthComparison() {
       lastTotal += parseFloat(e.amount || 0);
   });
 
+  thisTotal += await getGoalContribForMonth(thisYear, thisMonth);
+  lastTotal += await getGoalContribForMonth(lastYear, lastMonth);
+
   const fmt = v => '₱' + v.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   const thisName = now.toLocaleDateString('en-PH', { month: 'short' });
   const lastName = lastMonthDate.toLocaleDateString('en-PH', { month: 'short' });
@@ -650,6 +669,18 @@ async function renderHeatmap() {
       dayMap[e.expense_date] = (dayMap[e.expense_date] || 0) + parseFloat(e.amount || 0);
     }
   });
+
+  // Fold in goal contributions so funded goals appear on the heatmap
+  if (typeof getGoalsLocal === 'function') {
+    const goals = await getGoalsLocal();
+    goals.forEach(g => (g.contributions || []).forEach(c => {
+      if (!c.date) return;
+      const dateStr = c.date.slice(0, 10);
+      if (dateStr.startsWith(monthStr)) {
+        dayMap[dateStr] = (dayMap[dateStr] || 0) + parseFloat(c.amount || 0);
+      }
+    }));
+  }
 
   const vals       = Object.values(dayMap);
   const maxAmt     = vals.length ? Math.max(...vals) : 1;
