@@ -50,7 +50,11 @@
       "Bash(python -c \"import ml.fies_model; print\\('fies_model.py OK'\\)\")",
       "Bash(git commit *)",
       "Bash(python -c \"from ml.fies_model import CATEGORY_COLUMNS; print\\('FIES categories:'\\); [print\\(' -', c\\) for c in CATEGORY_COLUMNS]\")",
-      "Bash(python -c \"from ml.train_data import TRAINING_DATA; from collections import Counter; cats = Counter\\(l for _,l in TRAINING_DATA\\); [print\\(' -', c\\) for c in cats]\")"
+      "Bash(python -c \"from ml.train_data import TRAINING_DATA; from collections import Counter; cats = Counter\\(l for _,l in TRAINING_DATA\\); [print\\(' -', c\\) for c in cats]\")",
+      "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" status)",
+      "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" add backend/templates/auth/login.html)",
+      "Bash(git -C /c/Users/Administrator/Desktop/smartexpense commit -m ' *)",
+      "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" push origin main)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Administrator\\.claude\\projects\\c--Users-Administrator-Desktop-smartexpense\\memory",
