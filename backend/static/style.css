@@ -1548,6 +1548,11 @@ body {
 .more-sheet-backdrop { display: none; }
 .mobile-logout-card  { display: none; }
 
+/* ── Mobile brand header (logo strip, mobile-only) ──────────── */
+.mobile-header {
+  display: none;
+}
+
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 899px) {
   /* Layout */
@@ -1562,7 +1567,42 @@ body {
   .navbar { display: none; }
   .status-badge, .btn-logout, .btn-install { display: none; }
 
-  /* Bell stays visible on mobile — fixed top-right */
+  /* Mobile brand header */
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    padding: 0 16px;
+    background: var(--card-bg);
+    border-bottom: 0.5px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(108,79,255,0.06);
+  }
+
+  .mobile-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.2px;
+    text-decoration: none;
+  }
+
+  .mobile-header-brand span { color: var(--purple); }
+
+  .mobile-header-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    flex-shrink: 0;
+  }
+
+  /* Bell stays visible on mobile — aligned with header height */
   .notif-bell-wrap {
     position: fixed;
     top: 14px;
