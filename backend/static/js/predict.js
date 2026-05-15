@@ -286,6 +286,7 @@ function renderForecastChartLocal(expenses, curKey, today, daysInMonth, spentSoF
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      devicePixelRatio: window.devicePixelRatio || 2,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { position: 'top', labels: { usePointStyle: true, font: { size: 12 } } },
@@ -388,6 +389,7 @@ async function loadFIESBenchmark() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        devicePixelRatio: window.devicePixelRatio || 2,
         plugins: {
           legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 } } },
           tooltip: { callbacks: { label: c => ` ₱${(c.parsed.y ?? 0).toLocaleString()}` } },
