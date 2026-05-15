@@ -1,71 +1,102 @@
 <!-- ── INSIGHTS TAB ───────────────────────────── -->
 <div id="tab-insights" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-insights" tabindex="0">
 
-  <!-- PH Spending Benchmark (FIES ML Model) -->
-  <div class="card">
-    <h2>PH Spending Benchmark
-      <span style="font-size:0.72rem;font-weight:500;color:var(--text-muted);margin-left:6px;">FIES · 41,544 PH households</span>
-    </h2>
-    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 12px;">
-      Your spending vs. Philippine households at your income level — PSA Family Income and Expenditure Survey.
-    </p>
-    <div id="fies-benchmark-card">
-      <div class="spinner">Loading benchmark...</div>
-    </div>
-    <div class="chart-container" id="fies-chart-wrap" style="height:220px;display:none;margin-top:12px;">
-      <canvas id="chart-fies" role="img" aria-label="PH spending benchmark comparison chart"></canvas>
-    </div>
+  <!-- Inner sub-tabs -->
+  <div class="tab-bar" style="top:104px;margin:0 -16px;padding:0 16px;" role="tablist" aria-label="Insights sections">
+    <button class="tab-btn active" id="itab-btn-benchmark"   role="tab" aria-selected="true"  aria-controls="itab-benchmark">Benchmark</button>
+    <button class="tab-btn"        id="itab-btn-predictions" role="tab" aria-selected="false" aria-controls="itab-predictions">Predictions</button>
+    <button class="tab-btn"        id="itab-btn-anomalies"   role="tab" aria-selected="false" aria-controls="itab-anomalies">Anomalies</button>
   </div>
 
-  <!-- Anomaly Detection -->
-  <div class="card">
-    <h2>Unusual Spending
-      <span id="anomaly-summary" class="label-aside"></span>
-    </h2>
-    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
-      Expenses that were unusually large compared to your own spending history.
-    </p>
-    <div id="anomaly-list">
-      <div class="spinner">Scanning...</div>
-    </div>
-  </div>
-
-  <!-- Prediction + ML Forecast side by side -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
-    <div class="card" style="margin:0;">
-      <h2 style="font-size:1rem;">Spending Prediction</h2>
-      <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
-        Estimates end-of-month total from your history.
+  <!-- ── Benchmark ── -->
+  <div id="itab-benchmark" class="itab-panel" role="tabpanel" aria-labelledby="itab-btn-benchmark">
+    <div class="card">
+      <h2>PH Spending Benchmark
+        <span style="font-size:0.72rem;font-weight:500;color:var(--text-muted);margin-left:6px;">FIES · 41,544 PH households</span>
+      </h2>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 12px;">
+        Your spending vs. Philippine households at your income level — PSA Family Income and Expenditure Survey.
       </p>
-      <div id="prediction-card">
-        <div class="spinner">Loading...</div>
+      <div id="fies-benchmark-card">
+        <div class="spinner">Loading benchmark...</div>
       </div>
-    </div>
-    <div class="card" style="margin:0;">
-      <h2 style="font-size:1rem;">ML Forecast</h2>
-      <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
-        Analyzes your past monthly spending and predicts how much you will spend next month.
-      </p>
-      <div id="ml-forecast-card">
-        <div class="spinner">Training...</div>
+      <div class="chart-container" id="fies-chart-wrap" style="height:260px;display:none;margin-top:12px;">
+        <canvas id="chart-fies" role="img" aria-label="PH spending benchmark comparison chart"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- Forecast Chart -->
-  <div class="card card-forecast">
-    <h2>Monthly Forecast</h2>
-    <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
-      Projected spend if you continue at your current daily average.
-    </p>
-    <div class="chart-container" style="height:260px;">
-      <canvas id="chart-forecast" role="img" aria-label="Monthly spending forecast chart"></canvas>
+  <!-- ── Predictions ── -->
+  <div id="itab-predictions" class="itab-panel" role="tabpanel" aria-labelledby="itab-btn-predictions" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+      <div class="card" style="margin:0;">
+        <h2 style="font-size:1rem;">Spending Prediction</h2>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
+          Estimates end-of-month total from your history.
+        </p>
+        <div id="prediction-card">
+          <div class="spinner">Loading...</div>
+        </div>
+      </div>
+      <div class="card" style="margin:0;">
+        <h2 style="font-size:1rem;">ML Forecast</h2>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
+          Analyzes your past monthly spending and predicts how much you will spend next month.
+        </p>
+        <div id="ml-forecast-card">
+          <div class="spinner">Training...</div>
+        </div>
+      </div>
     </div>
-    <table class="sr-only" aria-label="Monthly forecast data">
-      <caption>Predicted spending by month</caption>
-      <thead><tr><th scope="col">Month</th><th scope="col">Amount</th></tr></thead>
-      <tbody id="chart-forecast-tbody"></tbody>
-    </table>
+    <div class="card card-forecast">
+      <h2>Monthly Forecast</h2>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
+        Projected spend if you continue at your current daily average.
+      </p>
+      <div class="chart-container" style="height:260px;">
+        <canvas id="chart-forecast" role="img" aria-label="Monthly spending forecast chart"></canvas>
+      </div>
+      <table class="sr-only" aria-label="Monthly forecast data">
+        <caption>Predicted spending by month</caption>
+        <thead><tr><th scope="col">Month</th><th scope="col">Amount</th></tr></thead>
+        <tbody id="chart-forecast-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Anomalies ── -->
+  <div id="itab-anomalies" class="itab-panel" role="tabpanel" aria-labelledby="itab-btn-anomalies" style="display:none;">
+    <div class="card">
+      <h2>Unusual Spending
+        <span id="anomaly-summary" class="label-aside"></span>
+      </h2>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 14px;">
+        Expenses that were unusually large compared to your own spending history.
+      </p>
+      <div id="anomaly-list">
+        <div class="spinner">Scanning...</div>
+      </div>
+    </div>
   </div>
 
 </div><!-- end tab-insights -->
+
+<script>
+(function() {
+  var btns   = ['itab-btn-benchmark', 'itab-btn-predictions', 'itab-btn-anomalies'];
+  var panels = ['itab-benchmark',     'itab-predictions',     'itab-anomalies'];
+
+  btns.forEach(function(btnId, i) {
+    var btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      btns.forEach(function(b, j) {
+        var b_el = document.getElementById(b);
+        var p_el = document.getElementById(panels[j]);
+        if (b_el) { b_el.classList.toggle('active', j === i); b_el.setAttribute('aria-selected', j === i); }
+        if (p_el) p_el.style.display = j === i ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
