@@ -347,14 +347,15 @@ async function loadExpenseList(filter = '') {
   let current = 0;
 
   function goTo(idx) {
-    const track  = document.getElementById('ob-cube-track');
     const slides = document.querySelectorAll('.ob-slide');
     if (!slides.length) return;
-    slides[current].classList.remove('ob-slide--active');
+    const prev = current;
+    slides[prev].classList.remove('ob-slide--active');
+    slides[prev].classList.add('ob-slide--exit');
     current = idx;
     slides[current].classList.add('ob-slide--active');
-    if (track) track.style.transform = `rotateY(${-60 * idx}deg)`;
     updateChrome();
+    setTimeout(() => slides[prev].classList.remove('ob-slide--exit'), 220);
   }
 
   function updateChrome() {
@@ -396,25 +397,10 @@ async function loadExpenseList(filter = '') {
 
     document.querySelectorAll('.ob-slide').forEach((s, i) => {
       s.classList.toggle('ob-slide--active', i === 0);
+      s.classList.remove('ob-slide--exit');
     });
     updateChrome();
     el.style.display = 'flex';
-
-    // Compute hexagonal prism inradius from panel width after it's visible
-    const slidesEl = document.getElementById('ob-slides');
-    const track    = document.getElementById('ob-cube-track');
-    if (slidesEl && track) {
-      const W = slidesEl.offsetWidth || 300;
-      const r = Math.round(W * Math.sqrt(3) / 2);
-      track.style.setProperty('--ob-r', r + 'px');
-      track.style.transform = 'rotateY(0deg)';
-    }
-
-    // Tap the slide area on intro slides to advance
-    const slidesClickEl = document.getElementById('ob-slides');
-    slidesClickEl?.addEventListener('click', (e) => {
-      if (current < 2 && !e.target.closest('button, input')) goTo(current + 1);
-    });
 
     // Pre-fill income if already saved
     const savedIncome = localStorage.getItem('se_income');
