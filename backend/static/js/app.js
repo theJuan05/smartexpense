@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await saveSetting('current_user_id', authData.user_id);
 
         // Always sync income from server — server is source of truth across devices
-        if (authData.monthly_income) {
+        if (authData.monthly_income > 0) {
           localStorage.setItem('se_income', authData.monthly_income.toString());
         }
       }
@@ -415,6 +415,10 @@ async function loadExpenseList(filter = '') {
       const val = parseFloat(document.getElementById('ob-income-val')?.value);
       if (val > 0) {
         localStorage.setItem('se_income', val.toString());
+        fetch('/api/v1/user/income', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ monthly_income: val }),
+        }).catch(() => {});
         const hint = document.getElementById('ob-budget-hint');
         if (hint) hint.textContent = `Based on your ₱${val.toLocaleString()} income, a common rule is to budget 80%.`;
         const budgetInp = document.getElementById('ob-budget-val');
