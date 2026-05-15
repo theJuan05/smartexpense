@@ -94,3 +94,11 @@ def execute(sql, params=None):
     finally:
         cursor.close()
         conn.close()
+
+
+def ensure_schema():
+    """Add any columns that may be missing from older deployments."""
+    col = query_one("SHOW COLUMNS FROM users LIKE 'monthly_income'")
+    if not col:
+        execute("ALTER TABLE users ADD COLUMN monthly_income DECIMAL(15,2) DEFAULT 0")
+        logger.info("[DB SCHEMA] Added monthly_income column to users table")

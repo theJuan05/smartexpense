@@ -107,8 +107,13 @@ def serve_firebase_sw():
     return response
 
 
-# Warm up the ML classifier at startup so the first request isn't slow
+# Ensure DB schema is up to date, then warm up the ML classifier
 with app.app_context():
+    try:
+        from models.db import ensure_schema
+        ensure_schema()
+    except Exception as e:
+        logging.warning('[Schema] ensure_schema failed: %s', e)
     try:
         from ml.classifier import get_classifier
         get_classifier()
