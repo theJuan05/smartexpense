@@ -37,9 +37,13 @@ def login():
 
     if request.method == 'POST':
         email    = request.form.get('email', '').strip().lower()
-        password = request.form.get('password', '')
+        password = request.form.get('password', '').strip()
+
+        logger.info('[Login] attempt email=%r pw_len=%d ua=%s',
+                    email, len(password), request.headers.get('User-Agent', '')[:80])
 
         user = get_user_by_email(email)
+        logger.info('[Login] user_found=%s is_verified=%s', bool(user), user.get('is_verified') if user else 'n/a')
 
         if user and check_password(user, password):
             if not user.get('is_verified'):
