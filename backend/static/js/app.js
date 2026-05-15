@@ -359,19 +359,19 @@ async function loadExpenseList(filter = '') {
   }
 
   function updateChrome() {
-    const isIntro  = current < 3;
-    const skipEl   = document.getElementById('ob-skip-all');
-    const stepEl   = document.getElementById('ob-step-count');
-    const visualEl = document.getElementById('ob-visual');
-    const iconEl   = document.getElementById('ob-visual-icon');
+    const isIntro = current < 3;
+    const skipEl  = document.getElementById('ob-skip-all');
+    const stepEl  = document.getElementById('ob-step-count');
+    const metaEl  = document.querySelector('.ob-card-meta');
+    const iconEl  = document.getElementById('ob-visual-icon');
 
-    if (skipEl)   skipEl.style.display  = isIntro ? '' : 'none';
-    if (stepEl)   stepEl.textContent    = isIntro ? `0${current + 1} / 03` : '';
-    if (visualEl) visualEl.classList.toggle('ob-visual--collapsed', !isIntro);
+    if (skipEl) skipEl.style.display = isIntro ? '' : 'none';
+    if (stepEl) stepEl.textContent   = isIntro ? `0${current + 1} / 03` : '';
+    if (metaEl) metaEl.style.display = isIntro ? 'flex' : 'none';
 
-    if (iconEl && isIntro) {
+    if (iconEl) {
       iconEl.style.opacity   = '0';
-      iconEl.style.transform = 'scale(0.72) translateY(8px)';
+      iconEl.style.transform = 'scale(0.72) translateY(6px)';
       setTimeout(() => {
         iconEl.textContent     = ICONS[current];
         iconEl.style.opacity   = '1';

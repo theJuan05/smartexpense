@@ -327,17 +327,17 @@
   {% include 'partials/scanner.html' %}
   {% include 'partials/pin-overlay.html' %}
 
-  <!-- Onboarding wizard — outside all tabs so it works from any page -->
+  <!-- Onboarding wizard — modal card over the app -->
   <div id="onboarding-overlay" class="onboarding-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Getting started">
-    <div class="ob-visual" id="ob-visual">
-      <div class="ob-icon-wrap">
-        <span class="ob-visual-icon" id="ob-visual-icon" aria-hidden="true">💰</span>
-      </div>
-    </div>
-    <div class="ob-panel">
-      <div class="ob-panel-header">
-        <p class="ob-step-count" id="ob-step-count" aria-live="polite">01 / 03</p>
-        <button class="ob-skip-btn" id="ob-skip-all" aria-label="Skip onboarding">Skip</button>
+    <div class="ob-card">
+      <div class="ob-card-top">
+        <div class="ob-icon-wrap">
+          <span class="ob-visual-icon" id="ob-visual-icon" aria-hidden="true">💰</span>
+        </div>
+        <div class="ob-card-meta">
+          <p class="ob-step-count" id="ob-step-count" aria-live="polite">01 / 03</p>
+          <button class="ob-skip-btn" id="ob-skip-all" aria-label="Skip onboarding">Skip</button>
+        </div>
       </div>
       <div class="ob-slides" id="ob-slides">
         <div class="ob-slide ob-slide--active" id="ob-slide-0">
