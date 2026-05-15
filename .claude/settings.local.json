@@ -35,7 +35,24 @@
       "Bash(python -m json.tool)",
       "Bash(git commit -m ' *)",
       "Bash(git add *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(Sort-Object Name)",
+      "Read(//c/Users/Administrator/.claude/projects/c--Users-Administrator-Desktop-smartexpense/memory/**)",
+      "WebSearch",
+      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('Family Income and Expenditure.csv'\\); print\\(df.shape\\); print\\(df[['Total Household Income','Total Food Expenditure','Housing and water Expenditure','Medical Care Expenditure','Transportation Expenditure','Communication Expenditure','Education Expenditure','Clothing, Footwear and Other Wear Expenditure','Miscellaneous Goods and Services Expenditure']].describe\\(\\).to_string\\(\\)\\)\")",
+      "Bash(python -c \"from backend.models.db import query_all; print\\('ok'\\)\")",
+      "Bash(cp \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\\\\Family Income and Expenditure.csv\" \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\\\\backend\\\\ml\\\\fies_data.csv\" && echo \"copied\")",
+      "Bash(python ml/fies_model.py)",
+      "Bash(python -c \"import ml.fies_model as m; _, avgs = m.train\\(\\); print\\('Model trained OK'\\); print\\('Categories:', list\\(m.CATEGORY_COLUMNS.keys\\(\\)\\)\\); print\\('n_households:', avgs['_n_households']\\)\")",
+      "Bash(python -c \"import routes.analysis; print\\('analysis.py OK'\\)\")",
+      "Bash(python -c \"import ml.fies_model; print\\('fies_model.py OK'\\)\")",
+      "Bash(git commit *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Administrator\\.claude\\projects\\c--Users-Administrator-Desktop-smartexpense\\memory",
+      "c:\\Users\\Administrator\\Desktop\\smartexpense"
     ]
   }
 }

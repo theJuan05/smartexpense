@@ -1,0 +1,24 @@
+Honestly — yes, for your grade it is.
+
+Here's why:
+
+The rubric specifically requires (Section D & M):
+
+Requirement	Without FIES	With FIES
+Use a dataset (CSV/Excel/JSON)	❌ No external dataset	✅ 41,544-row CSV
+Train a ML model	⚠️ Trains on user's own data only	✅ Trains on real PH government data
+Submit a dataset file	❌ Nothing to submit	✅ fies_data.csv
+Submit a model file (.pkl)	✅ forecaster.pkl	✅ fies_model.pkl
+Display analytical output	✅ Forecast chart	✅ Benchmark comparison
+Your existing ML (forecaster.py) trains on the user's own expense history — the panel might question whether that really counts as "using a dataset" since it's just the user's personal records.
+
+The FIES model trains on an actual external CSV dataset — which is clearly what the rubric means by "use a dataset."
+
+For your presentation it also makes a strong point:
+
+"We used the PSA Family Income and Expenditure Survey — 41,544 real Filipino households — to train a model that benchmarks our users' spending against national data."
+
+That sounds much more impressive than just forecasting based on your own history.
+
+So keep it. It directly covers the 25% ML criterion and gives you a clear dataset to submit.
+

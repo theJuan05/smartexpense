@@ -1,0 +1,3 @@
+#PULL FROM NEWLY ADDED CODE TO EC2#
+cd ~/app/smartexpense && git pull && sudo systemctl restart smartexpense
+ github token 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
