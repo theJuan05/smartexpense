@@ -146,14 +146,28 @@ async function saveNewGoal() {
   if (!name)                  { showToast('Please enter a goal name', 'warning');        return; }
   if (!target || target <= 0) { showToast('Please enter a valid target amount', 'warning'); return; }
 
-  await addGoalLocal({
+  const goalData = {
     name,
     targetAmount: target,
     savedAmount:  0,
     icon,
     deadline:     deadline || null,
     createdAt:    new Date().toISOString(),
-  });
+    contributions: [],
+  };
+
+  // Save to server first so we get the real ID
+  try {
+    const res  = await fetch('/api/v1/goals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(goalData),
+    });
+    const data = await res.json();
+    if (data.id) goalData.id = data.id;
+  } catch (_) {}
+
+  await addGoalLocal(goalData);
   closeAddGoalModal();
   await loadGoals();
   if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
@@ -190,6 +204,14 @@ async function confirmFund() {
   const newSaved      = (parseFloat(goal.savedAmount) || 0) + amount;
   const contributions = [...(goal.contributions || []), { amount, date: new Date().toISOString() }];
   await updateGoalLocal(goalId, { savedAmount: newSaved, contributions });
+
+  // Sync to server
+  fetch(`/api/v1/goals/${goalId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ savedAmount: newSaved, contributions }),
+  }).catch(() => {});
+
   closeFundGoalModal();
   await loadGoals();
   if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
@@ -206,6 +228,7 @@ async function confirmFund() {
 async function deleteGoalUI(id) {
   if (!confirm('Delete this goal?')) return;
   await deleteGoalLocal(id);
+  fetch(`/api/v1/goals/${id}`, { method: 'DELETE' }).catch(() => {});
   await loadGoals();
   if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
   showToast('Goal deleted');

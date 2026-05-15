@@ -21,6 +21,7 @@ from routes.anomaly import anomaly_bp
 from routes.advice import advice_bp
 from routes.receipt_ocr import receipt_bp
 from routes.push import push_bp
+from routes.goals_api import goals_api_bp
 
 # -----------------------------
 # APP SETUP
@@ -50,6 +51,7 @@ app.register_blueprint(anomaly_bp,  url_prefix='/api/v1')
 app.register_blueprint(advice_bp,   url_prefix='/api/v1')
 app.register_blueprint(receipt_bp,  url_prefix='/api/v1/receipt')
 app.register_blueprint(push_bp,     url_prefix='/api/v1')
+app.register_blueprint(goals_api_bp, url_prefix='/api/v1')
 
 # -----------------------------
 # SECURITY HEADERS

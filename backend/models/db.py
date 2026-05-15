@@ -97,8 +97,24 @@ def execute(sql, params=None):
 
 
 def ensure_schema():
-    """Add any columns that may be missing from older deployments."""
+    """Add any columns or tables that may be missing from older deployments."""
     col = query_one("SHOW COLUMNS FROM users LIKE 'monthly_income'")
     if not col:
         execute("ALTER TABLE users ADD COLUMN monthly_income DECIMAL(15,2) DEFAULT 0")
         logger.info("[DB SCHEMA] Added monthly_income column to users table")
+
+    execute("""
+        CREATE TABLE IF NOT EXISTS goals (
+            id            INT AUTO_INCREMENT PRIMARY KEY,
+            user_id       INT NOT NULL,
+            name          VARCHAR(255) NOT NULL,
+            icon          VARCHAR(20) DEFAULT '🎯',
+            target_amount DECIMAL(15,2) NOT NULL,
+            saved_amount  DECIMAL(15,2) DEFAULT 0,
+            deadline      DATE NULL,
+            contributions JSON,
+            created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    """)
+    logger.info("[DB SCHEMA] goals table ensured")

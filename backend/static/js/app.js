@@ -41,8 +41,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     } catch (_) {}
 
-    // 4. Pull server expenses into IndexedDB (fills dashboard on first load / new device)
+    // 4. Pull server data into IndexedDB
     await pullExpensesFromServer();
+    await pullGoalsFromServer();
 
     // 4. Set today's date in form
     const dateEl = document.getElementById('exp-date');

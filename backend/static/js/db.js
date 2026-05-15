@@ -409,6 +409,37 @@ async function pullExpensesFromServer() {
 }
 
 // ============================================================
+// Pull goals from server and replace local IndexedDB copy
+// ============================================================
+async function pullGoalsFromServer() {
+  if (!navigator.onLine) return;
+  try {
+    const res = await fetch('/api/v1/goals');
+    if (!res.ok) return;
+    const goals = await res.json();
+    if (!Array.isArray(goals)) return;
+
+    const tx    = db.transaction('goals', 'readwrite');
+    const store = tx.objectStore('goals');
+    store.clear();
+    for (const g of goals) {
+      store.put({
+        id:            g.id,
+        name:          g.name,
+        icon:          g.icon || '🎯',
+        targetAmount:  g.targetAmount,
+        savedAmount:   g.savedAmount,
+        deadline:      g.deadline || null,
+        contributions: g.contributions || [],
+        createdAt:     g.createdAt || new Date().toISOString(),
+      });
+    }
+    await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+    console.log(`[Sync] Pulled ${goals.length} goal(s) from server ✅`);
+  } catch (_) {}
+}
+
+// ============================================================
 // 7. STATS — Quick summary for dashboard
 // ============================================================
 
