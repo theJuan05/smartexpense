@@ -55,7 +55,12 @@
       "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" add backend/templates/auth/login.html)",
       "Bash(git -C /c/Users/Administrator/Desktop/smartexpense commit -m ' *)",
       "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" push origin main)",
-      "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" add backend/routes/auth.py)"
+      "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" add backend/routes/auth.py)",
+      "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" add backend/static/js/app.js)",
+      "Skill(impeccable)",
+      "Skill(impeccable:*)",
+      "Bash(node \"c:/Users/Administrator/Desktop/smartexpense/.agents/skills/impeccable/scripts/load-context.mjs\")",
+      "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" add backend/templates/index.html backend/static/style.css)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Administrator\\.claude\\projects\\c--Users-Administrator-Desktop-smartexpense\\memory",
