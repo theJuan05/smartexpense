@@ -2217,7 +2217,7 @@ body {
   position: relative;
   z-index: 2;
   filter: drop-shadow(0 8px 24px rgba(108,79,255,0.4));
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+  transition: opacity 0.18s ease, transform 0.28s cubic-bezier(0.22,1,0.36,1);
 }
 
 /* Content panel (bottom ~50%) */
@@ -2252,31 +2252,48 @@ body {
   border-radius: 4px;
 }
 
-/* Slides */
-.ob-slides { flex: 1; position: relative; }
+/* Slides — hexagonal prism 3D carousel */
+.ob-slides {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  perspective: 900px;
+  perspective-origin: 50% 40%;
+}
+
+.ob-cube-track {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
 
 .ob-slide {
-  display: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
-.ob-slide.ob-slide--active {
-  display: flex;
-  animation: ob-slide-in 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-.ob-slide.ob-slide--exit {
-  display: flex;
-  animation: ob-slide-out 0.18s ease forwards;
+  background: var(--card-bg);
+  backface-visibility: hidden;
   pointer-events: none;
+  padding: 4px 0;
 }
+.ob-slide.ob-slide--active { pointer-events: auto; }
 
-@keyframes ob-slide-in {
-  from { opacity: 0; transform: translateX(24px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes ob-slide-out {
-  from { opacity: 1; transform: translateX(0); }
-  to   { opacity: 0; transform: translateX(-24px); }
+/* Hexagonal prism faces: each face N at rotateY(N*60deg) translateZ(r) */
+.ob-slide:nth-child(1) { transform: rotateY(  0deg) translateZ(var(--ob-r, 260px)); }
+.ob-slide:nth-child(2) { transform: rotateY( 60deg) translateZ(var(--ob-r, 260px)); }
+.ob-slide:nth-child(3) { transform: rotateY(120deg) translateZ(var(--ob-r, 260px)); }
+.ob-slide:nth-child(4) { transform: rotateY(180deg) translateZ(var(--ob-r, 260px)); }
+.ob-slide:nth-child(5) { transform: rotateY(240deg) translateZ(var(--ob-r, 260px)); }
+.ob-slide:nth-child(6) { transform: rotateY(300deg) translateZ(var(--ob-r, 260px)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-cube-track { transition: none; }
+  .ob-slide { transform: none !important; opacity: 0; transition: opacity 0.22s ease; }
+  .ob-slide.ob-slide--active { opacity: 1; }
 }
 
 .ob-title {

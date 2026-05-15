@@ -347,16 +347,14 @@ async function loadExpenseList(filter = '') {
   let current = 0;
 
   function goTo(idx) {
+    const track  = document.getElementById('ob-cube-track');
     const slides = document.querySelectorAll('.ob-slide');
     if (!slides.length) return;
     slides[current].classList.remove('ob-slide--active');
-    slides[current].classList.add('ob-slide--exit');
-    setTimeout(() => {
-      slides[current].classList.remove('ob-slide--exit');
-      current = idx;
-      slides[current].classList.add('ob-slide--active');
-      updateChrome();
-    }, 200);
+    current = idx;
+    slides[current].classList.add('ob-slide--active');
+    if (track) track.style.transform = `rotateY(${-60 * idx}deg)`;
+    updateChrome();
   }
 
   function updateChrome() {
@@ -369,7 +367,15 @@ async function loadExpenseList(filter = '') {
     if (dotsEl)  dotsEl.style.display  = isIntro ? 'flex' : 'none';
     if (arrowEl) arrowEl.style.display = isIntro ? 'flex' : 'none';
     if (skipEl)  skipEl.style.display  = isIntro ? 'block' : 'none';
-    if (iconEl)  iconEl.textContent    = ICONS[current];
+    if (iconEl) {
+      iconEl.style.opacity   = '0';
+      iconEl.style.transform = 'scale(0.7) translateY(10px)';
+      setTimeout(() => {
+        iconEl.textContent     = ICONS[current];
+        iconEl.style.opacity   = '1';
+        iconEl.style.transform = 'scale(1) translateY(0)';
+      }, 180);
+    }
 
     // Update active dot
     document.querySelectorAll('.ob-dot').forEach((dot, i) => {
@@ -390,10 +396,25 @@ async function loadExpenseList(filter = '') {
 
     document.querySelectorAll('.ob-slide').forEach((s, i) => {
       s.classList.toggle('ob-slide--active', i === 0);
-      s.classList.remove('ob-slide--exit');
     });
     updateChrome();
     el.style.display = 'flex';
+
+    // Compute hexagonal prism inradius from panel width after it's visible
+    const slidesEl = document.getElementById('ob-slides');
+    const track    = document.getElementById('ob-cube-track');
+    if (slidesEl && track) {
+      const W = slidesEl.offsetWidth || 300;
+      const r = Math.round(W * Math.sqrt(3) / 2);
+      track.style.setProperty('--ob-r', r + 'px');
+      track.style.transform = 'rotateY(0deg)';
+    }
+
+    // Tap the slide area on intro slides to advance
+    const slidesClickEl = document.getElementById('ob-slides');
+    slidesClickEl?.addEventListener('click', (e) => {
+      if (current < 2 && !e.target.closest('button, input')) goTo(current + 1);
+    });
 
     // Pre-fill income if already saved
     const savedIncome = localStorage.getItem('se_income');
