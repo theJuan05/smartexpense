@@ -2152,105 +2152,103 @@ body {
   cursor: pointer;
 }
 
-/* ── Onboarding — full-screen illustrated design ──────────────────── */
+/* ── Onboarding ──────────────────────────────────────────────────── */
 .onboarding-overlay {
   position: fixed;
   inset: 0;
   z-index: 1200;
   display: flex;
   flex-direction: column;
-  animation: ob-fade-in 0.3s ease-out;
-  background: #0d0d20;
+  animation: ob-fade-in 0.28s ease-out;
+  background: oklch(11% 0.04 275);
 }
 
 @keyframes ob-fade-in { from { opacity: 0; } to { opacity: 1; } }
 
-/* Skip button — top right */
-.ob-skip-btn {
-  position: absolute;
-  top: 20px; right: 24px;
-  background: rgba(255,255,255,0.12);
-  border: none;
-  color: #fff;
-  font-size: 0.82rem;
-  font-weight: 600;
-  font-family: inherit;
-  padding: 6px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  z-index: 10;
-  transition: background 0.15s;
-}
-.ob-skip-btn:hover { background: rgba(255,255,255,0.2); }
-
-/* Illustration area (top ~50%) */
+/* Illustration area */
 .ob-visual {
-  flex: 0 0 52%;
-  position: relative;
+  flex: 0 0 46%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 60%, oklch(28% 0.18 285 / 0.35) 0%, transparent 70%),
+    oklch(11% 0.04 275);
+  transition: flex-basis 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.28s ease;
   overflow: hidden;
-  background: #0d0d20;
+}
+.ob-visual.ob-visual--collapsed {
+  flex-basis: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
-/* Decorative blobs */
-.ob-blob {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.18;
-}
-.ob-blob-1 {
-  width: 260px; height: 260px;
-  background: var(--purple);
-  top: -60px; right: -40px;
-}
-.ob-blob-2 {
-  width: 180px; height: 180px;
-  background: #4c3bc4;
-  bottom: -30px; left: -40px;
+/* Icon container — styled card instead of floating emoji */
+.ob-icon-wrap {
+  width: 108px;
+  height: 108px;
+  border-radius: 32px;
+  background: linear-gradient(145deg, oklch(56% 0.22 290), oklch(43% 0.2 268));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 1px oklch(70% 0.15 290 / 0.2),
+    0 8px 20px oklch(43% 0.2 268 / 0.4),
+    0 28px 56px oklch(43% 0.2 268 / 0.35);
 }
 
-/* Central illustration icon */
 .ob-visual-icon {
-  font-size: 5rem;
-  position: relative;
-  z-index: 2;
-  filter: drop-shadow(0 8px 24px rgba(108,79,255,0.4));
-  transition: opacity 0.18s ease, transform 0.28s cubic-bezier(0.22,1,0.36,1);
+  font-size: 2.8rem;
+  line-height: 1;
+  transition: opacity 0.16s ease, transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Content panel (bottom ~50%) */
+/* Content panel */
 .ob-panel {
   flex: 1;
   background: var(--card-bg);
   border-radius: 28px 28px 0 0;
-  padding: 32px 28px 28px;
+  padding: 28px 28px 32px;
   display: flex;
   flex-direction: column;
-  position: relative;
-  box-shadow: 0 -8px 32px rgba(0,0,0,0.2);
+  box-shadow: 0 -6px 24px oklch(10% 0.04 275 / 0.5);
+  min-height: 0;
 }
-[data-theme="dark"] .ob-panel { background: #13132b; }
+[data-theme="dark"] .ob-panel { background: oklch(14% 0.04 280); }
 
-/* Dot indicators */
-.ob-dots {
+.ob-panel-header {
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 24px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
 }
-.ob-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: all 0.25s;
+
+/* Step counter — "01 / 03" */
+.ob-step-count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  margin: 0;
+  transition: opacity 0.2s ease;
 }
-.ob-dot--active {
-  background: var(--purple);
-  width: 24px;
-  border-radius: 4px;
+
+/* Skip — inline in header now */
+.ob-skip-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: color 0.15s;
 }
+.ob-skip-btn:hover { color: var(--text); }
 
 /* Slides — perspective depth transition */
 .ob-slides {
@@ -2312,25 +2310,10 @@ body {
   margin: 0 0 20px;
 }
 
-/* Circular next arrow (bottom-right of panel) */
-.ob-arrow-btn {
-  position: absolute;
-  bottom: 0; right: 0;
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: var(--purple);
-  color: #fff;
-  font-size: 1.4rem;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 20px rgba(108,79,255,0.45);
-  transition: transform 0.15s, box-shadow 0.15s;
+/* CTA inside each intro slide, pinned to bottom */
+.ob-slide-cta {
+  margin-top: auto;
 }
-.ob-arrow-btn:hover { transform: scale(1.08); box-shadow: 0 8px 28px rgba(108,79,255,0.55); }
-.ob-arrow-btn:active { transform: scale(0.95); }
 
 /* Input steps */
 .ob-input-group {

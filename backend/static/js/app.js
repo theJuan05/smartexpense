@@ -360,28 +360,24 @@ async function loadExpenseList(filter = '') {
 
   function updateChrome() {
     const isIntro  = current < 3;
-    const dotsEl   = document.getElementById('ob-dots');
-    const arrowEl  = document.getElementById('ob-arrow');
     const skipEl   = document.getElementById('ob-skip-all');
+    const stepEl   = document.getElementById('ob-step-count');
+    const visualEl = document.getElementById('ob-visual');
     const iconEl   = document.getElementById('ob-visual-icon');
 
-    if (dotsEl)  dotsEl.style.display  = isIntro ? 'flex' : 'none';
-    if (arrowEl) arrowEl.style.display = isIntro ? 'flex' : 'none';
-    if (skipEl)  skipEl.style.display  = isIntro ? 'block' : 'none';
-    if (iconEl) {
+    if (skipEl)   skipEl.style.display  = isIntro ? '' : 'none';
+    if (stepEl)   stepEl.textContent    = isIntro ? `0${current + 1} / 03` : '';
+    if (visualEl) visualEl.classList.toggle('ob-visual--collapsed', !isIntro);
+
+    if (iconEl && isIntro) {
       iconEl.style.opacity   = '0';
-      iconEl.style.transform = 'scale(0.7) translateY(10px)';
+      iconEl.style.transform = 'scale(0.72) translateY(8px)';
       setTimeout(() => {
         iconEl.textContent     = ICONS[current];
         iconEl.style.opacity   = '1';
         iconEl.style.transform = 'scale(1) translateY(0)';
-      }, 180);
+      }, 160);
     }
-
-    // Update active dot
-    document.querySelectorAll('.ob-dot').forEach((dot, i) => {
-      dot.classList.toggle('ob-dot--active', i === current);
-    });
   }
 
   function closeOnboarding() {
@@ -409,12 +405,12 @@ async function loadExpenseList(filter = '') {
       if (inp) inp.value = savedIncome;
     }
 
-    // Arrow button — advances intro slides, enters setup on slide 2
-    document.getElementById('ob-arrow')?.addEventListener('click', () => {
-      goTo(current < 2 ? current + 1 : 3);
-    });
+    // Intro slide CTAs
+    document.getElementById('ob-next-0')?.addEventListener('click', () => goTo(1), { once: true });
+    document.getElementById('ob-next-1')?.addEventListener('click', () => goTo(2), { once: true });
+    document.getElementById('ob-next-2')?.addEventListener('click', () => goTo(3), { once: true });
 
-    // Skip — closes from any intro slide
+    // Skip
     document.getElementById('ob-skip-all')?.addEventListener('click', () => closeOnboarding(), { once: true });
 
     // Income step
