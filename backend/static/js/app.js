@@ -25,9 +25,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         await saveSetting('current_user_id', authData.user_id);
 
-        // Always sync income from server — server is source of truth across devices
+        // Sync income: server wins if it has a value; otherwise push local value up
         if (authData.monthly_income > 0) {
           localStorage.setItem('se_income', authData.monthly_income.toString());
+        } else {
+          const localIncome = parseFloat(localStorage.getItem('se_income') || '0');
+          if (localIncome > 0) {
+            fetch('/api/v1/user/income', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ monthly_income: localIncome }),
+            }).catch(() => {});
+          }
         }
       }
     } catch (_) {}
