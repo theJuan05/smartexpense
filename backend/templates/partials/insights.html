@@ -2,10 +2,16 @@
 <div id="tab-insights" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-insights" tabindex="0">
 
   <!-- Inner sub-tabs -->
-  <div class="tab-bar" style="top:104px;margin:0 -16px;padding:0 16px;" role="tablist" aria-label="Insights sections">
-    <button class="tab-btn active" id="itab-btn-benchmark"   role="tab" aria-selected="true"  aria-controls="itab-benchmark">Benchmark</button>
-    <button class="tab-btn"        id="itab-btn-predictions" role="tab" aria-selected="false" aria-controls="itab-predictions">Predictions</button>
-    <button class="tab-btn"        id="itab-btn-anomalies"   role="tab" aria-selected="false" aria-controls="itab-anomalies">Anomalies</button>
+  <div style="display:flex;gap:8px;margin-bottom:16px;" role="tablist" aria-label="Insights sections">
+    <button id="itab-btn-benchmark"   role="tab" aria-selected="true"  aria-controls="itab-benchmark"
+      style="flex:1;padding:8px 0;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;
+             background:var(--purple);color:#fff;transition:all 0.15s;">Benchmark</button>
+    <button id="itab-btn-predictions" role="tab" aria-selected="false" aria-controls="itab-predictions"
+      style="flex:1;padding:8px 0;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;
+             background:var(--card-bg);color:var(--text-muted);border:1px solid var(--border);transition:all 0.15s;">Predictions</button>
+    <button id="itab-btn-anomalies"   role="tab" aria-selected="false" aria-controls="itab-anomalies"
+      style="flex:1;padding:8px 0;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;
+             background:var(--card-bg);color:var(--text-muted);border:1px solid var(--border);transition:all 0.15s;">Anomalies</button>
   </div>
 
   <!-- ── Benchmark ── -->
@@ -93,8 +99,14 @@
       btns.forEach(function(b, j) {
         var b_el = document.getElementById(b);
         var p_el = document.getElementById(panels[j]);
-        if (b_el) { b_el.classList.toggle('active', j === i); b_el.setAttribute('aria-selected', j === i); }
-        if (p_el) p_el.style.display = j === i ? '' : 'none';
+        var active = j === i;
+        if (b_el) {
+          b_el.setAttribute('aria-selected', active);
+          b_el.style.background  = active ? 'var(--purple)' : 'var(--card-bg)';
+          b_el.style.color       = active ? '#fff' : 'var(--text-muted)';
+          b_el.style.border      = active ? 'none' : '1px solid var(--border)';
+        }
+        if (p_el) p_el.style.display = active ? '' : 'none';
       });
     });
   });
