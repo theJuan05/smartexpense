@@ -34,24 +34,22 @@
 
   <!-- ── Predictions ── -->
   <div id="itab-predictions" class="itab-panel" role="tabpanel" aria-labelledby="itab-btn-predictions" style="display:none;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
-      <div class="card" style="margin:0;">
-        <h2 style="font-size:1rem;">Spending Prediction</h2>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
-          Estimates end-of-month total from your history.
-        </p>
-        <div id="prediction-card">
-          <div class="spinner">Loading...</div>
-        </div>
+    <div class="card">
+      <h2>Spending Prediction</h2>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 12px;">
+        Estimates end-of-month total from your history.
+      </p>
+      <div id="prediction-card">
+        <div class="spinner">Loading...</div>
       </div>
-      <div class="card" style="margin:0;">
-        <h2 style="font-size:1rem;">ML Forecast</h2>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin:-6px 0 12px;">
-          Analyzes your past monthly spending and predicts how much you will spend next month.
-        </p>
-        <div id="ml-forecast-card">
-          <div class="spinner">Training...</div>
-        </div>
+    </div>
+    <div class="card">
+      <h2>ML Forecast</h2>
+      <p style="font-size:0.82rem;color:var(--text-muted);margin:-8px 0 12px;">
+        Analyzes your past monthly spending and predicts how much you will spend next month.
+      </p>
+      <div id="ml-forecast-card">
+        <div class="spinner">Training...</div>
       </div>
     </div>
     <div class="card card-forecast">
