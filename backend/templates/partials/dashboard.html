@@ -50,8 +50,9 @@
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-            <button onclick="showInstallGuide()" aria-label="Install app"
-                    style="background:#fff;color:oklch(45% 0.22 280);border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;">Install</button>
+            <button aria-label="Install app"
+                    style="background:#fff;color:oklch(45% 0.22 280);border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;"
+                    onclick="if(window._dip){window._dip.prompt();}else{var m=document.getElementById('modal-install-guide');var a=document.getElementById('install-guide-android');var i=document.getElementById('install-guide-ios');if(a)a.style.display='block';if(i)i.style.display='none';if(m)m.style.display='flex';}">Install</button>
             <button onclick="document.getElementById('install-card').style.display='none'" aria-label="Dismiss"
                     style="background:none;border:none;color:oklch(92% 0.04 280);cursor:pointer;padding:4px;font-size:1rem;line-height:1;">✕</button>
           </div>

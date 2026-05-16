@@ -6,14 +6,7 @@ let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
-
-  // Desktop install button
-  const btn = document.getElementById('btn-install');
-  if (btn) { btn.style.display = 'block'; btn.addEventListener('click', handleInstall); }
-
-  // Install card inside dashboard
-  const card = document.getElementById('install-card');
-  if (card) card.style.display = 'flex';
+  window._dip = e; // also store globally so inline onclick can access it
 
   console.log('[PWA] Install prompt ready');
 });
@@ -30,18 +23,16 @@ async function handleInstall() {
     showToast('App installed successfully!', 'success');
   }
   deferredPrompt = null;
-  const btn  = document.getElementById('btn-install');
+  window._dip = null;
   const card = document.getElementById('install-card');
-  if (btn)  btn.style.display = 'none';
   if (card) card.style.display = 'none';
 }
 
 // App installed event
 window.addEventListener('appinstalled', function() {
   showToast('SmartExpense AI Pro installed!', 'success');
-  const btn  = document.getElementById('btn-install');
+  window._dip = null;
   const card = document.getElementById('install-card');
-  if (btn)  btn.style.display = 'none';
   if (card) card.style.display = 'none';
   deferredPrompt = null;
 });
