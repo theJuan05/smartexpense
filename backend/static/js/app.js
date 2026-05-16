@@ -75,10 +75,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateOnlineStatus();
     showToast('Back online! Syncing...');
     await runSync();
+    await syncIncomeFromServer();
   });
   window.addEventListener('offline', () => {
     updateOnlineStatus();
     showToast('You are offline - data saved locally', 'warning');
+  });
+
+  // Re-sync income when app is resumed from background (mobile PWA)
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible') {
+      await syncIncomeFromServer();
+    }
   });
 
   // 8. Backend check runs in background — doesn't block UI
@@ -835,6 +843,21 @@ function setupIncomeModal() {
   });
 
   input.addEventListener('keydown', e => { if (e.key === 'Enter') btnSave.click(); });
+}
+
+// Fetch income from server and update localStorage + UI if changed
+async function syncIncomeFromServer() {
+  try {
+    const res  = await fetch('/api/v1/auth/status');
+    const data = await res.json();
+    if (data.logged_in && data.monthly_income > 0) {
+      const current = parseFloat(localStorage.getItem('se_income') || '0');
+      if (data.monthly_income !== current) {
+        localStorage.setItem('se_income', data.monthly_income.toString());
+        renderBalance();
+      }
+    }
+  } catch (_) {}
 }
 
 // ── Backend ────────────────────────────────────────────────
