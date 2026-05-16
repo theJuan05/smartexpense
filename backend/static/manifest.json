@@ -36,20 +36,5 @@
       "purpose": "maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/static/screenshots/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "SmartExpense AI Pro dashboard on desktop"
-    },
-    {
-      "src": "/static/screenshots/screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "SmartExpense AI Pro dashboard on mobile"
-    }
-  ]
+  "screenshots": []
 }

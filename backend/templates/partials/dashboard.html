@@ -39,6 +39,21 @@
           </div>
         </div>
 
+        <!-- PWA Install Card — hidden until beforeinstallprompt fires -->
+        <div id="install-card" class="install-card" style="display:none;" role="region" aria-label="Install app">
+          <div class="install-card-left">
+            <img src="/static/icons/icon-192.png" class="install-card-icon" alt="SmartExpense icon" />
+            <div class="install-card-text">
+              <span class="install-card-title">Install SmartExpense</span>
+              <span class="install-card-sub">Works offline, faster, no browser bar</span>
+            </div>
+          </div>
+          <div class="install-card-actions">
+            <button class="install-card-btn" onclick="handleInstall()" aria-label="Install app">Install</button>
+            <button class="install-card-dismiss" onclick="document.getElementById('install-card').style.display='none'" aria-label="Dismiss">✕</button>
+          </div>
+        </div>
+
         <!-- Stats Row -->
         <div class="stats-row">
           <div class="stat-box">

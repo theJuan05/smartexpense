@@ -11,6 +11,10 @@ window.addEventListener('beforeinstallprompt', function(e) {
   const btn = document.getElementById('btn-install');
   if (btn) { btn.style.display = 'block'; btn.addEventListener('click', handleInstall); }
 
+  // Install card inside dashboard (most visible)
+  const card = document.getElementById('install-card');
+  if (card) card.style.display = 'flex';
+
   // Mobile install banner (shown above bottom nav)
   const banner = document.getElementById('install-banner');
   if (banner) banner.style.display = 'flex';
@@ -32,8 +36,10 @@ async function handleInstall() {
   deferredPrompt = null;
   const btn    = document.getElementById('btn-install');
   const banner = document.getElementById('install-banner');
+  const card   = document.getElementById('install-card');
   if (btn)    btn.style.display = 'none';
   if (banner) banner.style.display = 'none';
+  if (card)   card.style.display = 'none';
 }
 
 // App installed event
@@ -41,8 +47,10 @@ window.addEventListener('appinstalled', function() {
   showToast('SmartExpense AI Pro installed!', 'success');
   const btn    = document.getElementById('btn-install');
   const banner = document.getElementById('install-banner');
+  const card   = document.getElementById('install-card');
   if (btn)    btn.style.display = 'none';
   if (banner) banner.style.display = 'none';
+  if (card)   card.style.display = 'none';
   deferredPrompt = null;
 });
 
