@@ -27,11 +27,8 @@
     function _syncIncome() {
       fetch('/api/v1/auth/status').then(function(r) { return r.json(); }).then(function(d) {
         if (d.logged_in && d.monthly_income > 0) {
-          var cur = parseFloat(localStorage.getItem('se_income') || '0');
-          if (d.monthly_income !== cur) {
-            localStorage.setItem('se_income', d.monthly_income.toString());
-            if (typeof renderBalance === 'function') renderBalance();
-          }
+          localStorage.setItem('se_income', d.monthly_income.toString());
+          if (typeof renderBalance === 'function') renderBalance();
         }
       }).catch(function() {});
     }

@@ -833,13 +833,14 @@ function setupIncomeModal() {
     localStorage.setItem('se_income', val.toString());
     close();
     renderBalance();
-    showToast('Income updated!');
-    // Sync to DB so Advice savings-rate analysis works
     fetch('/api/v1/user/income', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ monthly_income: val }),
-    }).catch(() => {});
+    }).then(r => r.json()).then(d => {
+      if (d.status === 'success') showToast('Income updated! Synced to all devices.');
+      else showToast('Income saved locally — sync failed', 'warning');
+    }).catch(() => showToast('Income saved locally — check connection', 'warning'));
   });
 
   input.addEventListener('keydown', e => { if (e.key === 'Enter') btnSave.click(); });
