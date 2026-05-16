@@ -409,20 +409,46 @@ async function pullExpensesFromServer() {
 }
 
 // ============================================================
-// Pull goals from server and replace local IndexedDB copy
+// Bidirectional goal sync: push local→server or pull server→local
 // ============================================================
 async function pullGoalsFromServer() {
   if (!navigator.onLine) return;
   try {
     const res = await fetch('/api/v1/goals');
     if (!res.ok) return;
-    const goals = await res.json();
-    if (!Array.isArray(goals)) return;
+    const serverGoals = await res.json();
+    if (!Array.isArray(serverGoals)) return;
 
+    const localGoals = await getGoalsLocal();
+
+    if (serverGoals.length === 0 && localGoals.length > 0) {
+      // Server has nothing — push local goals up (first sync after feature launch)
+      for (const g of localGoals) {
+        try {
+          const r    = await fetch('/api/v1/goals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(g),
+          });
+          const data = await r.json();
+          if (data.id && data.id !== g.id) {
+            // Re-key local record to match server ID
+            await deleteGoalLocal(g.id);
+            await addGoalLocal({ ...g, id: data.id });
+          }
+        } catch (_) {}
+      }
+      console.log(`[Sync] Pushed ${localGoals.length} local goal(s) to server ✅`);
+      return;
+    }
+
+    if (serverGoals.length === 0) return; // both empty, nothing to do
+
+    // Server has goals — replace local copy with server truth
     const tx    = db.transaction('goals', 'readwrite');
     const store = tx.objectStore('goals');
     store.clear();
-    for (const g of goals) {
+    for (const g of serverGoals) {
       store.put({
         id:            g.id,
         name:          g.name,
@@ -435,7 +461,7 @@ async function pullGoalsFromServer() {
       });
     }
     await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
-    console.log(`[Sync] Pulled ${goals.length} goal(s) from server ✅`);
+    console.log(`[Sync] Pulled ${serverGoals.length} goal(s) from server ✅`);
   } catch (_) {}
 }
 
