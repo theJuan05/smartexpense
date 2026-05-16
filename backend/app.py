@@ -27,11 +27,12 @@ from routes.goals_api import goals_api_bp
 # APP SETUP
 # -----------------------------
 base_dir = os.path.abspath(os.path.dirname(__file__))
+frontend_dir = os.path.join(base_dir, '..', 'frontend')
 
 app = Flask(
     __name__,
-    static_folder=os.path.join(base_dir, "static"),
-    template_folder=os.path.join(base_dir, "templates")
+    static_folder=os.path.join(frontend_dir, "static"),
+    template_folder=os.path.join(frontend_dir, "templates")
 )
 
 app.config.from_object(Config)
