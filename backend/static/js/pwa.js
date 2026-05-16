@@ -97,9 +97,17 @@ async function registerBackgroundSync() {
   }
 }
 
-// Hide install card if already running as PWA
+// Hide install card if already running as installed PWA
 document.addEventListener('DOMContentLoaded', function() {
   if (isInstalledPWA()) {
+    const card = document.getElementById('install-card');
+    if (card) card.style.display = 'none';
+  }
+});
+
+// Also hide when matchMedia changes (user installs while page is open)
+window.matchMedia('(display-mode: standalone)').addEventListener('change', function(e) {
+  if (e.matches) {
     const card = document.getElementById('install-card');
     if (card) card.style.display = 'none';
   }

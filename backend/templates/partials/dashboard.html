@@ -39,9 +39,9 @@
           </div>
         </div>
 
-        <!-- PWA Install Card — hidden until beforeinstallprompt fires -->
+        <!-- PWA Install Card — visible unless already installed as PWA -->
         <div id="install-card" role="region" aria-label="Install app"
-             style="display:none;align-items:center;justify-content:space-between;gap:12px;background:oklch(52% 0.22 280);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 4px 18px oklch(45% 0.22 280/0.3);">
+             style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:oklch(52% 0.22 280);border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:0 4px 18px oklch(45% 0.22 280/0.3);">
           <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;">
             <img src="/static/icons/icon-192.png" alt="SmartExpense" style="width:40px;height:40px;border-radius:10px;flex-shrink:0;" />
             <div style="display:flex;flex-direction:column;gap:2px;min-width:0;">
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-            <button onclick="handleInstall()" aria-label="Install app"
+            <button onclick="showInstallGuide()" aria-label="Install app"
                     style="background:#fff;color:oklch(45% 0.22 280);border:none;border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;">Install</button>
             <button onclick="document.getElementById('install-card').style.display='none'" aria-label="Dismiss"
                     style="background:none;border:none;color:oklch(92% 0.04 280);cursor:pointer;padding:4px;font-size:1rem;line-height:1;">✕</button>
