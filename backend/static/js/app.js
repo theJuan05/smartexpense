@@ -242,7 +242,7 @@ function setupTabs() {
       if (target === 'expenses')  { await pullExpensesFromServer(); await loadExpenseList(); }
       if (target === 'budget')    await loadBudgetSummary();
       if (target === 'advice')    await loadAdvice();
-      if (target === 'goals')     await loadGoals();
+      if (target === 'goals')     { await pullGoalsFromServer(); await loadGoals(); }
       if (target === 'insights') {
         await Promise.all([loadFIESBenchmark(), loadPrediction(), loadAnomalies(), loadMLForecast()]);
       }

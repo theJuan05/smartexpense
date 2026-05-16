@@ -7,12 +7,10 @@ window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
 
-  // Show install button
-  const btn = document.getElementById('btn-install');
-  if (btn) {
-    btn.style.display = 'block';
-    btn.addEventListener('click', handleInstall);
-  }
+  const btn       = document.getElementById('btn-install');
+  const btnMobile = document.getElementById('btn-install-mobile');
+  if (btn) { btn.style.display = 'block'; btn.addEventListener('click', handleInstall); }
+  if (btnMobile) btnMobile.addEventListener('click', handleInstall);
 
   console.log('[PWA] Install prompt ready');
 });
@@ -77,6 +75,32 @@ async function registerBackgroundSync() {
     }
   }
 }
+
+// Mobile install button — always wire it up so it works even on iOS
+document.addEventListener('DOMContentLoaded', function() {
+  const btnMobile = document.getElementById('btn-install-mobile');
+  if (!btnMobile) return;
+
+  // If already installed, hide the option
+  if (isInstalledPWA()) {
+    btnMobile.style.display = 'none';
+    return;
+  }
+
+  btnMobile.addEventListener('click', function() {
+    if (deferredPrompt) {
+      handleInstall();
+    } else {
+      // iOS or prompt not yet available — show manual instructions
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        showToast('Tap the Share button then "Add to Home Screen"', 'info');
+      } else {
+        showToast('Tap the browser menu (⋮) then "Add to Home Screen"', 'info');
+      }
+    }
+  });
+});
 
 // Initialize PWA features
 function initPWA() {

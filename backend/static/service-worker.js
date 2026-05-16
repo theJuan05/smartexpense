@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v36';
+const CACHE_NAME = 'smartexpense-v37';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
