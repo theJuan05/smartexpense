@@ -1,6 +1,7 @@
 {
   "name": "SmartExpense AI Pro",
   "short_name": "SmartExpense",
+  "prefer_related_applications": false,
   "description": "AI-Powered Financial Management for Filipinos",
   "start_url": "/",
   "display": "standalone",

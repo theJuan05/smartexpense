@@ -48,6 +48,17 @@ window.addEventListener('appinstalled', function() {
   deferredPrompt = null;
 });
 
+function _showInstallGuide() {
+  const modal   = document.getElementById('modal-install-guide');
+  const android = document.getElementById('install-guide-android');
+  const ios     = document.getElementById('install-guide-ios');
+  if (!modal) return;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (android) android.style.display = isIOS ? 'none' : 'block';
+  if (ios)     ios.style.display     = isIOS ? 'block' : 'none';
+  modal.style.display = 'flex';
+}
+
 // Check if running as installed PWA
 function isInstalledPWA() {
   return window.matchMedia('(display-mode: standalone)').matches ||
@@ -93,17 +104,20 @@ document.addEventListener('DOMContentLoaded', function() {
     banner.style.display = 'none';
   });
 
-  // More-sheet install button (fallback + iOS)
+  // More-sheet install button — native prompt or step-by-step guide
   const btnMobile = document.getElementById('btn-install-mobile');
-  if (btnMobile && !isInstalledPWA()) {
-    btnMobile.addEventListener('click', function() {
-      if (deferredPrompt) {
-        handleInstall();
-      } else {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        showToast(isIOS ? 'Tap Share then "Add to Home Screen"' : 'Tap ⋮ then "Add to Home Screen"', 'info');
-      }
-    });
+  if (btnMobile) {
+    if (isInstalledPWA()) {
+      btnMobile.style.display = 'none';
+    } else {
+      btnMobile.addEventListener('click', function() {
+        if (deferredPrompt) {
+          handleInstall();
+        } else {
+          _showInstallGuide();
+        }
+      });
+    }
   }
 });
 

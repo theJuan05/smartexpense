@@ -334,6 +334,33 @@
     </div>
   </div>
 
+  <!-- Install guide modal (fallback when beforeinstallprompt hasn't fired) -->
+  <div id="modal-install-guide" style="display:none;" class="modal-overlay" role="dialog" aria-modal="true" aria-label="How to install">
+    <div class="modal-card" style="max-width:360px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h3 style="font-size:1rem;font-weight:700;margin:0;">Add to Home Screen</h3>
+        <button onclick="document.getElementById('modal-install-guide').style.display='none'" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem;">✕</button>
+      </div>
+      <div id="install-guide-android" style="display:none;">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;">On Chrome Android:</p>
+        <ol style="font-size:0.88rem;line-height:1.8;padding-left:18px;margin:0 0 16px;">
+          <li>Tap the <strong>⋮</strong> menu at the top right of Chrome</li>
+          <li>Tap <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong></li>
+          <li>Tap <strong>Install</strong> to confirm</li>
+        </ol>
+      </div>
+      <div id="install-guide-ios" style="display:none;">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;">On iPhone / iPad:</p>
+        <ol style="font-size:0.88rem;line-height:1.8;padding-left:18px;margin:0 0 16px;">
+          <li>Tap the <strong>Share</strong> button (box with arrow) at the bottom</li>
+          <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+          <li>Tap <strong>Add</strong> to confirm</li>
+        </ol>
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="document.getElementById('modal-install-guide').style.display='none'">Got it</button>
+    </div>
+  </div>
+
   <!-- Hidden backend status -->
   <p id="backend-status" style="display:none;"></p>
 
