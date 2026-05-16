@@ -25,13 +25,6 @@
 
   <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <!-- Mobile brand header (logo strip, hidden on desktop) -->
-  <header class="mobile-header" aria-label="SmartExpense">
-    <span class="mobile-header-brand">
-      Smart<span>Expense</span>
-    </span>
-  </header>
-
   <!-- ── Sidebar (desktop only) ────────────────────────────────── -->
   <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation">
 
@@ -276,6 +269,21 @@
       <span>More</span>
     </button>
   </nav>
+
+  <!-- Install banner (mobile, shown when Chrome offers install) -->
+  <div id="install-banner" class="install-banner" style="display:none;" role="region" aria-label="Install app">
+    <div class="install-banner-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    </div>
+    <div class="install-banner-text">
+      <span class="install-banner-title">Install SmartExpense</span>
+      <span class="install-banner-sub">Add to your home screen</span>
+    </div>
+    <button class="install-banner-btn" id="btn-install-banner" aria-label="Install">Install</button>
+    <button class="install-banner-close" id="btn-install-banner-close" aria-label="Dismiss">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
 
   <!-- More Sheet (slide-up) -->
   <div id="more-sheet-backdrop" class="more-sheet-backdrop" aria-hidden="true"></div>

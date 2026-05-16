@@ -7,10 +7,13 @@ window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
 
-  const btn       = document.getElementById('btn-install');
-  const btnMobile = document.getElementById('btn-install-mobile');
+  // Desktop install button
+  const btn = document.getElementById('btn-install');
   if (btn) { btn.style.display = 'block'; btn.addEventListener('click', handleInstall); }
-  if (btnMobile) btnMobile.addEventListener('click', handleInstall);
+
+  // Mobile install banner
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.style.display = 'flex';
 
   console.log('[PWA] Install prompt ready');
 });
@@ -38,8 +41,11 @@ async function handleInstall() {
 window.addEventListener('appinstalled', function() {
   console.log('[PWA] App was installed');
   showToast('SmartExpense AI Pro installed!');
-  const btn = document.getElementById('btn-install');
-  if (btn) btn.style.display = 'none';
+  const btn    = document.getElementById('btn-install');
+  const banner = document.getElementById('install-banner');
+  if (btn)    btn.style.display = 'none';
+  if (banner) banner.style.display = 'none';
+  deferredPrompt = null;
 });
 
 // Check if running as installed PWA
@@ -76,30 +82,29 @@ async function registerBackgroundSync() {
   }
 }
 
-// Mobile install button — always wire it up so it works even on iOS
+// Wire up install banner buttons
 document.addEventListener('DOMContentLoaded', function() {
-  const btnMobile = document.getElementById('btn-install-mobile');
-  if (!btnMobile) return;
+  const bannerBtn   = document.getElementById('btn-install-banner');
+  const bannerClose = document.getElementById('btn-install-banner-close');
+  const banner      = document.getElementById('install-banner');
 
-  // If already installed, hide the option
-  if (isInstalledPWA()) {
-    btnMobile.style.display = 'none';
-    return;
-  }
-
-  btnMobile.addEventListener('click', function() {
-    if (deferredPrompt) {
-      handleInstall();
-    } else {
-      // iOS or prompt not yet available — show manual instructions
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      if (isIOS) {
-        showToast('Tap the Share button then "Add to Home Screen"', 'info');
-      } else {
-        showToast('Tap the browser menu (⋮) then "Add to Home Screen"', 'info');
-      }
-    }
+  if (bannerBtn)   bannerBtn.addEventListener('click', handleInstall);
+  if (bannerClose && banner) bannerClose.addEventListener('click', function() {
+    banner.style.display = 'none';
   });
+
+  // More-sheet install button (fallback + iOS)
+  const btnMobile = document.getElementById('btn-install-mobile');
+  if (btnMobile && !isInstalledPWA()) {
+    btnMobile.addEventListener('click', function() {
+      if (deferredPrompt) {
+        handleInstall();
+      } else {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        showToast(isIOS ? 'Tap Share then "Add to Home Screen"' : 'Tap ⋮ then "Add to Home Screen"', 'info');
+      }
+    });
+  }
 });
 
 // Initialize PWA features
