@@ -46,17 +46,17 @@ window.addEventListener('appinstalled', function() {
   deferredPrompt = null;
 });
 
-// Show step-by-step install guide modal (global — called from onclick)
+// Show install guide modal — called from onclick
 function showInstallGuide() {
   if (deferredPrompt) {
     handleInstall();
     return;
   }
   const modal   = document.getElementById('modal-install-guide');
+  if (!modal) return;
   const android = document.getElementById('install-guide-android');
   const ios     = document.getElementById('install-guide-ios');
-  if (!modal) return;
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isIOS   = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   if (android) android.style.display = isIOS ? 'none' : 'block';
   if (ios)     ios.style.display     = isIOS ? 'block' : 'none';
   modal.style.display = 'flex';

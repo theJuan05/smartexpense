@@ -332,34 +332,34 @@
   </div>
 
   <!-- Install guide modal (fallback when beforeinstallprompt hasn't fired) -->
-  <div id="modal-install-guide" style="display:none;" class="modal-overlay" role="dialog" aria-modal="true" aria-label="How to install">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h2>Add to Home Screen</h2>
-        <button class="modal-close" onclick="closeInstallGuide()" aria-label="Close">✕</button>
+  <div id="modal-install-guide" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;padding:20px;" role="dialog" aria-modal="true" aria-label="How to install">
+    <div style="background:#fff;border-radius:20px;width:100%;max-width:360px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.3);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;">
+        <h2 style="margin:0;font-size:1.1rem;font-weight:700;color:#1a1a2e;">Add to Home Screen</h2>
+        <button onclick="document.getElementById('modal-install-guide').style.display='none'" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#666;padding:4px;">✕</button>
       </div>
-      <div class="modal-body">
+      <div style="padding:16px 20px 20px;">
         <div id="install-guide-android" style="display:none;">
-          <ol style="font-size:0.9rem;line-height:2.2;padding-left:20px;margin:0 0 14px;">
+          <ol style="font-size:0.9rem;line-height:2.2;padding-left:20px;margin:0 0 14px;color:#333;">
             <li>Tap <strong>⋮</strong> (top-right of Chrome)</li>
             <li>Tap <strong>"Add to home screen"</strong></li>
             <li>Tap <strong>Add</strong> to confirm</li>
           </ol>
-          <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 14px;padding:10px;background:var(--bg);border-radius:8px;">
-            This installs SmartExpense as a real app — it opens full-screen with no browser bar, just like a native app.
+          <p style="font-size:0.78rem;color:#888;margin:0 0 14px;padding:10px;background:#f5f5ff;border-radius:8px;">
+            This installs SmartExpense as a real app — full-screen with no browser bar.
           </p>
         </div>
         <div id="install-guide-ios" style="display:none;">
-          <ol style="font-size:0.9rem;line-height:2.2;padding-left:20px;margin:0 0 14px;">
+          <ol style="font-size:0.9rem;line-height:2.2;padding-left:20px;margin:0 0 14px;color:#333;">
             <li>Tap the <strong>Share</strong> button (bottom of Safari)</li>
             <li>Tap <strong>"Add to Home Screen"</strong></li>
             <li>Tap <strong>Add</strong></li>
           </ol>
-          <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 14px;padding:10px;background:var(--bg);border-radius:8px;">
-            This installs SmartExpense as a real app — opens full-screen with no browser bar.
+          <p style="font-size:0.78rem;color:#888;margin:0 0 14px;padding:10px;background:#f5f5ff;border-radius:8px;">
+            This installs SmartExpense as a real app — full-screen with no browser bar.
           </p>
         </div>
-        <button class="btn btn-primary" style="width:100%;" onclick="closeInstallGuide()">Got it</button>
+        <button onclick="document.getElementById('modal-install-guide').style.display='none'" style="width:100%;background:oklch(52% 0.22 280);color:#fff;border:none;border-radius:10px;padding:12px;font-size:0.95rem;font-weight:700;cursor:pointer;">Got it</button>
       </div>
     </div>
   </div>
