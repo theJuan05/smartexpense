@@ -103,18 +103,25 @@ def ensure_schema():
         execute("ALTER TABLE users ADD COLUMN monthly_income DECIMAL(15,2) DEFAULT 0")
         logger.info("[DB SCHEMA] Added monthly_income column to users table")
 
+    # If goals table exists with wrong schema (missing 'name' column), drop and recreate
+    goals_exists = query_one("SHOW TABLES LIKE 'goals'")
+    if goals_exists:
+        wrong_schema = not query_one("SHOW COLUMNS FROM goals LIKE 'name'")
+        if wrong_schema:
+            execute("DROP TABLE goals")
+            logger.info("[DB SCHEMA] Dropped goals table with wrong schema — will recreate")
+
     execute("""
         CREATE TABLE IF NOT EXISTS goals (
             id            INT AUTO_INCREMENT PRIMARY KEY,
             user_id       INT NOT NULL,
             name          VARCHAR(255) NOT NULL,
-            icon          VARCHAR(20) DEFAULT '🎯',
+            icon          VARCHAR(20) DEFAULT '',
             target_amount DECIMAL(15,2) NOT NULL,
             saved_amount  DECIMAL(15,2) DEFAULT 0,
             deadline      DATE NULL,
-            contributions JSON,
-            created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            contributions MEDIUMTEXT,
+            created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     """)
     logger.info("[DB SCHEMA] goals table ensured")
