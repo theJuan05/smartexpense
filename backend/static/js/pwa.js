@@ -11,13 +11,9 @@ window.addEventListener('beforeinstallprompt', function(e) {
   const btn = document.getElementById('btn-install');
   if (btn) { btn.style.display = 'block'; btn.addEventListener('click', handleInstall); }
 
-  // Install card inside dashboard (most visible)
+  // Install card inside dashboard
   const card = document.getElementById('install-card');
   if (card) card.style.display = 'flex';
-
-  // Mobile install banner (shown above bottom nav)
-  const banner = document.getElementById('install-banner');
-  if (banner) banner.style.display = 'flex';
 
   console.log('[PWA] Install prompt ready');
 });
@@ -34,23 +30,19 @@ async function handleInstall() {
     showToast('App installed successfully!', 'success');
   }
   deferredPrompt = null;
-  const btn    = document.getElementById('btn-install');
-  const banner = document.getElementById('install-banner');
-  const card   = document.getElementById('install-card');
-  if (btn)    btn.style.display = 'none';
-  if (banner) banner.style.display = 'none';
-  if (card)   card.style.display = 'none';
+  const btn  = document.getElementById('btn-install');
+  const card = document.getElementById('install-card');
+  if (btn)  btn.style.display = 'none';
+  if (card) card.style.display = 'none';
 }
 
 // App installed event
 window.addEventListener('appinstalled', function() {
   showToast('SmartExpense AI Pro installed!', 'success');
-  const btn    = document.getElementById('btn-install');
-  const banner = document.getElementById('install-banner');
-  const card   = document.getElementById('install-card');
-  if (btn)    btn.style.display = 'none';
-  if (banner) banner.style.display = 'none';
-  if (card)   card.style.display = 'none';
+  const btn  = document.getElementById('btn-install');
+  const card = document.getElementById('install-card');
+  if (btn)  btn.style.display = 'none';
+  if (card) card.style.display = 'none';
   deferredPrompt = null;
 });
 
@@ -105,19 +97,11 @@ async function registerBackgroundSync() {
   }
 }
 
-// Wire up install banner close button
+// Hide install card if already running as PWA
 document.addEventListener('DOMContentLoaded', function() {
-  const bannerClose = document.getElementById('btn-install-banner-close');
-  const bannerBtn   = document.getElementById('btn-install-banner');
-  const banner      = document.getElementById('install-banner');
-  if (bannerClose && banner) bannerClose.addEventListener('click', function() { banner.style.display = 'none'; });
-  if (bannerBtn) bannerBtn.addEventListener('click', handleInstall);
-
-  // Hide install options if already running as PWA
   if (isInstalledPWA()) {
-    const mobileBtn = document.getElementById('btn-install-mobile');
-    if (mobileBtn) mobileBtn.style.display = 'none';
-    if (banner) banner.style.display = 'none';
+    const card = document.getElementById('install-card');
+    if (card) card.style.display = 'none';
   }
 });
 
