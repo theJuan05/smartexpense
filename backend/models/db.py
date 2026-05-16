@@ -125,3 +125,8 @@ def ensure_schema():
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     """)
     logger.info("[DB SCHEMA] goals table ensured")
+
+    col = query_one("SHOW COLUMNS FROM users LIKE 'profile_pic'")
+    if not col:
+        execute("ALTER TABLE users ADD COLUMN profile_pic MEDIUMTEXT")
+        logger.info("[DB SCHEMA] Added profile_pic column to users table")

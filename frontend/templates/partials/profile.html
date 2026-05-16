@@ -56,17 +56,6 @@
         <span class="settings-arrow" aria-hidden="true">›</span>
       </button>
 
-      <button type="button" class="settings-item" id="open-edit-phone" aria-label="Edit phone number">
-        <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">📱</span>
-          <div>
-            <div class="settings-label">Phone Number</div>
-            <div class="settings-value" id="display-phone">Not set</div>
-          </div>
-        </div>
-        <span class="settings-arrow" aria-hidden="true">›</span>
-      </button>
-
     </div>
   </div>
 
@@ -422,24 +411,6 @@
            style="display:none;color:var(--danger);font-size:0.85rem;margin-top:4px;"></div>
       <button class="btn btn-primary" style="width:100%;margin-top:8px;"
               onclick="saveProfileField('password')">Update Password</button>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Phone Modal -->
-<div id="modal-edit-phone" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-edit-phone-title">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2 id="modal-edit-phone-title">Edit Phone Number</h2>
-      <button class="modal-close" aria-label="Close" onclick="closeProfileModal('modal-edit-phone')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label for="input-phone">Phone Number</label>
-        <input type="tel" id="input-phone" placeholder="e.g. 09XX XXX XXXX" />
-      </div>
-      <button class="btn btn-primary" style="width:100%;margin-top:8px;"
-              onclick="saveProfileField('phone')">Save</button>
     </div>
   </div>
 </div>

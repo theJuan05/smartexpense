@@ -3,7 +3,7 @@ import re
 import secrets
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
 from models.user import create_user, get_user_by_email, get_user_by_token, verify_user, check_password
-from models.db import execute
+from models.db import execute, query_one
 from security.jwt_auth import generate_token
 from config import Config
 from functools import wraps
@@ -150,6 +150,41 @@ def verify_email(token):
 
 
 # -----------------------------
+# CHANGE PASSWORD
+# -----------------------------
+@auth_bp.route('/api/v1/user/change-password', methods=['POST'])
+def change_password():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+
+    data        = request.get_json() or {}
+    current_pw  = data.get('current_password', '')
+    new_pw      = data.get('new_password', '')
+    confirm_pw  = data.get('confirm_password', '')
+
+    from models.user import get_user_by_id
+    user = get_user_by_id(user_id)
+    if not user or not check_password(user, current_pw):
+        return jsonify({'status': 'error', 'message': 'Current password is incorrect'}), 400
+
+    if len(new_pw) < 8:
+        return jsonify({'status': 'error', 'message': 'Password must be at least 8 characters'}), 400
+
+    if not SPECIAL_CHARS.search(new_pw):
+        return jsonify({'status': 'error', 'message': 'Password must contain at least one special character (e.g. !@#$%)'}), 400
+
+    if new_pw != confirm_pw:
+        return jsonify({'status': 'error', 'message': 'Passwords do not match'}), 400
+
+    from werkzeug.security import generate_password_hash
+    execute("UPDATE users SET password_hash = %s WHERE id = %s",
+            (generate_password_hash(new_pw), user_id))
+
+    return jsonify({'status': 'success'})
+
+
+# -----------------------------
 # UPDATE MONTHLY INCOME
 # -----------------------------
 @auth_bp.route('/api/v1/user/income', methods=['POST'])
@@ -165,6 +200,33 @@ def update_income():
     except (ValueError, TypeError):
         return jsonify({'status': 'error', 'message': 'Invalid amount'}), 400
     execute("UPDATE users SET monthly_income = %s WHERE id = %s", (income, user_id))
+    return jsonify({'status': 'success'})
+
+
+# -----------------------------
+# PROFILE PICTURE
+# -----------------------------
+@auth_bp.route('/api/v1/user/profile-pic', methods=['GET'])
+def get_profile_pic():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    row = query_one("SELECT profile_pic FROM users WHERE id = %s", (user_id,))
+    return jsonify({'pic': row['profile_pic'] if row else None})
+
+
+@auth_bp.route('/api/v1/user/profile-pic', methods=['POST'])
+def save_profile_pic():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    data = request.get_json() or {}
+    pic  = data.get('pic') or None
+    if pic and not pic.startswith('data:image/'):
+        return jsonify({'status': 'error', 'message': 'Invalid image format'}), 400
+    if pic and len(pic) > 7 * 1024 * 1024:
+        return jsonify({'status': 'error', 'message': 'Image too large'}), 400
+    execute("UPDATE users SET profile_pic = %s WHERE id = %s", (pic, user_id))
     return jsonify({'status': 'success'})
 
 

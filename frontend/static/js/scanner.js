@@ -31,12 +31,33 @@ async function compressImage(file) {
   });
 }
 
+// ── OFFLINE BANNER ────────────────────────────────────────────
+function updateScannerOfflineState() {
+  const banner     = document.getElementById('scanner-offline-banner');
+  const fileLabel  = document.querySelector('label[for="scanner-file"]');
+  const fileInput  = document.getElementById('scanner-file');
+  const processBtn = document.getElementById('btn-scan-process');
+
+  const offline = !navigator.onLine;
+
+  if (banner)    banner.style.display   = offline ? 'flex' : 'none';
+  if (fileLabel) fileLabel.style.opacity = offline ? '0.45' : '1';
+  if (fileInput) fileInput.disabled      = offline;
+
+  // Only re-enable process btn if a file is already selected
+  if (processBtn && offline) processBtn.disabled = true;
+  if (processBtn && !offline && fileInput && fileInput.files[0]) {
+    processBtn.disabled = false;
+  }
+}
+
 // ── MODAL OPEN / CLOSE ────────────────────────────────────────
 function openScannerModal() {
   const modal = document.getElementById('scanner-modal');
   if (!modal) return;
   modal.classList.add('active');
   resetScannerUI();
+  updateScannerOfflineState();
 }
 
 function closeScannerModal() {
@@ -236,17 +257,28 @@ window.addEventListener('load', () => {
     fileInput.addEventListener('change', function() {
       const file = this.files[0];
       if (!file) return;
-      
+
       const preview = document.getElementById('scanner-preview');
       preview.src = URL.createObjectURL(file);
       preview.style.display = 'block';
-      
+
+      // Only enable process button if online
       const processBtn = document.getElementById('btn-scan-process');
-      if (processBtn) processBtn.disabled = false;
-      
+      if (processBtn) processBtn.disabled = !navigator.onLine;
+
       // Clear previous results
       const resultEl = document.getElementById('scanner-result');
       if (resultEl) resultEl.innerHTML = '';
     });
   }
+
+  // React to connectivity changes while modal is open
+  window.addEventListener('online',  () => {
+    const modal = document.getElementById('scanner-modal');
+    if (modal?.classList.contains('active')) updateScannerOfflineState();
+  });
+  window.addEventListener('offline', () => {
+    const modal = document.getElementById('scanner-modal');
+    if (modal?.classList.contains('active')) updateScannerOfflineState();
+  });
 });

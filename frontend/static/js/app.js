@@ -813,10 +813,39 @@ function setupIncomeModal() {
   const btnCancel = document.getElementById('btn-cancel-income');
   const btnSave   = document.getElementById('btn-save-income');
   const input     = document.getElementById('income-input');
+  const slider    = document.getElementById('income-slider');
+  const display   = document.getElementById('income-display-val');
 
   if (!btnSet || !modal) return;
 
-  const open  = () => { input.value = localStorage.getItem('se_income') || ''; openModal(modal, btnSet); };
+  function formatIncome(val) {
+    return '₱' + Number(val).toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  function syncFromSlider() {
+    const val = parseInt(slider.value, 10);
+    input.value   = val;
+    display.textContent = formatIncome(val);
+  }
+
+  function syncFromInput() {
+    const val = Math.min(Math.max(parseInt(input.value, 10) || 0, 0), 500000);
+    slider.value  = val;
+    display.textContent = formatIncome(val);
+  }
+
+  slider.addEventListener('input', syncFromSlider);
+  input.addEventListener('input',  syncFromInput);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') btnSave.click(); });
+
+  const open = () => {
+    const saved = parseFloat(localStorage.getItem('se_income') || '0');
+    const clamped = Math.min(saved, 500000);
+    input.value  = clamped || '';
+    slider.value = clamped;
+    display.textContent = formatIncome(clamped);
+    openModal(modal, btnSet);
+  };
   const close = () => closeModal(modal);
 
   btnSet.addEventListener('click', open);
@@ -842,8 +871,6 @@ function setupIncomeModal() {
       else showToast('Income saved locally — sync failed', 'warning');
     }).catch(() => showToast('Income saved locally — check connection', 'warning'));
   });
-
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') btnSave.click(); });
 }
 
 // Fetch income from server and update localStorage + UI if changed

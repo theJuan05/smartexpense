@@ -62,7 +62,8 @@
       "Bash(node \"c:/Users/Administrator/Desktop/smartexpense/.agents/skills/impeccable/scripts/load-context.mjs\")",
       "Bash(git -C \"/c/Users/Administrator/Desktop/smartexpense\" add backend/templates/index.html backend/static/style.css)",
       "Bash(python3 -c ' *)",
-      "Bash(curl -I https://smartexpense.duckdns.org/static/icons/icon-192.png)"
+      "Bash(curl -I https://smartexpense.duckdns.org/static/icons/icon-192.png)",
+      "Bash(git mv *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Administrator\\.claude\\projects\\c--Users-Administrator-Desktop-smartexpense\\memory",

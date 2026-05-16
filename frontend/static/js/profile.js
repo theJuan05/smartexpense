@@ -7,8 +7,6 @@ function loadProfile() {
   const defaults = {
     username: '',
     email:    '',
-    phone:    '',
-    password: '',
     avatar:   '👤',
     currency: 'PHP (₱)',
     since:    new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long' })
@@ -48,7 +46,6 @@ function renderProfile() {
   // Account fields
   document.getElementById('display-username').textContent = p.username || 'Not set';
   document.getElementById('display-email').textContent    = p.email    || 'Not set';
-  document.getElementById('display-phone').textContent    = p.phone    || 'Not set';
   document.getElementById('display-currency').textContent = p.currency || 'PHP (₱)';
 
   // Dark mode toggle sync
@@ -93,41 +90,48 @@ function saveProfileField(field) {
     closeProfileModal('modal-edit-email');
   }
 
-  else if (field === 'phone') {
-    const val = document.getElementById('input-phone').value.trim();
-    p.phone = val;
-    closeProfileModal('modal-edit-phone');
-  }
-
   else if (field === 'password') {
     const current = document.getElementById('input-current-password').value;
     const newPass = document.getElementById('input-new-password').value;
     const confirm = document.getElementById('input-confirm-password').value;
     const errEl   = document.getElementById('password-error');
+    const btn     = document.querySelector('#modal-edit-password .btn-primary');
 
-    if (p.password && current !== p.password) {
-      errEl.textContent    = '❌ Current password is incorrect.';
-      errEl.style.display  = 'block';
-      return;
-    }
-    if (newPass.length < 6) {
-      errEl.textContent    = '❌ Password must be at least 6 characters.';
-      errEl.style.display  = 'block';
-      return;
-    }
-    if (newPass !== confirm) {
-      errEl.textContent    = '❌ Passwords do not match.';
-      errEl.style.display  = 'block';
-      return;
-    }
-    p.password = newPass;
-    closeProfileModal('modal-edit-password');
-    showToast('✅ Password updated successfully!');
+    if (btn) btn.disabled = true;
+
+    fetch('/api/v1/user/change-password', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        current_password: current,
+        new_password:     newPass,
+        confirm_password: confirm,
+      }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.status === 'success') {
+          closeProfileModal('modal-edit-password');
+          showToast('✅ Password updated successfully!');
+        } else {
+          errEl.textContent   = '❌ ' + data.message;
+          errEl.style.display = 'block';
+        }
+      })
+      .catch(() => {
+        errEl.textContent   = '❌ Network error. Please try again.';
+        errEl.style.display = 'block';
+      })
+      .finally(() => {
+        if (btn) btn.disabled = false;
+      });
+
+    return;
   }
 
   saveProfile(p);
   renderProfile();
-  if (field !== 'password') showToast('✅ Saved successfully!');
+  showToast('✅ Saved successfully!');
 }
 
 // ── AVATAR ────────────────────────────────────────────────────
@@ -146,6 +150,11 @@ function removeProfilePhoto() {
   renderProfile();
   closeProfileModal('modal-edit-avatar');
   showToast('✅ Photo removed.');
+  fetch('/api/v1/user/profile-pic', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ pic: null }),
+  }).catch(() => {});
 }
 
 function handleProfilePicUpload(file) {
@@ -180,6 +189,11 @@ function handleProfilePicUpload(file) {
         renderProfile();
         closeProfileModal('modal-edit-avatar');
         showToast('✅ Profile photo updated!');
+        fetch('/api/v1/user/profile-pic', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ pic: dataUrl }),
+        }).catch(() => {});
       } catch (_) {
         showToast('❌ Could not save photo. Try a smaller image.');
       }
@@ -242,6 +256,7 @@ async function syncAccountFromServer() {
     if (!res.ok) return;
     const data = await res.json();
     if (!data.logged_in) return;
+
     const p = loadProfile();
     let changed = false;
     if (data.user_email && p.email !== data.user_email) {
@@ -255,6 +270,20 @@ async function syncAccountFromServer() {
     if (changed) {
       saveProfile(p);
       renderProfile();
+    }
+  } catch (_) {}
+
+  // Sync profile picture from server — covers cross-device logins
+  try {
+    const picRes  = await fetch('/api/v1/user/profile-pic');
+    if (!picRes.ok) return;
+    const picData = await picRes.json();
+    if (picData.pic) {
+      const local = localStorage.getItem(PROFILE_PIC_KEY);
+      if (local !== picData.pic) {
+        localStorage.setItem(PROFILE_PIC_KEY, picData.pic);
+        renderProfile();
+      }
     }
   } catch (_) {}
 }
@@ -282,13 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('open-edit-password')
     ?.addEventListener('click', () => openProfileModal('modal-edit-password'));
-
-  document.getElementById('open-edit-phone')
-    ?.addEventListener('click', () => {
-      const p = loadProfile();
-      document.getElementById('input-phone').value = p.phone || '';
-      openProfileModal('modal-edit-phone');
-    });
 
   document.getElementById('btn-change-avatar')
     ?.addEventListener('click', () => openProfileModal('modal-edit-avatar'));
