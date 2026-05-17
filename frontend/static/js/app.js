@@ -307,7 +307,7 @@ async function _syncNewExpense(localId, expense) {
     if (result && result.status === 'success') {
       await markExpenseSynced(localId, result.id);
       await loadExpenseList();  // refresh to remove Pending badge
-      await checkBudgetAlerts(); // server now has the expense — check is accurate
+      await checkBudgetAlerts(expense.category); // only toast the category just logged
     }
     fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
   } catch (_) {}
@@ -926,14 +926,16 @@ function registerServiceWorker() {
 }
 
 // ── Push Notifications ─────────────────────────────────────
-async function requestNotificationPermission() {
+// fromSettings=true skips the "already asked" guard so the user can re-prompt
+// from the Profile → Push Notifications row.
+async function requestNotificationPermission(fromSettings = false) {
   if (!('Notification' in window)) return;
   if (Notification.permission === 'denied') return;
   if (Notification.permission === 'granted') {
     if (typeof initFirebaseMessaging === 'function') initFirebaseMessaging();
     return;
   }
-  if (localStorage.getItem('se-notif-asked')) return;
+  if (!fromSettings && localStorage.getItem('se-notif-asked')) return;
   localStorage.setItem('se-notif-asked', '1');
   const result = await Notification.requestPermission();
   if (result === 'granted' && typeof initFirebaseMessaging === 'function') {

@@ -430,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Push Notifications enable button
   updateNotifPermissionStatus();
   document.getElementById('btn-enable-notifications')
-    ?.addEventListener('click', requestNotificationPermission);
+    ?.addEventListener('click', () => requestNotificationPermission(true));
 
 });
 

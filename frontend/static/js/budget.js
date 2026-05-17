@@ -276,7 +276,7 @@ async function renderBudgetOffline(container) {
 }
 
 // ── Check budgets after adding expense ────────────────────
-async function checkBudgetAlerts() {
+async function checkBudgetAlerts(triggeredCategory = null) {
   if (!navigator.onLine) return;
 
   const result = await API.request('/budgets/summary');
@@ -287,8 +287,10 @@ async function checkBudgetAlerts() {
   const seen    = JSON.parse(localStorage.getItem(seenKey) || '[]');
 
   result.data.forEach(budget => {
+    const isThisCategory = !triggeredCategory || budget.category === triggeredCategory;
+
     if (budget.status === 'danger') {
-      showToast(`OVER BUDGET: ${budget.category} (${budget.percentage}%)`, 'warning');
+      if (isThisCategory) showToast(`Over budget: ${budget.category} (${budget.percentage}%)`, 'warning');
       const id = `${budget.id}-danger`;
       if (!seen.includes(id)) {
         seen.push(id);
@@ -301,7 +303,7 @@ async function checkBudgetAlerts() {
         }
       }
     } else if (budget.status === 'warning') {
-      showToast(`Warning: ${budget.category} at ${budget.percentage}%`, 'warning');
+      if (isThisCategory) showToast(`Budget warning: ${budget.category} at ${budget.percentage}%`, 'warning');
       const id = `${budget.id}-warning`;
       if (!seen.includes(id)) {
         seen.push(id);
