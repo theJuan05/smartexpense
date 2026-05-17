@@ -1,3 +1,15 @@
 #PULL FROM NEWLY ADDED CODE TO EC2#
 cd ~/app/smartexpense && git pull && sudo systemctl restart smartexpense
+
+http://smartexpense.duckdns.org:8080
+
  github token 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
+
+ https://smartexpense.duckdns.org
+ Your database is on Aiven. Use these details in Adminer:
+
+Field	Value
+Server:	mysql-42b8a1c-amiguelll0513-d746.h.aivencloud.com:15785
+Username:	avnadmin
+Password:	click the eye icon on Aiven to reveal it
+Database	defaultdb
