@@ -1,7 +1,7 @@
 // db.js — Complete IndexedDB Manager for SmartExpense
 
 const DB_NAME    = 'SmartExpenseDB';
-const DB_VERSION = 4;
+const DB_VERSION = 5;
 let db = null;
 
 // Returns a human-readable title, replacing undecryptable ciphertext with a fallback

@@ -478,29 +478,40 @@ function updateNotifPermissionStatus() {
 async function requestNotificationPermission() {
   if (!('Notification' in window)) {
     if (_isIOS() && !_isStandalone()) {
-      showToast('Open SmartExpense from your home screen icon, then try again.');
+      alert('To enable notifications:\n1. Go to your home screen\n2. Open SmartExpense from the home screen icon\n3. Come back to Profile and tap Push Notifications again.');
     } else if (_isIOS()) {
-      showToast('iOS 16.4+ is required for push notifications.');
+      alert('iOS 16.4+ is required for push notifications.');
     } else {
-      showToast('Try opening the app in Chrome to enable notifications.');
+      alert('Notifications are not supported in this browser. Try opening in Chrome.');
     }
     return;
   }
   if (Notification.permission === 'denied') {
-    showToast('Notifications blocked. Go to phone Settings → Notifications → allow SmartExpense.');
+    alert('Notifications are blocked.\n\nTo fix: go to phone Settings → Apps → Chrome → Notifications → allow, then come back here.');
     return;
   }
+
   const permission = await Notification.requestPermission();
   updateNotifPermissionStatus();
+
   if (permission === 'granted') {
-    showToast('✅ Notifications enabled!');
-    if (typeof registerFCMToken === 'function') {
-      registerFCMToken();
-    } else if (typeof initFirebaseMessaging === 'function') {
-      initFirebaseMessaging();
+    const btn = document.getElementById('btn-enable-notifications');
+    const statusEl = document.getElementById('notif-permission-status');
+    if (statusEl) statusEl.textContent = 'Registering device…';
+
+    let fcmOk = false;
+    if (typeof initFirebaseMessaging === 'function') {
+      fcmOk = await initFirebaseMessaging();
+    }
+
+    updateNotifPermissionStatus();
+    if (fcmOk) {
+      showToast('Push notifications enabled! You will receive budget alerts.', 'success');
+    } else {
+      showToast('Permission granted, but device registration failed. Try the test button.', 'warning');
     }
   } else {
-    showToast('Notifications permission was not granted.');
+    showToast('Notification permission was not granted.');
   }
 }
 
@@ -512,40 +523,26 @@ async function sendTestNotification() {
 
   const btn = document.getElementById('btn-test-notification');
   const origText = btn?.querySelector('.settings-value')?.textContent;
+  if (btn) btn.querySelector('.settings-value').textContent = 'Registering…';
+
+  // Always re-register the FCM token before testing — ensures the phone is in push_tokens table
+  if (typeof initFirebaseMessaging === 'function') {
+    await initFirebaseMessaging();
+  }
+
   if (btn) btn.querySelector('.settings-value').textContent = 'Sending…';
 
-  let swOk = false;
-
-  // Try local SW notification (shows even if app is open)
-  try {
-    const reg = await navigator.serviceWorker.ready;
-    await reg.showNotification('SmartExpense', {
-      body:    'Notifications are working on this device!',
-      icon:    '/static/icons/icon-192.png',
-      badge:   '/static/icons/icon-192.png',
-      tag:     'se-test',
-      vibrate: [200, 100, 200],
-    });
-    swOk = true;
-  } catch (_) {}
-
-  // Always also fire the FCM server push so it works when app is closed
+  // Try FCM server push (works when app is open OR closed)
   try {
     const res  = await fetch('/api/v1/push-test', { method: 'POST' });
     const data = await res.json();
     if (data.status === 'success') {
-      showToast('Test notification sent to ' + (data.devices || 1) + ' device(s)!', 'success');
-    } else if (!swOk) {
-      showToast('Could not send test: ' + (data.message || 'unknown error'), 'warning');
+      showToast('Test push sent to ' + (data.devices || 1) + ' device(s) — check your notifications!', 'success');
     } else {
-      showToast('Test notification sent!', 'success');
+      alert('Push test failed: ' + (data.message || 'unknown error') + '\n\nMake sure you tapped "Push Notifications" and allowed it first.');
     }
   } catch (_) {
-    if (swOk) {
-      showToast('Test notification sent (local only — offline).', 'success');
-    } else {
-      showToast('Test failed — make sure you are online.', 'warning');
-    }
+    alert('Could not reach server. Make sure you are online.');
   }
 
   if (btn && origText) btn.querySelector('.settings-value').textContent = origText;

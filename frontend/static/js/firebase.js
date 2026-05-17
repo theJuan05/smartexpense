@@ -12,13 +12,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-// Called by app.js after notification permission is granted.
-// Gets the FCM device token and saves it to the Flask backend.
+// Called after notification permission is granted.
+// Returns true if FCM token was successfully saved to the server.
 async function initFirebaseMessaging() {
-  if (typeof messaging === 'undefined') return;
+  if (typeof messaging === 'undefined') {
+    console.warn('[FCM] messaging not defined — Firebase SDK may not be loaded');
+    return false;
+  }
   try {
-    // Register the Firebase SW separately so it doesn't conflict with the main
-    // service-worker.js that handles caching + local push notifications.
     const fbReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
     const token = await messaging.getToken({
       vapidKey:                  "BOfZ497Sgq7gruzFLTrEnJmWlq8jmUypT_4SCuW9G44YK_tSAjcxmPHiT3izs1aeYKANmCfIr89pf4DKhKbJ_QI",
@@ -26,12 +27,12 @@ async function initFirebaseMessaging() {
     });
 
     if (!token) {
-      console.warn('[FCM] No token returned — SW or VAPID issue');
-      return;
+      console.warn('[FCM] No token returned — VAPID key or SW issue');
+      return false;
     }
 
     console.log('[FCM] Token obtained, saving to server...');
-    const res = await fetch('/api/v1/push-token', {
+    const res  = await fetch('/api/v1/push-token', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ token }),
@@ -39,9 +40,13 @@ async function initFirebaseMessaging() {
     const data = await res.json();
     if (data.status === 'success') {
       console.log('[FCM] Token registered with server ✅');
+      return true;
     }
+    console.warn('[FCM] Server rejected token:', data.message);
+    return false;
   } catch (err) {
     console.warn('[FCM] Init error:', err.message || err);
+    return false;
   }
 }
 
