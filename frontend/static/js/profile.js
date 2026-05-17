@@ -432,6 +432,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-enable-notifications')
     ?.addEventListener('click', () => requestNotificationPermission(true));
 
+  // Test Notification button
+  document.getElementById('btn-test-notification')
+    ?.addEventListener('click', sendTestNotification);
+
 });
 
 // ── PUSH NOTIFICATION PERMISSION ─────────────────────────────
@@ -494,4 +498,43 @@ async function requestNotificationPermission() {
   } else {
     showToast('Notifications permission was not granted.');
   }
+}
+
+async function sendTestNotification() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    showToast('Enable notifications first, then try again.', 'warning');
+    return;
+  }
+
+  const btn = document.getElementById('btn-test-notification');
+  const origText = btn?.querySelector('.settings-value')?.textContent;
+  if (btn) btn.querySelector('.settings-value').textContent = 'Sending…';
+
+  // Try local SW notification immediately (works when app is open)
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    await reg.showNotification('SmartExpense', {
+      body:    'Notifications are working on this device!',
+      icon:    '/static/icons/icon-192.png',
+      badge:   '/static/icons/icon-192.png',
+      tag:     'se-test',
+      vibrate: [200, 100, 200],
+    });
+    showToast('Test notification sent!', 'success');
+  } catch (_) {
+    // SW notification failed — fall back to FCM server push
+    try {
+      const res  = await fetch('/api/v1/push-test', { method: 'POST' });
+      const data = await res.json();
+      if (data.status === 'success') {
+        showToast('Test push sent via FCM — check your notifications.', 'success');
+      } else {
+        showToast('Could not send test: ' + (data.message || 'unknown error'), 'warning');
+      }
+    } catch (e) {
+      showToast('Test failed — make sure you are online.', 'warning');
+    }
+  }
+
+  if (btn && origText) btn.querySelector('.settings-value').textContent = origText;
 }
