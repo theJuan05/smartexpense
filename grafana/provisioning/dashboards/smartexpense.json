@@ -1,0 +1,126 @@
+{
+  "title": "SmartExpense — Live Monitoring",
+  "uid": "smartexpense-main",
+  "version": 1,
+  "schemaVersion": 36,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total HTTP Requests",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [{
+        "expr": "sum(flask_http_request_total{app='smartexpense'})",
+        "legendFormat": "Total Requests"
+      }],
+      "options": { "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" },
+        "thresholds": { "steps": [
+          { "color": "green", "value": null },
+          { "color": "yellow", "value": 1000 },
+          { "color": "red", "value": 10000 }
+        ]}}}
+    },
+    {
+      "id": 2,
+      "title": "Requests Per Minute",
+      "type": "stat",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [{
+        "expr": "rate(flask_http_request_total{app='smartexpense'}[1m]) * 60",
+        "legendFormat": "Req/min"
+      }],
+      "options": { "colorMode": "background", "graphMode": "area" },
+      "fieldConfig": { "defaults": { "decimals": 1, "color": { "mode": "thresholds" },
+        "thresholds": { "steps": [
+          { "color": "green", "value": null },
+          { "color": "yellow", "value": 50 },
+          { "color": "red", "value": 200 }
+        ]}}}
+    },
+    {
+      "id": 3,
+      "title": "Error Rate (5xx)",
+      "type": "stat",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "targets": [{
+        "expr": "sum(rate(flask_http_request_total{app='smartexpense', status=~'5..'}[5m])) * 60",
+        "legendFormat": "Errors/min"
+      }],
+      "options": { "colorMode": "background" },
+      "fieldConfig": { "defaults": { "decimals": 2, "color": { "mode": "thresholds" },
+        "thresholds": { "steps": [
+          { "color": "green", "value": null },
+          { "color": "red", "value": 1 }
+        ]}}}
+    },
+    {
+      "id": 4,
+      "title": "Avg Response Time (ms)",
+      "type": "stat",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "targets": [{
+        "expr": "rate(flask_http_request_duration_seconds_sum{app='smartexpense'}[5m]) / rate(flask_http_request_duration_seconds_count{app='smartexpense'}[5m]) * 1000",
+        "legendFormat": "Avg ms"
+      }],
+      "options": { "colorMode": "background" },
+      "fieldConfig": { "defaults": { "decimals": 0, "unit": "ms", "color": { "mode": "thresholds" },
+        "thresholds": { "steps": [
+          { "color": "green", "value": null },
+          { "color": "yellow", "value": 500 },
+          { "color": "red", "value": 2000 }
+        ]}}}
+    },
+    {
+      "id": 5,
+      "title": "HTTP Requests Over Time",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 4, "w": 24, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(flask_http_request_total{app='smartexpense', status=~'2..'}[1m]) * 60",
+          "legendFormat": "2xx Success"
+        },
+        {
+          "expr": "rate(flask_http_request_total{app='smartexpense', status=~'4..'}[1m]) * 60",
+          "legendFormat": "4xx Client Error"
+        },
+        {
+          "expr": "rate(flask_http_request_total{app='smartexpense', status=~'5..'}[1m]) * 60",
+          "legendFormat": "5xx Server Error"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqpm", "custom": { "lineWidth": 2 } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "2xx Success" }, "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" }}]},
+          { "matcher": { "id": "byName", "options": "4xx Client Error" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow", "mode": "fixed" }}]},
+          { "matcher": { "id": "byName", "options": "5xx Server Error" }, "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" }}]}
+        ]}
+    },
+    {
+      "id": 6,
+      "title": "Response Time by Endpoint (p95)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+      "targets": [{
+        "expr": "histogram_quantile(0.95, rate(flask_http_request_duration_seconds_bucket{app='smartexpense'}[5m])) * 1000",
+        "legendFormat": "{{method}} {{path}}"
+      }],
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "lineWidth": 2 } }}
+    },
+    {
+      "id": 7,
+      "title": "Top Endpoints by Request Count",
+      "type": "bargauge",
+      "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+      "targets": [{
+        "expr": "topk(8, sum by (path, method) (flask_http_request_total{app='smartexpense'}))",
+        "legendFormat": "{{method}} {{path}}"
+      }],
+      "options": { "orientation": "horizontal", "reduceOptions": { "calcs": ["lastNotNull"] }},
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }}}
+    }
+  ]
+}

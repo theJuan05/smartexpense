@@ -40,6 +40,13 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 _allowed_origin = Config.APP_URL.rstrip('/')
 CORS(app, resources={r"/api/*": {"origins": [_allowed_origin, "http://localhost:5000"]}}, supports_credentials=True)
 
+# ── Prometheus metrics (exposes /metrics for Grafana dashboard) ─
+try:
+    from prometheus_flask_exporter import PrometheusMetrics
+    PrometheusMetrics(app, default_labels={'app': 'smartexpense'})
+except ImportError:
+    pass  # Optional — app runs fine without it
+
 # -----------------------------
 # REGISTER BLUEPRINTS
 # -----------------------------

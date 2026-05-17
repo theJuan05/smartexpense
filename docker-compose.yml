@@ -42,6 +42,45 @@ services:
     expose:
       - "5000"
 
+  # ── Prometheus (metrics collector) ───────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: smartexpense_prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=7d'
+    networks:
+      - internal
+      - external
+    ports:
+      - "9090:9090"
+    depends_on:
+      - app
+
+  # ── Grafana (monitoring dashboard) ────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: smartexpense_grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER:     admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-smartexpense123}
+      GF_SERVER_DOMAIN:           ${GRAFANA_DOMAIN:-localhost}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - internal
+      - external
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
   # ── Nginx Reverse Proxy / API Gateway ─────────────────────
   nginx:
     image: nginx:alpine
@@ -67,4 +106,8 @@ networks:
 
 volumes:
   db_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local
