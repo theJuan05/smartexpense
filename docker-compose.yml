@@ -8,16 +8,16 @@ services:
     container_name: smartexpense_db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE:      ${DB_NAME}
-      MYSQL_USER:          ${DB_USER}
-      MYSQL_PASSWORD:      ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE:      ${DB_NAME:-smartexpense}
+      MYSQL_USER:          ${DB_USER:-smartexpense_user}
+      MYSQL_PASSWORD:      ${DB_PASSWORD:-smartexpense_pass}
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - internal
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${DB_USER:-smartexpense_user}", "-p${DB_PASSWORD:-smartexpense_pass}"]
       interval: 10s
       timeout: 5s
       retries: 5
