@@ -193,7 +193,14 @@ def generate_advice(data):
         })
 
     if near_budget:
-        health_score -= 5
+        for b in near_budget:
+            pct_used = b['spent'] / b['amount_limit']
+            if pct_used >= 0.9:
+                health_score -= 13
+            elif pct_used >= 0.8:
+                health_score -= 10
+            else:
+                health_score -= 7
         cats = ', '.join(b['category'] for b in near_budget[:2])
         advice_list.append({
             'type'    : 'warning',
