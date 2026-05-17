@@ -64,7 +64,9 @@
       "Bash(python3 -c ' *)",
       "Bash(curl -I https://smartexpense.duckdns.org/static/icons/icon-192.png)",
       "Bash(git mv *)",
-      "Bash(findstr -E \"\\(ml|ai|predict|forecast|anomal|advice|receipt\\)\")"
+      "Bash(findstr -E \"\\(ml|ai|predict|forecast|anomal|advice|receipt\\)\")",
+      "Bash(find /etc/systemd/system -name \"smartexpense*\" 2>/dev/null || echo \"not found\")",
+      "Read(//etc/systemd/**)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Administrator\\.claude\\projects\\c--Users-Administrator-Desktop-smartexpense\\memory",

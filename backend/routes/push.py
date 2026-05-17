@@ -86,7 +86,7 @@ def send_fcm(token, title, body, link='/'):
         return False
 
 
-# ── Create push_tokens table ───────────────────────────────────
+# ── Create push_tokens table (one row per device, not per user) ─
 def _ensure_table():
     conn = get_connection()
     if not conn:
@@ -97,14 +97,27 @@ def _ensure_table():
             CREATE TABLE IF NOT EXISTS push_tokens (
                 id         INT AUTO_INCREMENT PRIMARY KEY,
                 user_id    INT NOT NULL,
-                token      TEXT NOT NULL,
+                token      VARCHAR(512) NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
                            ON UPDATE CURRENT_TIMESTAMP,
-                UNIQUE KEY uq_push_user (user_id)
+                UNIQUE KEY uq_push_token (token(255))
             )
         """)
         conn.commit()
+        # Migrate old schema: drop the per-user unique key if it still exists
+        try:
+            cursor.execute("ALTER TABLE push_tokens DROP INDEX uq_push_user")
+            conn.commit()
+            logger.info('[Push] Dropped old uq_push_user index — now multi-device')
+        except Exception:
+            pass  # Already removed or never existed
+        # Add per-token unique key if missing (tables created before this migration)
+        try:
+            cursor.execute("ALTER TABLE push_tokens ADD UNIQUE KEY uq_push_token (token(255))")
+            conn.commit()
+        except Exception:
+            pass  # Already exists
     except Exception as e:
         logger.warning('[Push] Table init failed: %s', e)
     finally:
@@ -132,10 +145,11 @@ def save_push_token():
         return jsonify({'status': 'error', 'message': 'DB unavailable'}), 500
     try:
         cursor = conn.cursor()
+        # Upsert by token — same device re-registering just refreshes its row
         cursor.execute("""
             INSERT INTO push_tokens (user_id, token)
             VALUES (%s, %s)
-            ON DUPLICATE KEY UPDATE token = VALUES(token), updated_at = CURRENT_TIMESTAMP
+            ON DUPLICATE KEY UPDATE user_id = VALUES(user_id), updated_at = CURRENT_TIMESTAMP
         """, (user_id, token))
         conn.commit()
         logger.info('[Push] Token saved for user %s', user_id)
@@ -150,6 +164,22 @@ def save_push_token():
         conn.close()
 
 
+def _get_user_tokens(user_id):
+    """Return all FCM tokens registered for this user (all devices)."""
+    rows = query_all('SELECT token FROM push_tokens WHERE user_id = %s', (user_id,))
+    return [r['token'] for r in rows]
+
+
+def _send_to_all(user_id, title, body, link='/'):
+    """Send FCM push to every device the user is logged in on."""
+    tokens = _get_user_tokens(user_id)
+    sent   = 0
+    for token in tokens:
+        if send_fcm(token, title, body, link):
+            sent += 1
+    return sent
+
+
 # ── POST /api/push-test  (demo / presentation use) ────────────
 @push_bp.route('/push-test', methods=['POST'])
 def push_test():
@@ -157,16 +187,12 @@ def push_test():
     if not user_id:
         return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
 
-    row = query_one('SELECT token FROM push_tokens WHERE user_id = %s', (user_id,))
-    if not row:
+    tokens = _get_user_tokens(user_id)
+    if not tokens:
         return jsonify({'status': 'error', 'message': 'No push token registered for this user'}), 404
 
-    ok = send_fcm(
-        row['token'],
-        title='SmartExpense 🔔',
-        body='Push notifications are working! You\'re all set.',
-    )
-    return jsonify({'status': 'success' if ok else 'error'})
+    sent = _send_to_all(user_id, 'SmartExpense', 'Push notifications are working on all your devices!')
+    return jsonify({'status': 'success' if sent else 'error', 'devices': sent})
 
 
 # ── POST /api/budgets/notify ───────────────────────────────────
@@ -176,11 +202,9 @@ def check_and_notify():
     if not user_id:
         return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
 
-    row = query_one('SELECT token FROM push_tokens WHERE user_id = %s', (user_id,))
-    if not row:
-        return jsonify({'status': 'ok', 'message': 'No push token registered'})
+    if not _get_user_tokens(user_id):
+        return jsonify({'status': 'ok', 'message': 'No push tokens registered'})
 
-    token   = row['token']
     budgets = query_all("""
         SELECT
             b.id,
@@ -208,10 +232,10 @@ def check_and_notify():
         if pct >= 90:
             title = f'Over Budget: {category}'
             body  = f"You've spent ₱{spent:,.0f} — {pct:.0f}% of your ₱{limit:,.0f} limit!"
-            if send_fcm(token, title, body): pushed += 1
+            pushed += _send_to_all(user_id, title, body)
         elif pct >= 70:
             title = f'Budget Warning: {category}'
             body  = f"You've used {pct:.0f}% of your ₱{limit:,.0f} monthly budget."
-            if send_fcm(token, title, body): pushed += 1
+            pushed += _send_to_all(user_id, title, body)
 
     return jsonify({'status': 'success', 'pushed': pushed})

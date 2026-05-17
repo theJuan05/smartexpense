@@ -123,6 +123,14 @@ with app.app_context():
     except Exception as e:
         logging.warning('[ML] Classifier warm-up failed: %s', e)
 
+# Start background scheduler (daily budget reminders)
+# Gunicorn: use --preload so this runs once in the master process, not per worker
+try:
+    from scheduler import start_scheduler
+    start_scheduler(app)
+except Exception as e:
+    logging.warning('[Scheduler] Failed to start: %s', e)
+
 if __name__ == '__main__':
     print("=" * 50)
     print("  SmartExpense - Flask Backend")
