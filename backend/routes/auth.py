@@ -1,6 +1,7 @@
 import logging
 import re
 import secrets
+from datetime import datetime, timedelta, timezone
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
 from models.user import create_user, get_user_by_email, get_user_by_token, verify_user, check_password
 from models.db import execute, query_one
@@ -147,6 +148,74 @@ def verify_email(token):
     verify_user(user['id'])
     flash('Email verified! You can now log in.', 'success')
     return redirect(url_for('auth.login'))
+
+
+# -----------------------------
+# FORGOT PASSWORD
+# -----------------------------
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        user  = get_user_by_email(email)
+        if user:
+            token   = secrets.token_urlsafe(32)
+            expires = datetime.now(timezone.utc) + timedelta(hours=1)
+            execute(
+                "UPDATE users SET password_reset_token = %s, password_reset_expires = %s WHERE id = %s",
+                (token, expires, user['id'])
+            )
+            reset_url = f"{Config.APP_URL}/reset-password/{token}"
+            import threading
+            from routes.email_alert import send_reset_email
+            def _send():
+                try:
+                    send_reset_email(user['email'], user['name'], reset_url)
+                except Exception as e:
+                    logger.error("Reset email failed for %s: %s", email, e)
+            threading.Thread(target=_send, daemon=True).start()
+        # Same message regardless — prevents email enumeration
+        flash('If that email has an account, a reset link has been sent. Check your inbox.', 'info')
+        return redirect(url_for('auth.forgot_password'))
+    return render_template('auth/forgot-password.html')
+
+
+# -----------------------------
+# RESET PASSWORD
+# -----------------------------
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    user = query_one(
+        "SELECT * FROM users WHERE password_reset_token = %s AND password_reset_expires > %s",
+        (token, datetime.now(timezone.utc))
+    )
+    if not user:
+        flash('This reset link is invalid or has expired.', 'error')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        new_pw  = request.form.get('password', '')
+        confirm = request.form.get('confirm_password', '')
+
+        if len(new_pw) < 8:
+            flash('Password must be at least 8 characters.', 'error')
+            return render_template('auth/reset-password.html', token=token)
+        if not SPECIAL_CHARS.search(new_pw):
+            flash('Password must contain at least one special character (e.g. !@#$%).', 'error')
+            return render_template('auth/reset-password.html', token=token)
+        if new_pw != confirm:
+            flash('Passwords do not match.', 'error')
+            return render_template('auth/reset-password.html', token=token)
+
+        from werkzeug.security import generate_password_hash
+        execute(
+            "UPDATE users SET password_hash = %s, password_reset_token = NULL, password_reset_expires = NULL WHERE id = %s",
+            (generate_password_hash(new_pw), user['id'])
+        )
+        flash('Password updated! You can now sign in with your new password.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/reset-password.html', token=token)
 
 
 # -----------------------------

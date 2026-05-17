@@ -130,3 +130,9 @@ def ensure_schema():
     if not col:
         execute("ALTER TABLE users ADD COLUMN profile_pic MEDIUMTEXT")
         logger.info("[DB SCHEMA] Added profile_pic column to users table")
+
+    col = query_one("SHOW COLUMNS FROM users LIKE 'password_reset_token'")
+    if not col:
+        execute("ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(100) NULL")
+        execute("ALTER TABLE users ADD COLUMN password_reset_expires DATETIME NULL")
+        logger.info("[DB SCHEMA] Added password reset columns to users table")

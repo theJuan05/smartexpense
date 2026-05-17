@@ -109,3 +109,44 @@ def _send_alert_email(name, to_email, device):
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
         smtp.login(Config.GMAIL_USER, Config.GMAIL_APP_PASSWORD)
         smtp.sendmail(Config.GMAIL_USER, to_email, msg.as_string())
+
+
+def send_reset_email(to_email, name, reset_url):
+    import requests as _requests
+    html = f"""
+    <div style="font-family:'Segoe UI',sans-serif;max-width:480px;margin:auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+      <div style="background:linear-gradient(135deg,#6c4fff,#3b37b8);padding:2rem;text-align:center;color:white;">
+        <h1 style="margin:0;font-size:1.5rem;">🔑 Reset your password</h1>
+        <p style="margin:0.5rem 0 0;opacity:0.85;">SmartExpense</p>
+      </div>
+      <div style="background:#fff;padding:2rem;">
+        <p style="color:#333;">Hi <strong>{name}</strong>,</p>
+        <p style="color:#555;">We received a request to reset your password. Click the button below to set a new one. This link expires in <strong>1 hour</strong>.</p>
+        <div style="text-align:center;margin:1.75rem 0;">
+          <a href="{reset_url}" style="background:#6c4fff;color:white;padding:0.85rem 2rem;border-radius:10px;text-decoration:none;font-weight:700;font-size:1rem;">
+            Reset Password
+          </a>
+        </div>
+        <p style="color:#888;font-size:0.85rem;">Or copy this link into your browser:</p>
+        <p style="color:#6c4fff;font-size:0.82rem;word-break:break-all;">{reset_url}</p>
+        <p style="color:#aaa;font-size:0.78rem;margin-top:1.5rem;text-align:center;">If you did not request a password reset, you can ignore this email. Your password will not change.</p>
+        <p style="color:#bbb;font-size:0.78rem;text-align:center;">SmartExpense — Password Reset</p>
+      </div>
+    </div>
+    """
+    resp = _requests.post(
+        'https://api.brevo.com/v3/smtp/email',
+        headers={
+            'api-key': Config.BREVO_API_KEY,
+            'Content-Type': 'application/json'
+        },
+        json={
+            'sender': {'email': Config.GMAIL_USER, 'name': 'SmartExpense'},
+            'to': [{'email': to_email, 'name': name}],
+            'subject': 'Reset your SmartExpense password',
+            'htmlContent': html
+        },
+        timeout=15
+    )
+    if resp.status_code >= 400:
+        raise Exception(f'Brevo error {resp.status_code}: {resp.text}')

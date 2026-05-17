@@ -424,7 +424,8 @@ async function pullGoalsFromServer() {
 
     // Push any local goals the server doesn't know about yet
     // (created offline, or on a device that hadn't synced)
-    const localOnly = localGoals.filter(g => !serverIdSet.has(g.id));
+    const localOnly  = localGoals.filter(g => !serverIdSet.has(g.id));
+    const failedPush = []; // goals that failed to reach server — must not be lost
     for (const g of localOnly) {
       try {
         const r    = await fetch('/api/v1/goals', {
@@ -433,11 +434,17 @@ async function pullGoalsFromServer() {
           body:    JSON.stringify(g),
         });
         const data = await r.json();
-        if (data.id) serverGoals.push({ ...g, id: data.id });
-      } catch (_) {}
+        if (data.id) {
+          serverGoals.push({ ...g, id: data.id });
+        } else {
+          failedPush.push(g);
+        }
+      } catch (_) {
+        failedPush.push(g);
+      }
     }
 
-    if (serverGoals.length === 0) return; // nothing on either side
+    if (serverGoals.length === 0 && failedPush.length === 0) return;
 
     // Server is source of truth — replace local store with merged list
     const tx    = db.transaction('goals', 'readwrite');
@@ -456,8 +463,13 @@ async function pullGoalsFromServer() {
         createdAt:     g.createdAt     || new Date().toISOString(),
       });
     }
+    // Re-add goals that couldn't reach server (strip id to avoid server-id conflicts)
+    for (const g of failedPush) {
+      const { id: _drop, ...rest } = g;
+      store.put(rest);
+    }
     await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
-    console.log(`[Goals Sync] ${serverGoals.length} goal(s) synced ✅`);
+    console.log(`[Goals Sync] ${serverGoals.length} goal(s) synced, ${failedPush.length} pending ✅`);
   } catch (err) {
     console.warn('[Goals Sync] Failed:', err);
   }

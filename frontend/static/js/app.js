@@ -76,16 +76,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     showToast('Back online! Syncing...');
     await runSync();
     await syncIncomeFromServer();
+    await pullGoalsFromServer();
+    if (document.querySelector('#tab-goals.active')) await loadGoals();
   });
   window.addEventListener('offline', () => {
     updateOnlineStatus();
     showToast('You are offline - data saved locally', 'warning');
   });
 
-  // Re-sync income when app is resumed from background (mobile PWA)
+  // Re-sync when app is resumed from background (mobile PWA)
   document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState === 'visible') {
       await syncIncomeFromServer();
+      await pullGoalsFromServer();
+      if (document.querySelector('#tab-goals.active')) await loadGoals();
     }
   });
 
