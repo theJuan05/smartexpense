@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v51';
+const CACHE_NAME = 'smartexpense-v52';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -96,25 +96,14 @@ self.addEventListener('fetch', function(event) {
   // Android (e.g. ?source=pwa) don't prevent a cache hit.
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      caches.match('/', { ignoreSearch: true }).then(function(cached) {
-        // Refresh cache in background regardless
-        fetch('/').then(function(resp) {
-          if (resp && resp.status === 200) {
-            caches.open(CACHE_NAME).then(function(cache) { cache.put('/', resp); });
-          }
-        }).catch(function() {});
-
-        if (cached) return cached;
-
-        // Not cached yet — try network
-        return fetch(event.request).then(function(resp) {
-          if (resp && resp.status === 200) {
-            caches.open(CACHE_NAME).then(function(cache) { cache.put('/', resp.clone()); });
-          }
-          return resp;
-        }).catch(function() {
-          // Fully offline, nothing cached — show minimal offline page
-          // so the SW always responds (never lets Chrome show its own error)
+      fetch(event.request).then(function(resp) {
+        if (resp && resp.status === 200) {
+          caches.open(CACHE_NAME).then(function(cache) { cache.put('/', resp.clone()); });
+        }
+        return resp;
+      }).catch(function() {
+        return caches.match('/', { ignoreSearch: true }).then(function(cached) {
+          if (cached) return cached;
           return new Response(
             '<!DOCTYPE html><html><head><meta charset="utf-8">' +
             '<meta name="viewport" content="width=device-width,initial-scale=1">' +

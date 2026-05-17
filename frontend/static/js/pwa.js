@@ -2,11 +2,17 @@
 
 let deferredPrompt = null;
 
-// Listen for install prompt
+// Listen for install prompt — only show card when Chrome says app is installable
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   deferredPrompt = e;
-  window._dip = e; // also store globally so inline onclick can access it
+  window._dip = e;
+
+  // Only show if not already in standalone mode
+  if (!isInstalledPWA()) {
+    const card = document.getElementById('install-card');
+    if (card) card.style.display = 'flex';
+  }
 
   console.log('[PWA] Install prompt ready');
 });

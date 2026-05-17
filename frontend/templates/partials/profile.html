@@ -216,7 +216,28 @@
           </span>
           <div>
             <div class="settings-label">Push Notifications</div>
-            <div class="settings-value" id="notif-permission-status">Checking...</div>
+            <div class="settings-value" id="notif-permission-status">Tap to enable</div>
+            <script>
+              (function(){
+                var el = document.getElementById('notif-permission-status');
+                if (!el) return;
+                if (!('Notification' in window)) {
+                  var ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                  var sa  = window.matchMedia('(display-mode:standalone)').matches || navigator.standalone;
+                  el.textContent  = (ios && !sa) ? 'Open from home screen first' : 'Not supported — try Chrome';
+                  el.style.color  = '#ef4444';
+                } else if (Notification.permission === 'granted') {
+                  el.textContent = 'Enabled';
+                  el.style.color = '#22c55e';
+                } else if (Notification.permission === 'denied') {
+                  el.textContent = 'Blocked — go to Chrome → Site settings → allow';
+                  el.style.color = '#ef4444';
+                } else {
+                  el.textContent = 'Tap to enable';
+                  el.style.color = '';
+                }
+              })();
+            </script>
           </div>
         </div>
         <span class="settings-arrow" aria-hidden="true">›</span>
