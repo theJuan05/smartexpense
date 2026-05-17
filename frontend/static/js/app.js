@@ -12,48 +12,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 2. Initialize DB
     await initDB();
 
-    // 3. Detect account switch — wipe local data if a different user logs in
-    try {
-      const authRes  = await fetch('/api/v1/auth/status');
-      const authData = await authRes.json();
-      if (authData.logged_in && authData.user_id) {
-        const storedUid = await getSetting('current_user_id');
-        if (storedUid !== null && storedUid !== authData.user_id) {
-          await clearAllExpensesLocal();
-          await saveSetting('last_sync', null);
-          localStorage.removeItem('se_income');
-        }
-        await saveSetting('current_user_id', authData.user_id);
-
-        // Sync income: server wins if it has a value; otherwise push local value up
-        if (authData.monthly_income > 0) {
-          localStorage.setItem('se_income', authData.monthly_income.toString());
-        } else {
-          const localIncome = parseFloat(localStorage.getItem('se_income') || '0');
-          if (localIncome > 0) {
-            fetch('/api/v1/user/income', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ monthly_income: localIncome }),
-            }).catch(() => {});
-          }
-        }
-      }
-    } catch (_) {}
-
-    // 4. Pull server data into IndexedDB
-    await pullExpensesFromServer();
-    await pullGoalsFromServer();
-
-    // 4. Set today's date in form
+    // 3. Set today's date in form
     const dateEl = document.getElementById('exp-date');
     if (dateEl) dateEl.value = today();
 
-    // 5. Setup tabs
+    // 4. Wire up tabs immediately — before any network calls
     setupTabs();
     setPageTitle('dashboard');
 
-    // 6. Load UI data in parallel (faster)
+    // 5. Load from local IndexedDB (instant, no network needed)
     await Promise.all([
       loadExpenseList(),
       refreshStats()
@@ -61,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await renderBalance();
     setupIncomeModal();
   } finally {
-    // 6. Always dismiss skeleton — even if something above threw
+    // Always dismiss skeleton — even if something above threw
     const skel = document.getElementById('page-skeleton');
     if (skel) skel.classList.add('sk-hidden');
   }
@@ -93,8 +60,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // 8. Backend check runs in background — doesn't block UI
+  // 8. Auth check + server sync — both run in background, never block UI
   checkBackendConnection();
+  _syncOnLoad();
 
   // 9. Button events
   document.getElementById('btn-add-expense')
@@ -889,6 +857,43 @@ async function syncIncomeFromServer() {
       }
     }
   } catch (_) {}
+}
+
+// ── Background Sync on Load ────────────────────────────────
+// Runs auth check + server pull after UI is ready. Never awaited — won't block tabs or buttons.
+async function _syncOnLoad() {
+  try {
+    const authRes  = await fetch('/api/v1/auth/status');
+    const authData = await authRes.json();
+    if (authData.logged_in && authData.user_id) {
+      const storedUid = await getSetting('current_user_id');
+      if (storedUid !== null && storedUid !== authData.user_id) {
+        await clearAllExpensesLocal();
+        await saveSetting('last_sync', null);
+        localStorage.removeItem('se_income');
+      }
+      await saveSetting('current_user_id', authData.user_id);
+      if (authData.monthly_income > 0) {
+        localStorage.setItem('se_income', authData.monthly_income.toString());
+      } else {
+        const localIncome = parseFloat(localStorage.getItem('se_income') || '0');
+        if (localIncome > 0) {
+          fetch('/api/v1/user/income', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ monthly_income: localIncome }),
+          }).catch(() => {});
+        }
+      }
+    }
+  } catch (_) {}
+  const pulled = await pullExpensesFromServer();
+  await pullGoalsFromServer();
+  if (pulled > 0) {
+    await loadExpenseList();
+    await refreshStats();
+    await renderBalance();
+  }
 }
 
 // ── Backend ────────────────────────────────────────────────

@@ -356,7 +356,10 @@ async function pullExpensesFromServer() {
 
   let serverData;
   try {
-    const res = await fetch('/api/v1/expenses');
+    const ctrl = new AbortController();
+    const _t   = setTimeout(() => ctrl.abort(), 8000);
+    const res  = await fetch('/api/v1/expenses', { signal: ctrl.signal });
+    clearTimeout(_t);
     if (!res.ok) return 0;
     const json = await res.json();
     serverData = json.data;
@@ -414,7 +417,10 @@ async function pullExpensesFromServer() {
 async function pullGoalsFromServer() {
   if (!navigator.onLine) return;
   try {
-    const res = await fetch('/api/v1/goals');
+    const ctrl = new AbortController();
+    const _t   = setTimeout(() => ctrl.abort(), 8000);
+    const res  = await fetch('/api/v1/goals', { signal: ctrl.signal });
+    clearTimeout(_t);
     if (!res.ok) return;
     const serverGoals = await res.json();
     if (!Array.isArray(serverGoals)) return;
