@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v49';
+const CACHE_NAME = 'smartexpense-v51';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -79,6 +79,10 @@ self.addEventListener('fetch', function(event) {
   if (url.includes('/api/') ||
       url.includes('cdnjs.cloudflare.com') ||
       url.includes('gstatic.com') ||
+      url.includes('googleapis.com') ||
+      url.includes('firebaseapp.com') ||
+      url.includes('firebasestorage.app') ||
+      url.includes('firebaseio.com') ||
       url.includes('generativelanguage.googleapis.com') ||
       path === '/login' ||
       path === '/register' ||
@@ -133,7 +137,25 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // ── Static assets: stale-while-revalidate ─────────────────
+  // ── JS/CSS: network-first so updates land immediately ──────
+  const isScript = path.endsWith('.js') || path.endsWith('.css');
+  if (isScript) {
+    event.respondWith(
+      fetch(event.request).then(function(response) {
+        if (response && response.status === 200) {
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, response.clone());
+          });
+        }
+        return response;
+      }).catch(function() {
+        return caches.match(event.request);
+      })
+    );
+    return;
+  }
+
+  // ── Other static assets: stale-while-revalidate ────────────
   event.respondWith(
     caches.match(event.request).then(function(cached) {
       var networkPromise = fetch(event.request).then(function(response) {
@@ -172,30 +194,3 @@ self.addEventListener('sync', function(event) {
   }
 });
 
-// Open / focus the app when a notification is tapped
-self.addEventListener('notificationclick', function(event) {
-  event.notification.close();
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(function(clientList) {
-        for (var i = 0; i < clientList.length; i++) {
-          if ('focus' in clientList[i]) return clientList[i].focus();
-        }
-        if (self.clients.openWindow) return self.clients.openWindow('/');
-      })
-  );
-});
-
-// Handle server push payloads
-self.addEventListener('push', function(event) {
-  var data  = event.data ? event.data.json() : {};
-  var title = data.title || 'SmartExpense';
-  var opts  = {
-    body:    data.body  || '',
-    icon:    '/static/icons/icon-192.png',
-    badge:   '/static/icons/icon-192.png',
-    tag:     data.tag   || 'smartexpense',
-    vibrate: [200, 100, 200],
-  };
-  event.waitUntil(self.registration.showNotification(title, opts));
-});
