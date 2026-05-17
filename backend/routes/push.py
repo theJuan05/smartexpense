@@ -239,3 +239,19 @@ def check_and_notify():
             pushed += _send_to_all(user_id, title, body)
 
     return jsonify({'status': 'success', 'pushed': pushed})
+
+
+# ── POST /api/send-reminders  (manual trigger / demo) ─────────
+@push_bp.route('/send-reminders', methods=['POST'])
+def trigger_reminders():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    try:
+        from flask import current_app
+        from scheduler import send_daily_budget_reminders
+        send_daily_budget_reminders(current_app._get_current_object(), force=True)
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        logger.error('[Push] Manual reminder trigger failed: %s', e)
+        return jsonify({'status': 'error', 'message': str(e)}), 500

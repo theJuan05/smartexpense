@@ -9,10 +9,10 @@ logger = logging.getLogger(__name__)
 _last_sent_date = None
 
 
-def send_daily_budget_reminders(app):
+def send_daily_budget_reminders(app, force=False):
     global _last_sent_date
     today = date.today()
-    if _last_sent_date == today:
+    if not force and _last_sent_date == today:
         return  # Already ran today in this process
     _last_sent_date = today
 

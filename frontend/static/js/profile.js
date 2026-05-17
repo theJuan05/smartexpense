@@ -436,6 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-test-notification')
     ?.addEventListener('click', sendTestNotification);
 
+  // Trigger budget reminders now
+  document.getElementById('btn-trigger-reminders')
+    ?.addEventListener('click', triggerRemindersNow);
+
 });
 
 // ── PUSH NOTIFICATION PERMISSION ─────────────────────────────
@@ -537,4 +541,29 @@ async function sendTestNotification() {
   }
 
   if (btn && origText) btn.querySelector('.settings-value').textContent = origText;
+}
+
+async function triggerRemindersNow() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    showToast('Enable notifications first, then try again.', 'warning');
+    return;
+  }
+
+  const btn      = document.getElementById('btn-trigger-reminders');
+  const valueEl  = btn?.querySelector('.settings-value');
+  if (valueEl) valueEl.textContent = 'Sending…';
+
+  try {
+    const res  = await fetch('/api/v1/send-reminders', { method: 'POST' });
+    const data = await res.json();
+    if (data.status === 'success') {
+      showToast('Budget reminders sent to all your devices!', 'success');
+    } else {
+      showToast('Could not send reminders: ' + (data.message || 'unknown error'), 'warning');
+    }
+  } catch (_) {
+    showToast('Failed — make sure you are online.', 'warning');
+  }
+
+  if (valueEl) valueEl.textContent = 'Trigger all budget notifications instantly';
 }
