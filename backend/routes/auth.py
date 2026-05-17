@@ -307,9 +307,11 @@ def delete_account():
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
-    execute("DELETE FROM expenses WHERE user_id = %s", (user_id,))
-    execute("DELETE FROM budgets  WHERE user_id = %s", (user_id,))
-    execute("DELETE FROM users    WHERE id = %s",      (user_id,))
+    execute("DELETE FROM expenses    WHERE user_id = %s", (user_id,))
+    execute("DELETE FROM budgets     WHERE user_id = %s", (user_id,))
+    execute("DELETE FROM goals       WHERE user_id = %s", (user_id,))
+    execute("DELETE FROM push_tokens WHERE user_id = %s", (user_id,))
+    execute("DELETE FROM users       WHERE id = %s",      (user_id,))
     session.clear()
     return jsonify({'status': 'success'})
 

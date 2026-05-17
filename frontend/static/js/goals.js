@@ -163,7 +163,7 @@ function createGoalCard(goal) {
       <span class="goal-pct">${pct}% complete</span>
       ${done
         ? `<span class="goal-done-badge">🎉 Achieved!</span>`
-        : `<button class="goal-fund-btn" onclick="showFundGoalModal(${goal.id}, '${_esc(goal.name)}', ${remain})">+ Fund</button>`
+        : `<button class="goal-fund-btn" data-id="${goal.id}" data-name="${_esc(goal.name)}" data-remain="${remain}" onclick="showFundGoalModal(parseInt(this.dataset.id), this.dataset.name, parseFloat(this.dataset.remain))">+ Fund</button>`
       }
     </div>
     ${logHtml}`;
@@ -248,27 +248,47 @@ async function confirmFund() {
 
   if (!amount || amount <= 0) { showToast('Please enter a valid amount', 'warning'); return; }
 
-  const goals = await getGoalsLocal();
-  const goal  = goals.find(g => g.id === goalId);
-  if (!goal) return;
+  // Resolve goal — try local first, fall back to server
+  let goal = null;
+  try {
+    const localGoals = await getGoalsLocal();
+    goal = localGoals.find(g => g.id === goalId) || null;
+  } catch (_) {}
 
-  const newSaved      = (parseFloat(goal.savedAmount) || 0) + amount;
+  if (!goal && navigator.onLine) {
+    try {
+      const res  = await fetch('/api/v1/goals');
+      const data = await res.json();
+      if (Array.isArray(data)) goal = data.find(g => g.id === goalId) || null;
+    } catch (_) {}
+  }
+
+  if (!goal) { showToast('Goal not found', 'warning'); return; }
+
+  // Use atomic server-side fund endpoint (avoids race condition)
+  let newSaved = (parseFloat(goal.savedAmount) || 0) + amount;
+  if (navigator.onLine) {
+    try {
+      const res  = await fetch(`/api/v1/goals/${goalId}/fund`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ amount, date: new Date().toISOString() }),
+      });
+      const data = await res.json();
+      if (data.status === 'success') newSaved = data.savedAmount;
+    } catch (_) {}
+  }
+
+  // Update local cache to match
   const contributions = [...(goal.contributions || []), { amount, date: new Date().toISOString() }];
   await updateGoalLocal(goalId, { savedAmount: newSaved, contributions });
-
-  // Sync to server
-  fetch(`/api/v1/goals/${goalId}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ savedAmount: newSaved, contributions }),
-  }).catch(() => {});
 
   closeFundGoalModal();
   await loadGoals();
   if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
   if (typeof renderBalance      === 'function') await renderBalance();
 
-  if (newSaved >= goal.targetAmount) {
+  if (newSaved >= parseFloat(goal.targetAmount)) {
     showToast(`🎉 Goal "${goal.name}" achieved!`, 'success');
   } else {
     showToast(`₱${Number(amount).toLocaleString()} added to "${goal.name}"`, 'success');

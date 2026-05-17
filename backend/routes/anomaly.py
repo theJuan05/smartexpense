@@ -2,6 +2,7 @@
 
 from flask import Blueprint, jsonify, request, session
 from models.db import query_all, query_one
+from security.encryption import decrypt
 from datetime import date, timedelta
 from collections import defaultdict
 import statistics
@@ -33,6 +34,8 @@ def get_recent_expenses(user_id, days=90):
             row['expense_date'] = row['expense_date'].strftime('%Y-%m-%d')
         if row.get('created_at'):
             row['created_at'] = str(row['created_at'])
+        if row.get('title'):
+            row['title'] = decrypt(row['title'])
         row['amount'] = float(row['amount'])
     return rows
 

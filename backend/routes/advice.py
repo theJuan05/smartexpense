@@ -19,7 +19,6 @@ def get_financial_data(user_id):
         SELECT
             e.amount,
             e.expense_date,
-            e.title,
             COALESCE(c.name, 'Others') AS category
         FROM expenses e
         LEFT JOIN categories c ON e.category_id = c.id

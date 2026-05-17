@@ -51,6 +51,7 @@ def query_all(sql, params=None):
     conn = get_connection()
     if not conn:
         return []
+    cursor = None
     try:
         cursor = conn.cursor(dictionary=True)
         cursor.execute(sql, params or ())
@@ -59,7 +60,8 @@ def query_all(sql, params=None):
         logger.error("[QUERY ERROR] %s", err)
         return []
     finally:
-        cursor.close()
+        if cursor:
+            cursor.close()
         conn.close()
 
 
@@ -67,6 +69,7 @@ def query_one(sql, params=None):
     conn = get_connection()
     if not conn:
         return None
+    cursor = None
     try:
         cursor = conn.cursor(dictionary=True)
         cursor.execute(sql, params or ())
@@ -75,7 +78,8 @@ def query_one(sql, params=None):
         logger.error("[QUERY ERROR] %s", err)
         return None
     finally:
-        cursor.close()
+        if cursor:
+            cursor.close()
         conn.close()
 
 
@@ -84,6 +88,7 @@ def execute(sql, params=None):
     conn = get_connection()
     if not conn:
         return None
+    cursor = None
     try:
         cursor = conn.cursor()
         cursor.execute(sql, params or ())
@@ -94,7 +99,8 @@ def execute(sql, params=None):
         conn.rollback()
         return None
     finally:
-        cursor.close()
+        if cursor:
+            cursor.close()
         conn.close()
 
 

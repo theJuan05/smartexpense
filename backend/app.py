@@ -37,7 +37,8 @@ app = Flask(
 
 app.config.from_object(Config)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+_allowed_origin = Config.APP_URL.rstrip('/')
+CORS(app, resources={r"/api/*": {"origins": [_allowed_origin, "http://localhost:5000"]}}, supports_credentials=True)
 
 # -----------------------------
 # REGISTER BLUEPRINTS

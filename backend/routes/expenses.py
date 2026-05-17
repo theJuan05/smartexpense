@@ -32,7 +32,7 @@ def get_expenses():
         LEFT JOIN categories c ON e.category_id = c.id
         WHERE e.user_id = %s
         ORDER BY e.expense_date DESC, e.created_at DESC
-        LIMIT 100
+        LIMIT 500
     """
     rows = query_all(sql, (user_id,))
 
@@ -54,7 +54,11 @@ def get_expenses():
 # Adds a new expense to MySQL
 @expenses_bp.route('/expenses', methods=['POST'])
 def add_expense():
-    data = request.get_json()
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"status": "error", "message": "Not authenticated"}), 401
+
+    data = request.get_json() or {}
 
     # ── Validate required fields ──────────────────────────────
     required = ['title', 'amount', 'expense_date']
@@ -90,9 +94,6 @@ def add_expense():
         VALUES
             (%s, %s, %s, %s, %s, %s, %s, 1)
     """
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({"status": "error", "message": "Not authenticated"}), 401
 
     params = (
         user_id,

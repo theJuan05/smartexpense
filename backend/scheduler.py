@@ -38,7 +38,7 @@ def send_daily_budget_reminders(app, force=False):
                     AND YEAR(e.expense_date)  = YEAR(CURDATE())
                     AND (b.category_id IS NULL OR e.category_id = b.category_id)
                 WHERE b.user_id = %s
-                GROUP BY b.amount_limit, c.name
+                GROUP BY b.id, b.amount_limit, c.name
             """, (uid,))
 
             for budget in budgets:
