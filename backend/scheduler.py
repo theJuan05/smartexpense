@@ -1,7 +1,5 @@
 import logging
 from datetime import date
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +76,9 @@ def send_daily_budget_reminders(app, force=False):
 
 
 def start_scheduler(app):
+    from apscheduler.schedulers.background import BackgroundScheduler
+    from apscheduler.triggers.cron import CronTrigger
+
     scheduler = BackgroundScheduler(daemon=True)
 
     # 8:00 PM Philippine Time daily  (PHT = UTC+8, so 20:00 PHT = 12:00 UTC)

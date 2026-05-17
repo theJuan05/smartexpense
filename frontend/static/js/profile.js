@@ -506,7 +506,7 @@ async function requestNotificationPermission() {
 
 async function sendTestNotification() {
   if (!('Notification' in window) || Notification.permission !== 'granted') {
-    showToast('Enable notifications first, then try again.', 'warning');
+    alert('Notifications are not enabled yet.\n\nTap "Push Notifications" above first, then allow when prompted.');
     return;
   }
 
@@ -514,7 +514,9 @@ async function sendTestNotification() {
   const origText = btn?.querySelector('.settings-value')?.textContent;
   if (btn) btn.querySelector('.settings-value').textContent = 'Sending…';
 
-  // Try local SW notification immediately (works when app is open)
+  let swOk = false;
+
+  // Try local SW notification (shows even if app is open)
   try {
     const reg = await navigator.serviceWorker.ready;
     await reg.showNotification('SmartExpense', {
@@ -524,18 +526,24 @@ async function sendTestNotification() {
       tag:     'se-test',
       vibrate: [200, 100, 200],
     });
-    showToast('Test notification sent!', 'success');
+    swOk = true;
+  } catch (_) {}
+
+  // Always also fire the FCM server push so it works when app is closed
+  try {
+    const res  = await fetch('/api/v1/push-test', { method: 'POST' });
+    const data = await res.json();
+    if (data.status === 'success') {
+      showToast('Test notification sent to ' + (data.devices || 1) + ' device(s)!', 'success');
+    } else if (!swOk) {
+      showToast('Could not send test: ' + (data.message || 'unknown error'), 'warning');
+    } else {
+      showToast('Test notification sent!', 'success');
+    }
   } catch (_) {
-    // SW notification failed — fall back to FCM server push
-    try {
-      const res  = await fetch('/api/v1/push-test', { method: 'POST' });
-      const data = await res.json();
-      if (data.status === 'success') {
-        showToast('Test push sent via FCM — check your notifications.', 'success');
-      } else {
-        showToast('Could not send test: ' + (data.message || 'unknown error'), 'warning');
-      }
-    } catch (e) {
+    if (swOk) {
+      showToast('Test notification sent (local only — offline).', 'success');
+    } else {
       showToast('Test failed — make sure you are online.', 'warning');
     }
   }
@@ -545,7 +553,7 @@ async function sendTestNotification() {
 
 async function triggerRemindersNow() {
   if (!('Notification' in window) || Notification.permission !== 'granted') {
-    showToast('Enable notifications first, then try again.', 'warning');
+    alert('Notifications are not enabled yet.\n\nTap "Push Notifications" above first, then allow when prompted.');
     return;
   }
 
@@ -559,10 +567,10 @@ async function triggerRemindersNow() {
     if (data.status === 'success') {
       showToast('Budget reminders sent to all your devices!', 'success');
     } else {
-      showToast('Could not send reminders: ' + (data.message || 'unknown error'), 'warning');
+      alert('Server error: ' + (data.message || 'unknown error'));
     }
   } catch (_) {
-    showToast('Failed — make sure you are online.', 'warning');
+    alert('Failed to reach server — make sure you are online.');
   }
 
   if (valueEl) valueEl.textContent = 'Trigger all budget notifications instantly';
