@@ -21,7 +21,7 @@ def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if 'user_id' not in session:
-            flash('Please log in to access SmartExpense AI Pro.', 'info')
+            flash('Please log in to access SmartExpense.', 'info')
             return redirect(url_for('auth.login'))
         return f(*args, **kwargs)
     return decorated

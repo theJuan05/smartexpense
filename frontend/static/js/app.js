@@ -1093,7 +1093,7 @@ function showAISuggestion(category, confidence) {
   btn.addEventListener('click', () => applyAISuggestion(category));
 
   hint.innerHTML = '';
-  hint.append('AI suggests: ', strong, ` (${pct}% confident) `, btn);
+  hint.append('Smart suggest: ', strong, ` (${pct}% confident) `, btn);
   hint.style.display = 'block';
 }
 

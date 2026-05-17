@@ -98,7 +98,7 @@ def service_worker():
 def ping():
     return jsonify({
         "status": "ok",
-        "message": "SmartExpense AI Pro backend is running!"
+        "message": "SmartExpense backend is running!"
     })
 
 @app.route('/firebase-messaging-sw.js')
@@ -125,7 +125,7 @@ with app.app_context():
 
 if __name__ == '__main__':
     print("=" * 50)
-    print("  SmartExpense AI Pro - Flask Backend")
+    print("  SmartExpense - Flask Backend")
     print("  Running at: http://localhost:5000")
     print("=" * 50)
     app.run(debug=True, port=5000, use_reloader=True, reloader_type='stat')

@@ -1,4 +1,4 @@
-// db.js — Complete IndexedDB Manager for SmartExpense AI Pro
+// db.js — Complete IndexedDB Manager for SmartExpense
 
 const DB_NAME    = 'SmartExpenseDB';
 const DB_VERSION = 4;
@@ -409,7 +409,7 @@ async function pullExpensesFromServer() {
 }
 
 // ============================================================
-// Bidirectional goal sync: push local→server or pull server→local
+// Bidirectional goal sync: merge local↔server
 // ============================================================
 async function pullGoalsFromServer() {
   if (!navigator.onLine) return;
@@ -419,50 +419,48 @@ async function pullGoalsFromServer() {
     const serverGoals = await res.json();
     if (!Array.isArray(serverGoals)) return;
 
-    const localGoals = await getGoalsLocal();
+    const localGoals  = await getGoalsLocal();
+    const serverIdSet = new Set(serverGoals.map(g => g.id));
 
-    if (serverGoals.length === 0 && localGoals.length > 0) {
-      // Server has nothing — push local goals up (first sync after feature launch)
-      for (const g of localGoals) {
-        try {
-          const r    = await fetch('/api/v1/goals', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(g),
-          });
-          const data = await r.json();
-          if (data.id && data.id !== g.id) {
-            // Re-key local record to match server ID
-            await deleteGoalLocal(g.id);
-            await addGoalLocal({ ...g, id: data.id });
-          }
-        } catch (_) {}
-      }
-      console.log(`[Sync] Pushed ${localGoals.length} local goal(s) to server ✅`);
-      return;
+    // Push any local goals the server doesn't know about yet
+    // (created offline, or on a device that hadn't synced)
+    const localOnly = localGoals.filter(g => !serverIdSet.has(g.id));
+    for (const g of localOnly) {
+      try {
+        const r    = await fetch('/api/v1/goals', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(g),
+        });
+        const data = await r.json();
+        if (data.id) serverGoals.push({ ...g, id: data.id });
+      } catch (_) {}
     }
 
-    if (serverGoals.length === 0) return; // both empty, nothing to do
+    if (serverGoals.length === 0) return; // nothing on either side
 
-    // Server has goals — replace local copy with server truth
+    // Server is source of truth — replace local store with merged list
     const tx    = db.transaction('goals', 'readwrite');
     const store = tx.objectStore('goals');
     store.clear();
     for (const g of serverGoals) {
+      if (!g.id) continue;
       store.put({
         id:            g.id,
         name:          g.name,
         icon:          g.icon || '🎯',
-        targetAmount:  g.targetAmount,
-        savedAmount:   g.savedAmount,
-        deadline:      g.deadline || null,
+        targetAmount:  parseFloat(g.targetAmount  || 0),
+        savedAmount:   parseFloat(g.savedAmount   || 0),
+        deadline:      g.deadline      || null,
         contributions: g.contributions || [],
-        createdAt:     g.createdAt || new Date().toISOString(),
+        createdAt:     g.createdAt     || new Date().toISOString(),
       });
     }
     await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
-    console.log(`[Sync] Pulled ${serverGoals.length} goal(s) from server ✅`);
-  } catch (_) {}
+    console.log(`[Goals Sync] ${serverGoals.length} goal(s) synced ✅`);
+  } catch (err) {
+    console.warn('[Goals Sync] Failed:', err);
+  }
 }
 
 // ============================================================

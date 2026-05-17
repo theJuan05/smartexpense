@@ -137,7 +137,7 @@ async function exportToPDF() {
         </style>
       </head>
       <body>
-        <h1>💰 SmartExpense AI Pro</h1>
+        <h1>💰 SmartExpense</h1>
         <div class="meta">Expense Report • Generated ${today}</div>
 
         <h2>Summary by Category</h2>

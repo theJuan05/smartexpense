@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-04-29T00:00:00Z",
-  "title": "Design System: SmartExpense AI Pro",
+  "title": "Design System: SmartExpense",
   "extensions": {
     "colorMeta": {
       "momentum-violet": {
@@ -225,7 +225,7 @@
   ],
   "narrative": {
     "northStar": "The Clarity Coach",
-    "overview": "SmartExpense AI Pro is built for people who don't feel confident about money yet — young professionals watching their first paycheck disappear, students trying to make rent, families deciding what to cut. The interface must feel like a knowledgeable friend: warm enough to not make them feel judged, structured enough to actually help them improve. Every screen earns trust before it earns compliance.\n\nDensity is intentional: enough information to be useful in a 30-second check-in, nothing that overwhelms on first visit. Cards group related data without nesting. Purple anchors the experience as a signal of clarity and focus — not luxury, not technicality, just 'this is the thing you pay attention to.' White space is generous; the interface breathes. Progress (health scores, budget bars, trend lines) is always the hero; raw data is secondary.\n\nThis system explicitly rejects the corporate gray of enterprise finance tools (Quickbooks, SAP), the data-wall anxiety of Bloomberg and old Mint, and the aggressive neon energy of crypto and trading apps. It also refuses generic bank-app blandness — sterile white with navy headers and zero personality.",
+    "overview": "SmartExpense is built for people who don't feel confident about money yet — young professionals watching their first paycheck disappear, students trying to make rent, families deciding what to cut. The interface must feel like a knowledgeable friend: warm enough to not make them feel judged, structured enough to actually help them improve. Every screen earns trust before it earns compliance.\n\nDensity is intentional: enough information to be useful in a 30-second check-in, nothing that overwhelms on first visit. Cards group related data without nesting. Purple anchors the experience as a signal of clarity and focus — not luxury, not technicality, just 'this is the thing you pay attention to.' White space is generous; the interface breathes. Progress (health scores, budget bars, trend lines) is always the hero; raw data is secondary.\n\nThis system explicitly rejects the corporate gray of enterprise finance tools (Quickbooks, SAP), the data-wall anxiety of Bloomberg and old Mint, and the aggressive neon energy of crypto and trading apps. It also refuses generic bank-app blandness — sterile white with navy headers and zero personality.",
     "keyCharacteristics": [
       "Purple-tinted neutrals — even the page background carries a faint violet tint, keeping surfaces warm rather than cold",
       "Progress-first hierarchy — health scores, budget bars, and trend lines are primary; raw data is secondary",

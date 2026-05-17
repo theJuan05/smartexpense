@@ -4,7 +4,7 @@
 function addGoalLocal(goal) {
   return new Promise((resolve, reject) => {
     const tx  = db.transaction('goals', 'readwrite');
-    const req = tx.objectStore('goals').add(goal);
+    const req = tx.objectStore('goals').put(goal);
     req.onsuccess = () => resolve(req.result);
     req.onerror   = () => reject(req.error);
   });

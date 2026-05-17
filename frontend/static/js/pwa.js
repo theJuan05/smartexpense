@@ -30,7 +30,7 @@ async function handleInstall() {
 
 // App installed event
 window.addEventListener('appinstalled', function() {
-  showToast('SmartExpense AI Pro installed!', 'success');
+  showToast('SmartExpense installed!', 'success');
   window._dip = null;
   const card = document.getElementById('install-card');
   if (card) card.style.display = 'none';
