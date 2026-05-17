@@ -2200,17 +2200,20 @@ body {
 /* Icon picker */
 .goal-icon-picker { display: flex; gap: 8px; flex-wrap: wrap; }
 .goal-icon-btn {
-  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   background: var(--bg);
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 5px 9px;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  line-height: 1;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  color: var(--text-muted);
 }
 .goal-icon-btn.selected,
-.goal-icon-btn:hover { border-color: var(--purple); background: var(--purple-light); }
+.goal-icon-btn:hover { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
 /* Dark mode */
 [data-theme="dark"] .goal-card { background: var(--dark-card); border-color: var(--dark-border); }
 [data-theme="dark"] .goal-card--done { background: rgba(10,140,90,0.1); border-color: rgba(10,140,90,0.3); }

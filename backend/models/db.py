@@ -22,6 +22,8 @@ def _get_pool():
             password     = Config.DB_PASSWORD,
             database     = Config.DB_NAME,
             connection_timeout = 10,
+            charset      = 'utf8mb4',
+            use_unicode  = True,
         )
         if Config.DB_PORT:
             kwargs['port'] = int(Config.DB_PORT)

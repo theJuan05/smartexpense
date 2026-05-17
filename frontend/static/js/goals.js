@@ -1,5 +1,21 @@
 // goals.js — Financial Goals Tracker (fully offline, IndexedDB)
 
+// ── Goal icon SVG map ────────────────────────────────────────
+function getGoalIconSVG(icon) {
+  const s = (path) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+  const map = {
+    '🎯': s('<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'),
+    '🏠': s('<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'),
+    '📱': s('<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>'),
+    '✈️': s('<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4c-1 0-2 1-3.5 2.5L11 8 2.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L6 11l-2 3H3l-1 1 3 2 2 3 1-1v-1l3-2 3.5 4.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>'),
+    '🎓': s('<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>'),
+    '💻': s('<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8m-4-4v4"/>'),
+    '🚗': s('<path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-3"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>'),
+    '💰': s('<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>'),
+  };
+  return map[icon] || map['🎯'];
+}
+
 // ── DB helpers ───────────────────────────────────────────────
 function addGoalLocal(goal) {
   return new Promise((resolve, reject) => {
@@ -94,7 +110,7 @@ function createGoalCard(goal) {
 
   div.innerHTML = `
     <div class="goal-card-header">
-      <div class="goal-icon">${goal.icon || '🎯'}</div>
+      <div class="goal-icon">${getGoalIconSVG(goal.icon)}</div>
       <div class="goal-info">
         <div class="goal-name">${_esc(goal.name)}</div>
         <div class="goal-amounts">
@@ -157,6 +173,7 @@ async function saveNewGoal() {
   };
 
   // Save to server first so we get the real ID
+  let synced = false;
   try {
     const res  = await fetch('/api/v1/goals', {
       method: 'POST',
@@ -164,14 +181,14 @@ async function saveNewGoal() {
       body: JSON.stringify(goalData),
     });
     const data = await res.json();
-    if (data.id) goalData.id = data.id;
+    if (data.id) { goalData.id = data.id; synced = true; }
   } catch (_) {}
 
   await addGoalLocal(goalData);
   closeAddGoalModal();
   await loadGoals();
   if (typeof renderGoalsSummary === 'function') await renderGoalsSummary();
-  showToast('Goal created!', 'success');
+  showToast(synced ? 'Goal created!' : 'Goal saved locally — server sync failed', synced ? 'success' : 'warning');
 }
 
 // ── Fund goal modal ──────────────────────────────────────────

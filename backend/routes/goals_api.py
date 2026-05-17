@@ -52,6 +52,8 @@ def create_goal():
         "VALUES (%s, %s, %s, %s, %s, %s, %s)",
         (uid, name, icon, target, saved, deadline, contributions)
     )
+    if not goal_id:
+        return jsonify({'status': 'error', 'message': 'Failed to save goal'}), 500
     return jsonify({'status': 'success', 'id': goal_id})
 
 

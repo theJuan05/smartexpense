@@ -487,7 +487,7 @@ function createExpenseItem(exp) {
   const div = document.createElement('div');
   div.className = 'expense-item';
 
-  const icon    = getCategoryIcon(exp.category);
+  const catData = getCategoryIcon(exp.category);
   const synced  = exp.synced == 1;
   const dateStr = exp.expense_date
     ? new Date(exp.expense_date + 'T00:00:00')
@@ -496,7 +496,7 @@ function createExpenseItem(exp) {
     : '';
 
   div.innerHTML = `
-    <div class="expense-icon">${icon}</div>
+    <div class="expense-icon" style="background:${catData.bg};border-color:transparent;color:${catData.color}">${catData.svg}</div>
     <div class="expense-info">
       <div class="expense-title">${escapeHtml(safeTitle(exp.title))}</div>
       <div class="expense-meta">
@@ -507,10 +507,8 @@ function createExpenseItem(exp) {
       <div class="expense-amount">-₱${Number(exp.amount).toLocaleString()}</div>
       ${!synced ? '<span class="expense-sync-badge">Pending</span>' : ''}
       <div class="expense-actions">
-        <button class="expense-edit-btn" data-id="${exp.local_id}"
-                title="Edit">✏️</button>
-        <button class="expense-delete-btn" data-id="${exp.local_id}"
-                title="Delete">🗑️</button>
+        <button class="expense-edit-btn" data-id="${exp.local_id}" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
+        <button class="expense-delete-btn" data-id="${exp.local_id}" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
       </div>
     </div>
   `;
@@ -1032,19 +1030,49 @@ function escapeHtml(str) {
 }
 
 function getCategoryIcon(category) {
-  const icons = {
-    'Food & Dining'    : '🍔',
-    'Transportation'   : '🚗',
-    'Utilities & Bills': '💡',
-    'Shopping'         : '🛍️',
-    'Healthcare'       : '🏥',
-    'Entertainment'    : '🎬',
-    'Education'        : '📚',
-    'Savings'          : '💰',
-    'Housing & Rent'   : '🏠',
-    'Others'           : '📦',
+  const map = {
+    'Food & Dining': {
+      color: '#d97706', bg: 'rgba(217,119,6,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3"/><path d="M21 15v7"/></svg>`,
+    },
+    'Transportation': {
+      color: '#2563eb', bg: 'rgba(37,99,235,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-3"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
+    },
+    'Utilities & Bills': {
+      color: '#ca8a04', bg: 'rgba(202,138,4,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+    },
+    'Shopping': {
+      color: '#7c3aed', bg: 'rgba(124,58,237,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+    },
+    'Healthcare': {
+      color: '#dc2626', bg: 'rgba(220,38,38,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`,
+    },
+    'Entertainment': {
+      color: '#db2777', bg: 'rgba(219,39,119,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
+    },
+    'Education': {
+      color: '#0891b2', bg: 'rgba(8,145,178,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+    },
+    'Savings': {
+      color: '#059669', bg: 'rgba(5,150,105,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`,
+    },
+    'Housing & Rent': {
+      color: '#475569', bg: 'rgba(71,85,105,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    },
+    'Others': {
+      color: '#6b7280', bg: 'rgba(107,114,128,0.1)',
+      svg: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+    },
   };
-  return icons[category] || '📦';
+  return map[category] || map['Others'];
 }
 
 
