@@ -432,10 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-enable-notifications')
     ?.addEventListener('click', () => requestNotificationPermission(true));
 
-  // Test Notification button
-  document.getElementById('btn-test-notification')
-    ?.addEventListener('click', sendTestNotification);
-
   // Trigger budget reminders now
   document.getElementById('btn-trigger-reminders')
     ?.addEventListener('click', triggerRemindersNow);

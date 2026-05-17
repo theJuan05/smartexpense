@@ -61,7 +61,41 @@ async function loadGoals() {
   const container = document.getElementById('goals-list');
   if (!container) return;
 
-  const goals = await getGoalsLocal();
+  let goals = [];
+
+  // Always try server first when online — bypasses IndexedDB sync issues
+  if (navigator.onLine) {
+    try {
+      const res = await fetch('/api/v1/goals');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          goals = data.map(g => ({
+            id:            g.id,
+            name:          g.name,
+            icon:          g.icon || '🎯',
+            targetAmount:  parseFloat(g.targetAmount  || 0),
+            savedAmount:   parseFloat(g.savedAmount   || 0),
+            deadline:      g.deadline      || null,
+            contributions: g.contributions || [],
+            createdAt:     g.createdAt     || new Date().toISOString(),
+          }));
+          // Refresh local cache in background
+          try {
+            const tx    = db.transaction('goals', 'readwrite');
+            const store = tx.objectStore('goals');
+            store.clear();
+            goals.forEach(g => store.put(g));
+          } catch (_) {}
+        }
+      }
+    } catch (_) {}
+  }
+
+  // Fall back to local IndexedDB when offline or server returned nothing
+  if (goals.length === 0) {
+    try { goals = await getGoalsLocal(); } catch (_) {}
+  }
 
   if (goals.length === 0) {
     container.innerHTML = `
