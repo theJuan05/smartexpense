@@ -926,20 +926,54 @@ function registerServiceWorker() {
 }
 
 // ── Push Notifications ─────────────────────────────────────
-// fromSettings=true skips the "already asked" guard so the user can re-prompt
-// from the Profile → Push Notifications row.
 async function requestNotificationPermission(fromSettings = false) {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'denied') return;
-  if (Notification.permission === 'granted') {
-    if (typeof initFirebaseMessaging === 'function') initFirebaseMessaging();
+  if (typeof updateNotifPermissionStatus === 'function') updateNotifPermissionStatus();
+
+  if (!('Notification' in window)) {
+    if (fromSettings) {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      if (isIOS && !isStandalone) {
+        alert('To enable notifications:\n1. Close this page\n2. Open SmartExpense from your home screen icon\n3. Go to Profile → Push Notifications');
+      } else {
+        alert('Notifications are not supported in this browser. Try Chrome.');
+      }
+    }
     return;
   }
+
+  if (Notification.permission === 'denied') {
+    if (fromSettings) alert('Notifications are blocked.\n\nFix: phone Settings → Apps → Chrome → Notifications → Allow');
+    return;
+  }
+
+  if (Notification.permission === 'granted') {
+    // Already granted — just ensure FCM token is registered
+    if (typeof initFirebaseMessaging === 'function') await initFirebaseMessaging();
+    if (typeof updateNotifPermissionStatus === 'function') updateNotifPermissionStatus();
+    return;
+  }
+
+  // 'default' — ask
   if (!fromSettings && localStorage.getItem('se-notif-asked')) return;
   localStorage.setItem('se-notif-asked', '1');
+
   const result = await Notification.requestPermission();
-  if (result === 'granted' && typeof initFirebaseMessaging === 'function') {
-    initFirebaseMessaging();
+  if (typeof updateNotifPermissionStatus === 'function') updateNotifPermissionStatus();
+
+  if (result === 'granted') {
+    if (typeof initFirebaseMessaging === 'function') {
+      const ok = await initFirebaseMessaging();
+      if (fromSettings) {
+        if (ok) {
+          if (typeof showToast === 'function') showToast('Push notifications enabled!', 'success');
+        } else {
+          if (typeof showToast === 'function') showToast('Permission granted, but device registration failed. Try the test button.', 'warning');
+        }
+      }
+    }
+  } else if (fromSettings) {
+    alert('Permission was not granted. You can try again from Profile → Push Notifications.');
   }
 }
 

@@ -475,45 +475,6 @@ function updateNotifPermissionStatus() {
   }
 }
 
-async function requestNotificationPermission() {
-  if (!('Notification' in window)) {
-    if (_isIOS() && !_isStandalone()) {
-      alert('To enable notifications:\n1. Go to your home screen\n2. Open SmartExpense from the home screen icon\n3. Come back to Profile and tap Push Notifications again.');
-    } else if (_isIOS()) {
-      alert('iOS 16.4+ is required for push notifications.');
-    } else {
-      alert('Notifications are not supported in this browser. Try opening in Chrome.');
-    }
-    return;
-  }
-  if (Notification.permission === 'denied') {
-    alert('Notifications are blocked.\n\nTo fix: go to phone Settings → Apps → Chrome → Notifications → allow, then come back here.');
-    return;
-  }
-
-  const permission = await Notification.requestPermission();
-  updateNotifPermissionStatus();
-
-  if (permission === 'granted') {
-    const btn = document.getElementById('btn-enable-notifications');
-    const statusEl = document.getElementById('notif-permission-status');
-    if (statusEl) statusEl.textContent = 'Registering device…';
-
-    let fcmOk = false;
-    if (typeof initFirebaseMessaging === 'function') {
-      fcmOk = await initFirebaseMessaging();
-    }
-
-    updateNotifPermissionStatus();
-    if (fcmOk) {
-      showToast('Push notifications enabled! You will receive budget alerts.', 'success');
-    } else {
-      showToast('Permission granted, but device registration failed. Try the test button.', 'warning');
-    }
-  } else {
-    showToast('Notification permission was not granted.');
-  }
-}
 
 async function sendTestNotification() {
   if (!('Notification' in window) || Notification.permission !== 'granted') {
