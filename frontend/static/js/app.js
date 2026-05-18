@@ -510,7 +510,7 @@ async function refreshStats() {
   const goalContribThisMonth = await getGoalContribForMonth();
   if (el('stat-month'))
     el('stat-month').textContent =
-      `₱${Number(stats.thisMonth + goalContribThisMonth).toLocaleString()}`;
+      `₱${Number(stats.thisMonth + goalContribThisMonth).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (el('stat-count'))
     el('stat-count').textContent = stats.count;
   await renderBalance();
