@@ -5,44 +5,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   const _skel = document.getElementById('page-skeleton');
   if (_skel) setTimeout(() => _skel.classList.add('sk-hidden'), 6000);
 
-  // 1. Show online status IMMEDIATELY (no waiting)
   updateOnlineStatus();
 
-  try {
-    // 2. Initialize DB
-    await initDB();
+  // ── Wire up ALL UI synchronously first — never blocked by network or DB ──
+  const dateEl = document.getElementById('exp-date');
+  if (dateEl) dateEl.value = today();
 
-    // 3. Set today's date in form
-    const dateEl = document.getElementById('exp-date');
-    if (dateEl) dateEl.value = today();
+  setupTabs();
+  setPageTitle('dashboard');
 
-    // 4. Wire up tabs immediately — before any network calls
-    setupTabs();
-    setPageTitle('dashboard');
+  document.getElementById('btn-add-expense')?.addEventListener('click', handleAddExpense);
+  document.getElementById('btn-add-budget')?.addEventListener('click', handleAddBudget);
+  document.getElementById('search-expenses')?.addEventListener('input', handleSearch);
+  document.getElementById('exp-title')?.addEventListener('input', handleTitleInput);
 
-    // 5. Load from local IndexedDB (instant, no network needed)
-    await Promise.all([
-      loadExpenseList(),
-      refreshStats()
-    ]);
-    await renderBalance();
-    setupIncomeModal();
-  } finally {
-    // Always dismiss skeleton — even if something above threw
-    const skel = document.getElementById('page-skeleton');
-    if (skel) skel.classList.add('sk-hidden');
-  }
+  registerServiceWorker();
+  initPWA();
 
-  // 7. Charts in background (non-blocking)
-  renderAllCharts();
-  setupChartPillToggle();
-
-  // 7. Online/offline listeners
   window.addEventListener('online', async () => {
     updateOnlineStatus();
     showToast('Back online! Syncing...');
     await runSync();
     await syncIncomeFromServer();
+    await renderBalance();
     await pullGoalsFromServer();
     if (document.querySelector('#tab-goals.active')) await loadGoals();
   });
@@ -51,41 +36,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     showToast('You are offline - data saved locally', 'warning');
   });
 
-  // Re-sync when app is resumed from background (mobile PWA)
   document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState === 'visible') {
       await syncIncomeFromServer();
+      await renderBalance();
       await pullGoalsFromServer();
       if (document.querySelector('#tab-goals.active')) await loadGoals();
     }
   });
 
-  // 8. Auth check + server sync — both run in background, never block UI
-  checkBackendConnection();
-  _syncOnLoad();
-
-  // 9. Button events
-  document.getElementById('btn-add-expense')
-    .addEventListener('click', handleAddExpense);
-
-  const addBudgetBtn = document.getElementById('btn-add-budget');
-  if (addBudgetBtn) {
-    addBudgetBtn.addEventListener('click', handleAddBudget);
+  // ── Load local data from IndexedDB (no network needed) ──
+  try {
+    await initDB();
+    await Promise.all([loadExpenseList(), refreshStats()]);
+    await renderBalance();
+    setupIncomeModal();
+  } finally {
+    const skel = document.getElementById('page-skeleton');
+    if (skel) skel.classList.add('sk-hidden');
   }
 
-  const searchEl = document.getElementById('search-expenses');
-  if (searchEl) {
-    searchEl.addEventListener('input', handleSearch);
-  }
-
-  const titleInput = document.getElementById('exp-title');
-  if (titleInput) {
-    titleInput.addEventListener('input', handleTitleInput);
-  }
-
-  // Register service worker and init PWA
-  registerServiceWorker();
-  initPWA();
+  renderAllCharts();
+  setupChartPillToggle();
 
   // Cache the app shell on every online load so offline always works
   if (navigator.onLine && 'caches' in window) {
@@ -98,12 +70,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Ask for notification permission once, after a short delay
   setTimeout(requestNotificationPermission, 3000);
-
-  // Notification bell
   setupNotificationBell();
   loadNotifications();
+
+  // ── Background: auth + server sync — never blocks UI ──
+  checkBackendConnection();
+  _syncOnLoad();
 });
 
 // ── Notification Bell ──────────────────────────────────────
@@ -862,6 +835,7 @@ async function syncIncomeFromServer() {
 // ── Background Sync on Load ────────────────────────────────
 // Runs auth check + server pull after UI is ready. Never awaited — won't block tabs or buttons.
 async function _syncOnLoad() {
+  let incomeChanged = false;
   try {
     const authRes  = await fetch('/api/v1/auth/status');
     const authData = await authRes.json();
@@ -874,7 +848,11 @@ async function _syncOnLoad() {
       }
       await saveSetting('current_user_id', authData.user_id);
       if (authData.monthly_income > 0) {
-        localStorage.setItem('se_income', authData.monthly_income.toString());
+        const current = parseFloat(localStorage.getItem('se_income') || '0');
+        if (authData.monthly_income !== current) {
+          localStorage.setItem('se_income', authData.monthly_income.toString());
+          incomeChanged = true;
+        }
       } else {
         const localIncome = parseFloat(localStorage.getItem('se_income') || '0');
         if (localIncome > 0) {
@@ -887,6 +865,7 @@ async function _syncOnLoad() {
       }
     }
   } catch (_) {}
+  if (incomeChanged) await renderBalance();
   const pulled = await pullExpensesFromServer();
   await pullGoalsFromServer();
   if (pulled > 0) {
