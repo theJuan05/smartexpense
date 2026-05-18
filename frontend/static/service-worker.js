@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v55';
+const CACHE_NAME = 'smartexpense-v56';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -91,19 +91,28 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // ── Navigation requests (opening the app) ─────────────────
-  // Handle separately: use ignoreSearch so query params added by
-  // Android (e.g. ?source=pwa) don't prevent a cache hit.
+  // ── Navigation: cache-first, update in background ─────────
+  // Serve cached page immediately so the app loads instantly offline.
+  // The network fetch runs in background to keep the cache fresh.
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).then(function(resp) {
-        if (resp && resp.status === 200) {
-          caches.open(CACHE_NAME).then(function(cache) { cache.put('/', resp.clone()); });
+      caches.match('/', { ignoreSearch: true }).then(function(cached) {
+        // Always try to refresh the cache in background
+        var networkFetch = fetch(event.request).then(function(resp) {
+          if (resp && resp.status === 200) {
+            caches.open(CACHE_NAME).then(function(cache) { cache.put('/', resp.clone()); });
+          }
+          return resp;
+        }).catch(function() { return null; });
+
+        if (cached) {
+          // Return cache immediately; network update happens in background
+          networkFetch.catch(function() {});
+          return cached;
         }
-        return resp;
-      }).catch(function() {
-        return caches.match('/', { ignoreSearch: true }).then(function(cached) {
-          if (cached) return cached;
+        // No cache yet — wait for network or show offline page
+        return networkFetch.then(function(resp) {
+          if (resp) return resp;
           return new Response(
             '<!DOCTYPE html><html><head><meta charset="utf-8">' +
             '<meta name="viewport" content="width=device-width,initial-scale=1">' +
@@ -126,19 +135,25 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // ── JS/CSS: network-first so updates land immediately ──────
+  // ── JS/CSS: cache-first, update in background ───────────────
+  // Serve from cache instantly (no network wait). Updates land on next SW version bump.
   const isScript = path.endsWith('.js') || path.endsWith('.css');
   if (isScript) {
     event.respondWith(
-      fetch(event.request).then(function(response) {
-        if (response && response.status === 200) {
-          caches.open(CACHE_NAME).then(function(cache) {
-            cache.put(event.request, response.clone());
-          });
-        }
-        return response;
-      }).catch(function() {
-        return caches.match(event.request);
+      caches.match(event.request).then(function(cached) {
+        // Update cache in background regardless
+        fetch(event.request).then(function(response) {
+          if (response && response.status === 200) {
+            caches.open(CACHE_NAME).then(function(cache) {
+              cache.put(event.request, response.clone());
+            });
+          }
+        }).catch(function() {});
+        // Return cache immediately if available, otherwise wait for network
+        if (cached) return cached;
+        return fetch(event.request).catch(function() {
+          return new Response('', { status: 503 });
+        });
       })
     );
     return;
