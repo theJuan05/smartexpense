@@ -559,7 +559,7 @@ async function renderGoalsSummary() {
     return `
       <div class="gs-item">
         <div class="gs-row">
-          <span class="gs-icon">${goal.icon || '🎯'}</span>
+          <span class="gs-icon">${typeof getGoalIconSVG === 'function' ? getGoalIconSVG(goal.icon) : (goal.icon || '🎯')}</span>
           <span class="gs-name">${_esc(goal.name)}</span>
           <span class="gs-pct">${pct}%</span>
         </div>
