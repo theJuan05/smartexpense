@@ -3166,7 +3166,8 @@ textarea:focus-visible {
     align-items: stretch;
   }
   .dash-main > .balance-card,
-  .dash-main > .stats-row { grid-column: 1 / -1; margin-bottom: 0; }
+  .dash-main > .stats-row,
+  .dash-main > .mcmp-card { grid-column: 1 / -1; margin-bottom: 0; }
   .dash-main > .dark-chart-card { margin-bottom: 0; }
   .dash-main > .card,
   .dash-main > .dark-chart-card {
