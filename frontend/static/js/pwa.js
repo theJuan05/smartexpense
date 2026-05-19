@@ -94,12 +94,17 @@ async function registerBackgroundSync() {
   }
 }
 
-// Hide install card if already running as installed PWA
+// Show install card on iOS (beforeinstallprompt never fires on iOS)
+// and hide it if already running as installed PWA
 document.addEventListener('DOMContentLoaded', function() {
+  const card = document.getElementById('install-card');
+  if (!card) return;
   if (isInstalledPWA()) {
-    const card = document.getElementById('install-card');
-    if (card) card.style.display = 'none';
+    card.style.display = 'none';
+    return;
   }
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS) card.style.display = 'flex';
 });
 
 // Also hide when matchMedia changes (user installs while page is open)
