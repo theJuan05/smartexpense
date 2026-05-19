@@ -5,4 +5,4 @@ __pycache__/
 .agents/
 *.backup
 node_modules/
-firebase-service-account.json
+firebase-service-account.jsoncommands
