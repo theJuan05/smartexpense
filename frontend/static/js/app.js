@@ -89,18 +89,33 @@ function setupNotificationBell() {
   const panel = document.getElementById('notif-panel');
   if (!btn || !panel) return;
 
+  btn.setAttribute('aria-haspopup', 'true');
+  panel.setAttribute('tabindex', '-1');
+
+  const closePanel = () => {
+    panel.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+  };
+
   btn.addEventListener('click', e => {
     e.stopPropagation();
     const open = panel.style.display !== 'none';
     panel.style.display = open ? 'none' : 'block';
     btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-    if (!open) loadNotifications();
+    if (!open) {
+      loadNotifications();
+      requestAnimationFrame(() => panel.focus());
+    }
   });
 
   document.addEventListener('click', e => {
-    if (!document.getElementById('notif-bell-wrap')?.contains(e.target)) {
-      panel.style.display = 'none';
-      btn.setAttribute('aria-expanded', 'false');
+    if (!document.getElementById('notif-bell-wrap')?.contains(e.target)) closePanel();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && panel.style.display !== 'none') {
+      closePanel();
+      btn.focus();
     }
   });
 }
@@ -679,7 +694,7 @@ async function renderHeatmap() {
     const label = amt > 0
       ? `₱${Number(amt).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`
       : 'No spending';
-    cells += `<div class="hm-cell hm-cell--l${lvl(amt)}${ds === todayStr ? ' hm-cell--today' : ''}" data-date="${ds}" data-amt="${amt}" role="gridcell" aria-label="${ds}: ${label}"><span class="hm-day-num">${d}</span></div>`;
+    cells += `<div class="hm-cell hm-cell--l${lvl(amt)}${ds === todayStr ? ' hm-cell--today' : ''}" data-date="${ds}" data-amt="${amt}" role="gridcell" tabindex="0" aria-label="${ds}: ${label}"><span class="hm-day-num" aria-hidden="true">${d}</span></div>`;
   }
 
   card.innerHTML = `
@@ -702,12 +717,16 @@ async function renderHeatmap() {
     </div>`;
 
   card.querySelectorAll('.hm-cell[data-date]').forEach(cell => {
-    cell.addEventListener('click', () => {
+    const announce = () => {
       const amt  = parseFloat(cell.dataset.amt || 0);
       const date = cell.dataset.date;
       showToast(amt > 0
         ? `${date}: ₱${Number(amt).toLocaleString('en-PH', { minimumFractionDigits: 2 })}`
         : `${date}: No spending`);
+    };
+    cell.addEventListener('click', announce);
+    cell.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); announce(); }
     });
   });
 }
