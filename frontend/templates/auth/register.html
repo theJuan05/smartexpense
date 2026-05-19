@@ -623,7 +623,7 @@
 
     (async function () {
       try {
-        const res  = await fetch('/api/auth/status');
+        const res  = await fetch('/api/v1/auth/status');
         const data = await res.json();
         if (data.logged_in) { window.location.href = '/'; return; }
       } catch (_) {}
