@@ -96,7 +96,7 @@ async function loadPrediction() {
     const pct = (predictedTotal / budgetLimit) * 100;
     if (pct >= 100) {
       risk = 'high';
-      riskMessage = `Projected to EXCEED budget by ₱${(predictedTotal - budgetLimit).toLocaleString('en-PH', { minimumFractionDigits: 2 })}!`;
+      riskMessage = `Projected to EXCEED budget by ₱${(Math.round((predictedTotal - budgetLimit) * 100) / 100).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}!`;
     } else if (pct >= 80) {
       risk = 'medium';
       riskMessage = `You may reach ${pct.toFixed(0)}% of your overall budget.`;
@@ -121,7 +121,7 @@ async function loadPrediction() {
     trendDirection === 'up'   ? 'Trending Up'   :
     trendDirection === 'down' ? 'Trending Down' : 'Stable';
 
-  const fmt = v => '₱' + Number(v).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+  const fmt = v => '₱' + (Math.round(v * 100) / 100).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   // Category budget alert rows
   const alertRows = alertBudgets.map(b => `
@@ -200,7 +200,7 @@ async function loadMLForecast() {
 
     if (res.status !== 'success') throw new Error('API error');
 
-    const fmt = v => '₱' + Number(v).toLocaleString('en-PH', { minimumFractionDigits: 2 });
+    const fmt = v => '₱' + (Math.round(v * 100) / 100).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const trendIcon  = res.trend === 'up' ? '📈 Increasing' : res.trend === 'down' ? '📉 Decreasing' : '➡️ Stable';
     const confidence = res.r2_score >= 0.8 ? 'High' : res.r2_score >= 0.5 ? 'Moderate' : 'Low';
     const confColor  = res.r2_score >= 0.8 ? 'var(--success)' : res.r2_score >= 0.5 ? 'var(--warning)' : 'var(--text-muted)';
