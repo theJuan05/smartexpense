@@ -427,7 +427,6 @@ body {
   background: linear-gradient(135deg, #2d1b8a 0%, #1a1040 60%, #0d0d20 100%);
   border-radius: var(--radius-xl);
   padding: 22px 22px 18px;
-  margin-bottom: 14px;
   position: relative;
   overflow: hidden;
 }
@@ -1022,6 +1021,16 @@ body {
   margin-bottom: 14px;
 }
 .dash-aside-header h2 { margin: 0; }
+
+/* Mobile base: dash sections stack with spacing */
+.dash-main,
+.dash-aside,
+.dash-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 14px;
+}
 
 .link-btn {
   background: none;
@@ -3155,39 +3164,38 @@ textarea:focus-visible {
   .container { margin-left: 175px; margin-right: 0; max-width: none; padding: 28px 32px; }
   #page-skeleton { left: 175px; }
 
-  /* ── Dashboard: main column + sticky aside ──────────────────── */
+  /* ── Dashboard: hero | aside (sticky) | charts ──────────────── */
+  /* HTML order: dash-main → dash-aside → dash-charts
+     Desktop: aside is a sticky right column spanning both rows  */
   #tab-dashboard.active {
     display: grid;
     grid-template-columns: 1fr 320px;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "main  aside"
+      "charts aside";
     column-gap: 24px;
     align-items: start;
   }
   /* onboarding overlay is fixed-position, no grid placement needed */
 
-  /* Main column: charts side-by-side in nested grid */
-  .dash-main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 20px;
-    row-gap: 14px;
-    align-items: stretch;
-  }
+  .dash-main   { grid-area: main;   display: flex; flex-direction: column; gap: 14px; }
+  .dash-charts { grid-area: charts; display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 14px; align-items: stretch; }
+  .dash-aside  { grid-area: aside;  position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px; }
+
   .dash-main > .balance-card,
   .dash-main > .stats-row,
-  .dash-main > .mcmp-card { grid-column: 1 / -1; margin-bottom: 0; }
-  .dash-main > .dark-chart-card { margin-bottom: 0; }
-  .dash-main > .card,
-  .dash-main > .dark-chart-card {
+  .dash-main > .mcmp-card { margin-bottom: 0; }
+
+  .dash-charts > .card,
+  .dash-charts > .dark-chart-card {
     display: flex;
     flex-direction: column;
   }
-  .dash-main > .card .chart-container,
-  .dash-main > .dark-chart-card .chart-container {
+  .dash-charts > .card .chart-container,
+  .dash-charts > .dark-chart-card .chart-container {
     flex: 1;
     min-height: 240px;
-  }
-  .dash-main > .dash-recent-tx {
-    grid-column: 1 / -1;
   }
   .recent-tx-grid {
     display: grid;
@@ -3203,15 +3211,6 @@ textarea:focus-visible {
   .recent-tx-grid > .spinner,
   .recent-tx-grid > div:only-child {
     grid-column: 1 / -1;
-  }
-
-  /* Aside: sticky panel */
-  .dash-aside {
-    position: sticky;
-    top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
   }
 
   /* ── Add Expense: form left, tips sidebar right ── */

@@ -73,6 +73,39 @@
         <!-- Month-over-month comparison -->
         <div class="card mcmp-card" id="month-comparison-card" aria-label="Month comparison"></div>
 
+      </div>
+      <!-- ── End dash-main ──────────────────────────────────── -->
+
+      <!-- ── Right aside: budget + goals ───────────────────────
+           Desktop: sticky right column. Mobile: appears here,
+           between the hero/stats and the charts. -->
+      <div class="dash-aside">
+
+        <!-- Budget Overview -->
+        <div class="card" id="card-budget-dash">
+          <h2>Budget Overview</h2>
+          <div id="budget-progress-list">
+            <div class="spinner">Loading budgets...</div>
+          </div>
+        </div>
+
+        <!-- Goals Summary -->
+        <div class="card" id="card-goals-dash">
+          <div class="dash-aside-header">
+            <h2>Goals</h2>
+            <button class="link-btn" onclick="document.querySelector('[data-tab=goals]').click()">View all</button>
+          </div>
+          <div id="goals-summary-list">
+            <div class="spinner">Loading...</div>
+          </div>
+        </div>
+
+      </div>
+      <!-- ── End dash-aside ─────────────────────────────────── -->
+
+      <!-- ── Charts: below aside on mobile, left col on desktop ─ -->
+      <div class="dash-charts">
+
         <!-- Spending by Category — Pie Chart -->
         <div class="card">
           <h2>Spending by Category</h2>
@@ -110,33 +143,7 @@
           </table>
         </div>
 
-
       </div>
-      <!-- ── End dash-main ──────────────────────────────────── -->
-
-      <!-- ── Right aside: budget overview only ───────────────── -->
-      <div class="dash-aside">
-
-        <!-- Budget Overview -->
-        <div class="card" id="card-budget-dash">
-          <h2>Budget Overview</h2>
-          <div id="budget-progress-list">
-            <div class="spinner">Loading budgets...</div>
-          </div>
-        </div>
-
-        <!-- Goals Summary -->
-        <div class="card" id="card-goals-dash">
-          <div class="dash-aside-header">
-            <h2>Goals</h2>
-            <button class="link-btn" onclick="document.querySelector('[data-tab=goals]').click()">View all</button>
-          </div>
-          <div id="goals-summary-list">
-            <div class="spinner">Loading...</div>
-          </div>
-        </div>
-
-      </div>
-      <!-- ── End dash-aside ─────────────────────────────────── -->
+      <!-- ── End dash-charts ───────────────────────────────────── -->
 
     </div>
