@@ -518,9 +518,10 @@ body {
   align-items: center;
   gap: 10px;
   flex: 1;
+  min-width: 0;
 }
 
-.balance-col-body { display: flex; flex-direction: column; gap: 2px; }
+.balance-col-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; overflow: hidden; }
 
 .balance-col-icon {
   width: 32px; height: 32px;
@@ -547,9 +548,12 @@ body {
 }
 
 .balance-col-val {
-  font-size: 0.95rem;
+  font-size: clamp(0.78rem, 3.6vw, 0.95rem);
   font-weight: 700;
   color: oklch(98% 0.005 280);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .balance-col-val.income  { color: var(--balance-income); }

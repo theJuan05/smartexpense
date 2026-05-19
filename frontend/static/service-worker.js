@@ -1,6 +1,6 @@
-const CACHE_NAME = 'smartexpense-v64';
+const CACHE_NAME = 'smartexpense-v65';
 const STATIC_ASSETS = [
-  '/static/style.css?v=63',
+  '/static/style.css?v=64',
   '/static/profile.css',
   '/static/pinlock.css',
   '/static/js/darkmode.js',
