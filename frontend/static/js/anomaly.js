@@ -14,15 +14,9 @@ async function loadAnomalies() {
 
   if (summaryEl) {
     summaryEl.innerHTML = `
-      <span style="background:#ffeaea;color:var(--danger);padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-right:6px;">
-        HIGH: ${high}
-      </span>
-      <span style="background:#fff3cd;color:#856404;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;margin-right:6px;">
-        MEDIUM: ${medium}
-      </span>
-      <span style="background:#d4edda;color:#155724;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;">
-        Scanned: ${expenses.length}
-      </span>
+      <span style="background:#ffeaea;color:var(--danger);padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;">HIGH: ${high}</span>
+      <span style="background:#fff3cd;color:#856404;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;">MEDIUM: ${medium}</span>
+      <span style="background:#d4edda;color:#155724;padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:600;">Scanned: ${expenses.length}</span>
     `;
   }
 
