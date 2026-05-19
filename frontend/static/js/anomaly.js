@@ -124,7 +124,7 @@ function createAnomalyCard(anomaly) {
         <span class="alert-card-title">${safeTitle(anomaly.title)}</span>
         <span class="alert-card-badge">${badge}</span>
       </div>
-      <div class="alert-card-amount">₱${Number(anomaly.amount).toLocaleString()}</div>
+      <div class="alert-card-amount">₱${Number(anomaly.amount).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
     </div>
     <div class="alert-card-meta">${anomaly.category} &bull; ${anomaly.expense_date || ''}</div>
     <ul class="alert-card-reasons">${reasonsList}</ul>
@@ -174,7 +174,7 @@ function showAnomalyWarning(severity, reason, average) {
   warningEl.innerHTML = `
     <div class="alert-card-title">${label}: ${reason}</div>
     <div class="alert-card-body" style="margin-top:4px;">
-      Your average expense: ₱${Number(average).toLocaleString()}
+      Your average expense: ₱${Number(average).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
     </div>
   `;
 

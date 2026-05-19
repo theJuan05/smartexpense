@@ -147,10 +147,10 @@ function createBudgetCard(budget) {
       <div style="display:flex;align-items:center;gap:12px;">
         <div class="budget-card-amounts">
           <div class="budget-card-spent">
-            ₱${Number(budget.spent).toLocaleString()}
+            ₱${Number(budget.spent).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
           </div>
           <div class="budget-card-limit">
-            of ₱${Number(budget.amount_limit).toLocaleString()}
+            of ₱${Number(budget.amount_limit).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
           </div>
         </div>
         <button class="budget-card-delete" data-id="${budget.id}"

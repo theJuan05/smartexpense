@@ -138,7 +138,7 @@ function createGoalCard(goal) {
       ${[...contributions].reverse().map(c => `
         <div class="goal-log-entry">
           <span class="goal-log-date">${new Date(c.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}</span>
-          <span class="goal-log-amount">+₱${Number(c.amount).toLocaleString()}</span>
+          <span class="goal-log-amount">+₱${Number(c.amount).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
         </div>`).join('')}
     </div>`;
 
@@ -148,9 +148,9 @@ function createGoalCard(goal) {
       <div class="goal-info">
         <div class="goal-name">${_esc(goal.name)}</div>
         <div class="goal-amounts">
-          <span class="goal-saved">₱${saved.toLocaleString()}</span>
+          <span class="goal-saved">₱${saved.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
           <span class="goal-sep">of</span>
-          <span class="goal-target">₱${target.toLocaleString()}</span>
+          <span class="goal-target">₱${target.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
           ${etaHtml}
         </div>
       </div>

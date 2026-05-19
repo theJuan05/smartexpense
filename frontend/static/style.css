@@ -2231,6 +2231,8 @@ body {
 
 @media (max-width: 380px) {
   .stats-row { grid-template-columns: 1fr; }
+  .container { padding: 12px 8px 100px; }
+  .card { padding: 14px 12px; }
 }
 
 /* ── Navbar: logout + install buttons ───────────────────────────── */
@@ -3426,7 +3428,7 @@ textarea:focus-visible {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 300px;
+  width: min(300px, calc(100vw - 24px));
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 12px;

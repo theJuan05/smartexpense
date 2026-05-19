@@ -16,7 +16,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('btn-add-expense')?.addEventListener('click', handleAddExpense);
   document.getElementById('btn-add-budget')?.addEventListener('click', handleAddBudget);
-  document.getElementById('search-expenses')?.addEventListener('input', handleSearch);
+  let _searchTimer;
+  document.getElementById('search-expenses')?.addEventListener('input', () => {
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(handleSearch, 300);
+  });
   document.getElementById('exp-title')?.addEventListener('input', handleTitleInput);
 
   registerServiceWorker();
@@ -136,7 +140,7 @@ async function loadNotifications() {
           <div class="notif-dot notif-dot--${b.status}"></div>
           <div class="notif-item-body">
             <div class="notif-item-title">${isDanger ? 'Over budget' : 'Budget warning'}: ${_esc(b.category)}</div>
-            <div class="notif-item-desc">₱${Number(b.spent).toLocaleString()} spent — ${b.percentage}% of ₱${Number(b.amount_limit).toLocaleString()} limit</div>
+            <div class="notif-item-desc">₱${Number(b.spent).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} spent — ${b.percentage}% of ₱${Number(b.amount_limit).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} limit</div>
           </div>
         </div>`;
     }).join('');
@@ -446,7 +450,7 @@ function createExpenseItem(exp) {
       </div>
     </div>
     <div class="expense-right">
-      <div class="expense-amount">-₱${Number(exp.amount).toLocaleString()}</div>
+      <div class="expense-amount">-₱${Number(exp.amount).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
       ${!synced ? '<span class="expense-sync-badge">Pending</span>' : ''}
       <div class="expense-actions">
         <button class="expense-edit-btn" data-id="${exp.local_id}" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>
@@ -564,7 +568,7 @@ async function renderGoalsSummary() {
           <span class="gs-pct">${pct}%</span>
         </div>
         <div class="gs-track"><div class="gs-fill" style="width:${pct}%"></div></div>
-        <div class="gs-amounts">₱${saved.toLocaleString()} <span style="color:var(--text-muted)">of ₱${target.toLocaleString()}</span></div>
+        <div class="gs-amounts">₱${saved.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span style="color:var(--text-muted)">of ₱${target.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>
       </div>`;
   }).join('');
 }
