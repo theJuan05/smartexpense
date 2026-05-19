@@ -66,7 +66,10 @@
       "Bash(git mv *)",
       "Bash(findstr -E \"\\(ml|ai|predict|forecast|anomal|advice|receipt\\)\")",
       "Bash(find /etc/systemd/system -name \"smartexpense*\" 2>/dev/null || echo \"not found\")",
-      "Read(//etc/systemd/**)"
+      "Read(//etc/systemd/**)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Administrator\\\\Desktop\\\\smartexpense\" -Recurse -Directory)",
+      "Bash(Select-Object FullName)",
+      "Bash(find \"c:\\\\\\\\Users\\\\\\\\Administrator\\\\\\\\Desktop\\\\\\\\smartexpense\" -type f \\\\\\( -name \"*.js\" -o -name \"*.css\" -o -name \"*.html\" -o -name \"*.py\" -o -name \"*.json\" \\\\\\))"
     ],
     "additionalDirectories": [
       "c:\\Users\\Administrator\\.claude\\projects\\c--Users-Administrator-Desktop-smartexpense\\memory",
