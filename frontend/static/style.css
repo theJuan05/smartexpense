@@ -2248,7 +2248,7 @@ body {
     border-top: 0.5px solid rgba(255,255,255,0.12);
     padding-top: 10px;
   }
-  .balance-footer > .balance-sep:last-of-type { display: none; }
+  .balance-footer > div:nth-child(4) { display: none; }
 
   .container { padding: 16px 12px 100px; }
   .navbar { padding: 0 14px; height: 52px; }
