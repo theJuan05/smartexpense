@@ -555,6 +555,18 @@ body {
 .balance-col-val.income  { color: var(--balance-income); }
 .balance-col-val.expense { color: var(--balance-expense); }
 
+.balance-goals-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+
 .balance-sep {
   width: 0.5px;
   height: 38px;
@@ -2237,20 +2249,7 @@ body {
 
 /* ── Phone-specific overrides (tighter padding) ──────────────── */
 @media (max-width: 640px) {
-  /* Balance footer: income+expenses on row 1, goals full-width on row 2 */
-  .balance-footer {
-    flex-wrap: wrap;
-    row-gap: 10px;
-  }
-  .balance-footer > .balance-col:last-child {
-    flex: 0 0 100%;
-    justify-content: center;
-    border-top: 0.5px solid rgba(255,255,255,0.12);
-    padding-top: 10px;
-  }
-  .balance-footer > div:nth-child(4) { display: none; }
-
-  .container { padding: 16px 12px 100px; }
+.container { padding: 16px 12px 100px; }
   .navbar { padding: 0 14px; height: 52px; }
   .navbar .logo { font-size: 0.88rem; }
 }
