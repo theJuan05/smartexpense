@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v62';
+const CACHE_NAME = 'smartexpense-v63';
 const STATIC_ASSETS = [
   '/static/style.css',
   '/static/profile.css',
@@ -118,9 +118,27 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // ── JS/CSS: cache-first, refresh in background ───────────────
-  const isScript = path.endsWith('.js') || path.endsWith('.css');
-  if (isScript) {
+  // ── CSS: network-first (always fresh), cache as offline fallback ─
+  if (path.endsWith('.css')) {
+    event.respondWith(
+      fetch(event.request).then(function(response) {
+        if (response && response.status === 200) {
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, response.clone());
+          });
+        }
+        return response;
+      }).catch(function() {
+        return caches.match(event.request).then(function(cached) {
+          return cached || new Response('', { status: 503 });
+        });
+      })
+    );
+    return;
+  }
+
+  // ── JS: cache-first, refresh in background ───────────────────
+  if (path.endsWith('.js')) {
     event.respondWith(
       caches.match(event.request).then(function(cached) {
         fetch(event.request).then(function(response) {
