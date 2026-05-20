@@ -108,36 +108,39 @@ def add_expense():
     new_id = execute(sql, params)
 
     if new_id:
-        try:
-            from routes.push import _send_to_all
-            from models.db import query_all as _qa
-            budgets = _qa("""
-                SELECT b.amount_limit,
-                       COALESCE(c.name, 'Overall Budget') AS category,
-                       COALESCE(SUM(e.amount), 0) AS spent
-                FROM budgets b
-                LEFT JOIN categories c ON b.category_id = c.id
-                LEFT JOIN expenses e
-                    ON e.user_id = b.user_id
-                    AND MONTH(e.expense_date) = MONTH(CURDATE())
-                    AND YEAR(e.expense_date)  = YEAR(CURDATE())
-                    AND (b.category_id IS NULL OR e.category_id = b.category_id)
-                WHERE b.user_id = %s
-                GROUP BY b.id, b.amount_limit, c.name
-            """, (user_id,))
-            for b in (budgets or []):
-                limit = float(b['amount_limit'])
-                spent = float(b['spent'])
-                pct   = (spent / limit * 100) if limit > 0 else 0
-                cat   = b['category']
-                if pct >= 90:
-                    _send_to_all(user_id, f'Over Budget: {cat}',
-                                 f"You've spent ₱{spent:,.0f} — {pct:.0f}% of your ₱{limit:,.0f} limit!")
-                elif pct >= 70:
-                    _send_to_all(user_id, f'Budget Warning: {cat}',
-                                 f"You've used {pct:.0f}% of your ₱{limit:,.0f} monthly budget.")
-        except Exception:
-            pass
+        import threading
+        def _check_and_notify(uid):
+            try:
+                from routes.push import _send_to_all
+                from models.db import query_all as _qa
+                budgets = _qa("""
+                    SELECT b.amount_limit,
+                           COALESCE(c.name, 'Overall Budget') AS category,
+                           COALESCE(SUM(e.amount), 0) AS spent
+                    FROM budgets b
+                    LEFT JOIN categories c ON b.category_id = c.id
+                    LEFT JOIN expenses e
+                        ON e.user_id = b.user_id
+                        AND MONTH(e.expense_date) = MONTH(CURDATE())
+                        AND YEAR(e.expense_date)  = YEAR(CURDATE())
+                        AND (b.category_id IS NULL OR e.category_id = b.category_id)
+                    WHERE b.user_id = %s
+                    GROUP BY b.id, b.amount_limit, c.name
+                """, (uid,))
+                for b in (budgets or []):
+                    limit = float(b['amount_limit'])
+                    spent = float(b['spent'])
+                    pct   = (spent / limit * 100) if limit > 0 else 0
+                    cat   = b['category']
+                    if pct >= 90:
+                        _send_to_all(uid, f'Over Budget: {cat}',
+                                     f"You've spent ₱{spent:,.0f} — {pct:.0f}% of your ₱{limit:,.0f} limit!")
+                    elif pct >= 70:
+                        _send_to_all(uid, f'Budget Warning: {cat}',
+                                     f"You've used {pct:.0f}% of your ₱{limit:,.0f} monthly budget.")
+            except Exception:
+                pass
+        threading.Thread(target=_check_and_notify, args=(user_id,), daemon=True).start()
         return jsonify({
             "status" : "success",
             "message": "Expense added successfully",
