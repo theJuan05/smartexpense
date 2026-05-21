@@ -230,10 +230,7 @@ async function loadMLForecast() {
           <div class="predict-sub">₱${Math.abs(res.slope).toLocaleString()} / month slope</div>
         </div>
       </div>
-      <div style="padding:10px 14px;background:var(--bg);border-radius:8px;font-size:0.8rem;color:var(--text-muted);line-height:1.6;">
-        <strong>Model:</strong> ${res.model} &nbsp;·&nbsp;
-        <strong>Trained on:</strong> ${res.month_labels.join(', ')}
-      </div>`;
+      `;
   } catch (_) {
     container.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;">Could not load ML forecast.</p>`;
   }
