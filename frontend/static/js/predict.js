@@ -37,11 +37,16 @@ async function loadPrediction() {
 
   let dailyAvg;
   if (pastExp.length > 0) {
-    const pastTotal  = pastExp.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
-    // Use calendar days in the period, not just days-with-spending.
-    // e.g. ₱3,000 over 90 days = ₱33/day, not ₱3,000 over 20 spending days = ₱150/day.
-    const periodDays = Math.round((today - cutoff) / (1000 * 60 * 60 * 24));
-    dailyAvg = pastTotal / Math.max(periodDays, 1);
+    const pastTotal = pastExp.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
+    // Divide by days in months that actually have data, not the full calendar window.
+    // e.g. if only April has data, use 30 days — not 109 days since Feb 1.
+    const pastMonthSet = new Set(pastExp.map(e => e.expense_date.substring(0, 7)));
+    let dataDays = 0;
+    pastMonthSet.forEach(k => {
+      const [y, m] = k.split('-').map(Number);
+      dataDays += new Date(y, m, 0).getDate();
+    });
+    dailyAvg = pastTotal / Math.max(dataDays, 1);
   } else {
     dailyAvg = spentSoFar / Math.max(daysElapsed, 1);
   }

@@ -275,16 +275,26 @@ def ml_forecast():
     monthly  = group_by_month(expenses)
 
     # Sort months oldest → newest, exclude current partial month
+    import calendar as cal
     today = date.today()
     current_month_key = today.strftime('%Y-%m')
     sorted_months = sorted(k for k in monthly if k != current_month_key)
     monthly_totals = [monthly[m] for m in sorted_months]
 
+    # If fewer than 2 full months, project the current month to end-of-month
+    # so the model can still run with at least 2 data points
+    if len(monthly_totals) < 2 and current_month_key in monthly:
+        days_in_month = cal.monthrange(today.year, today.month)[1]
+        current_spent = monthly[current_month_key]
+        projected     = round(current_spent * days_in_month / max(today.day, 1), 2)
+        sorted_months.append(current_month_key)
+        monthly_totals.append(projected)
+
     result = train_and_predict(monthly_totals)
     if result is None:
         return jsonify({
             'status':  'insufficient_data',
-            'message': 'Need at least 2 full months of spending history for ML forecast.',
+            'message': 'Need at least 2 months of spending history for ML forecast.',
         })
 
     # Label months for the response
