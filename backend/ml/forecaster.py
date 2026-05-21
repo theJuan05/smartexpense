@@ -21,17 +21,8 @@ def train_and_predict(monthly_totals: list[float]) -> dict:
     With only 1 month, returns that month's total as the baseline prediction.
     """
     n = len(monthly_totals)
-    if n < 1:
+    if n < 2:
         return None
-
-    if n == 1:
-        return {
-            'predicted': round(monthly_totals[0], 2),
-            'r2_score':  0.0,
-            'slope':     0.0,
-            'n_months':  1,
-            'trend':     'stable',
-        }
 
     X = np.arange(n).reshape(-1, 1).astype(float)
     y = np.array(monthly_totals, dtype=float)
