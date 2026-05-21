@@ -2437,6 +2437,8 @@ body {
 .ob-visual-icon {
   font-size: 1.7rem;
   line-height: 1;
+  width: 36px;
+  height: 36px;
   transition: opacity 0.16s ease, transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
