@@ -40,7 +40,7 @@
   </script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=73">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=74">
   <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='pinlock.css') }}">
   <style>
@@ -126,12 +126,22 @@
   </aside>
   <!-- ──────────────────────────────────────────────────────────── -->
 
-  <!-- Mobile header — logo strip (bell floats fixed at same height) -->
+  <!-- Mobile header — logo + notification bell (mobile only) -->
   <header class="mobile-header" aria-label="App header">
     <span class="mobile-header-brand">
       <img src="/static/icons/logo-icon.svg" alt="" class="mobile-header-icon" aria-hidden="true">
       Smart<span>Expense</span>
     </span>
+    <div class="notif-bell-wrap" id="notif-bell-wrap-m">
+      <button class="notif-bell-btn" id="btn-notif-bell-m" aria-label="Notifications" aria-expanded="false" aria-haspopup="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-badge" id="notif-badge-m" style="display:none"></span>
+      </button>
+      <div class="notif-panel" id="notif-panel-m" style="display:none">
+        <div class="notif-panel-header">Notifications</div>
+        <div id="notif-list-m"><div class="notif-loading">Checking...</div></div>
+      </div>
+    </div>
   </header>
 
   <!-- Navigation -->

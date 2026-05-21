@@ -84,12 +84,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ── Notification Bell ──────────────────────────────────────
-function setupNotificationBell() {
-  const btn   = document.getElementById('btn-notif-bell');
-  const panel = document.getElementById('notif-panel');
+function _setupBell(btnId, panelId, wrapId) {
+  const btn   = document.getElementById(btnId);
+  const panel = document.getElementById(panelId);
   if (!btn || !panel) return;
 
-  btn.setAttribute('aria-haspopup', 'true');
   panel.setAttribute('tabindex', '-1');
 
   const closePanel = () => {
@@ -109,7 +108,7 @@ function setupNotificationBell() {
   });
 
   document.addEventListener('click', e => {
-    if (!document.getElementById('notif-bell-wrap')?.contains(e.target)) closePanel();
+    if (!document.getElementById(wrapId)?.contains(e.target)) closePanel();
   });
 
   document.addEventListener('keydown', e => {
@@ -120,47 +119,57 @@ function setupNotificationBell() {
   });
 }
 
+function setupNotificationBell() {
+  _setupBell('btn-notif-bell',   'notif-panel',   'notif-bell-wrap');
+  _setupBell('btn-notif-bell-m', 'notif-panel-m', 'notif-bell-wrap-m');
+}
+
 async function loadNotifications() {
-  const list  = document.getElementById('notif-list');
-  const badge = document.getElementById('notif-badge');
-  const btn   = document.getElementById('btn-notif-bell');
-  if (!list || !badge) return;
+  const bells = [
+    { list: 'notif-list',   badge: 'notif-badge',   btn: 'btn-notif-bell'   },
+    { list: 'notif-list-m', badge: 'notif-badge-m', btn: 'btn-notif-bell-m' },
+  ];
 
   try {
     const res  = await fetch('/api/v1/budgets/summary');
     if (!res.ok) throw new Error();
     const data = (await res.json()).data || [];
-
     const alerts = data.filter(b => b.status === 'danger' || b.status === 'warning');
 
-    if (alerts.length === 0) {
-      badge.style.display = 'none';
-      btn?.classList.remove('has-alerts');
-      list.innerHTML = `
-        <div class="notif-empty">
-          <div class="notif-empty-icon">✅</div>
-          All budgets on track
-        </div>`;
-      return;
-    }
+    const itemsHtml = alerts.length === 0
+      ? `<div class="notif-empty"><div class="notif-empty-icon">✅</div>All budgets on track</div>`
+      : alerts.map(b => {
+          const isDanger = b.status === 'danger';
+          return `
+            <div class="notif-item">
+              <div class="notif-dot notif-dot--${b.status}"></div>
+              <div class="notif-item-body">
+                <div class="notif-item-title">${isDanger ? 'Over budget' : 'Budget warning'}: ${_esc(b.category)}</div>
+                <div class="notif-item-desc">₱${Number(b.spent).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} spent — ${b.percentage}% of ₱${Number(b.amount_limit).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} limit</div>
+              </div>
+            </div>`;
+        }).join('');
 
-    badge.textContent    = alerts.length;
-    badge.style.display  = 'flex';
-    btn?.classList.add('has-alerts');
-
-    list.innerHTML = alerts.map(b => {
-      const isDanger = b.status === 'danger';
-      return `
-        <div class="notif-item">
-          <div class="notif-dot notif-dot--${b.status}"></div>
-          <div class="notif-item-body">
-            <div class="notif-item-title">${isDanger ? 'Over budget' : 'Budget warning'}: ${_esc(b.category)}</div>
-            <div class="notif-item-desc">₱${Number(b.spent).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} spent — ${b.percentage}% of ₱${Number(b.amount_limit).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} limit</div>
-          </div>
-        </div>`;
-    }).join('');
+    bells.forEach(({ list, badge, btn }) => {
+      const listEl  = document.getElementById(list);
+      const badgeEl = document.getElementById(badge);
+      const btnEl   = document.getElementById(btn);
+      if (!listEl || !badgeEl) return;
+      listEl.innerHTML = itemsHtml;
+      if (alerts.length === 0) {
+        badgeEl.style.display = 'none';
+        btnEl?.classList.remove('has-alerts');
+      } else {
+        badgeEl.textContent   = alerts.length;
+        badgeEl.style.display = 'flex';
+        btnEl?.classList.add('has-alerts');
+      }
+    });
   } catch (_) {
-    list.innerHTML = '<div class="notif-loading">Could not load notifications</div>';
+    bells.forEach(({ list }) => {
+      const el = document.getElementById(list);
+      if (el) el.innerHTML = '<div class="notif-loading">Could not load notifications</div>';
+    });
   }
 }
 

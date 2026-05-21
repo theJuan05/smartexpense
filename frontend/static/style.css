@@ -1760,26 +1760,9 @@ body {
   .container { padding-bottom: 100px; }
   .card { padding: 16px; }
 
-  /* Collapse navbar to zero height — keeps bell in render tree so position:fixed works */
-  .navbar {
-    height: 0;
-    padding: 0;
-    border: none;
-    box-shadow: none;
-    overflow: visible;
-    background: transparent;
-    pointer-events: none;
-  }
-  .navbar .logo,
-  .navbar #btn-dark-mode,
-  .navbar #btn-profile-icon,
-  .navbar .btn-install,
-  .navbar .status-badge,
-  .navbar .btn-logout { display: none; }
-  .notif-bell-wrap {
-    display: flex;
-    pointer-events: all;
-  }
+  /* Hide nav chrome — bottom nav handles everything on mobile */
+  .navbar { display: none; }
+  .status-badge, .btn-logout, .btn-install { display: none; }
 
   /* Mobile brand header */
   .mobile-header {
@@ -1816,14 +1799,8 @@ body {
     flex-shrink: 0;
   }
 
-  /* Bell stays visible on mobile — aligned with header height */
-  .notif-bell-wrap {
-    position: fixed;
-    top: 14px;
-    right: 16px;
-    z-index: 300;
-  }
-  .notif-panel { right: 0; width: 280px; }
+  /* Bell lives in mobile-header; panel drops down from it */
+  .notif-panel { right: 0; width: min(280px, calc(100vw - 32px)); }
 
   /* Hide top tab bar — bottom nav handles navigation */
   .tab-bar { display: none; }
