@@ -2064,8 +2064,9 @@ body {
 .hm-dow-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 5px;
   margin-bottom: 4px;
+  max-width: 340px;
 }
 .hm-dow-row span {
   text-align: center;
@@ -2078,11 +2079,13 @@ body {
 .hm-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 5px;
+  max-width: 340px;
 }
 .hm-cell {
+  width: 100%;
   aspect-ratio: 1;
-  border-radius: 5px;
+  border-radius: 6px;
   position: relative;
   cursor: pointer;
   transition: transform 0.1s;
