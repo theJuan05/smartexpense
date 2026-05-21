@@ -18,6 +18,13 @@
     </div>
   </div>
 
+  <!-- Sign Out -->
+  <div class="card mobile-logout-card">
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" style="width:100%;justify-content:center;">
+      Sign Out
+    </a>
+  </div>
+
   <!-- Account Settings -->
   <div class="card">
     <h2>Account Settings</h2>
@@ -452,13 +459,6 @@
       <button class="btn btn-primary" style="width:100%;margin-top:8px;"
               onclick="saveProfileField('password')">Update Password</button>
     </div>
-  </div>
-
-  <!-- Sign Out (visible on mobile where top navbar logout is hidden) -->
-  <div class="card mobile-logout-card">
-    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" style="width:100%;justify-content:center;">
-      Sign Out
-    </a>
   </div>
 
   <!-- Privacy & Legal -->
