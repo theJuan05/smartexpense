@@ -629,7 +629,18 @@ async function sendTestNotification() {
     const res  = await fetch('/api/v1/push-test', { method: 'POST' });
     const data = await res.json();
     if (data.status === 'success') {
-      showToast('Test push sent to ' + (data.devices || 1) + ' device(s) — check your notifications!', 'success');
+      showToast('Push notification sent!', 'success');
+      // Show system notification directly so it always appears
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        await reg.showNotification('SmartExpense', {
+          body:    'Push notifications are working! 🎉',
+          icon:    '/static/icons/icon-192.png',
+          badge:   '/static/icons/icon-192.png',
+          vibrate: [200, 100, 200],
+          tag:     'smartexpense-test',
+        });
+      } catch (_) {}
     } else {
       alert('Push test failed: ' + (data.message || 'unknown error') + '\n\nMake sure you tapped "Push Notifications" and allowed it first.');
     }

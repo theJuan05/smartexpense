@@ -52,11 +52,20 @@ async function initFirebaseMessaging() {
 
 // When app is in the FOREGROUND, Firebase intercepts the push and
 // fires onMessage instead of showing a system notification.
-// Show a toast so the user still sees the alert.
-messaging.onMessage((payload) => {
+// Use the service worker to show a real system popup regardless.
+messaging.onMessage(async (payload) => {
   const title = payload.notification?.title || 'SmartExpense';
   const body  = payload.notification?.body  || '';
-  if (typeof showToast === 'function') {
-    showToast(`${title}: ${body}`, 'warning');
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    await reg.showNotification(title, {
+      body,
+      icon:    '/static/icons/icon-192.png',
+      badge:   '/static/icons/icon-192.png',
+      vibrate: [200, 100, 200],
+      tag:     'smartexpense',
+    });
+  } catch (_) {
+    if (typeof showToast === 'function') showToast(`${title}: ${body}`, 'warning');
   }
 });
