@@ -702,7 +702,7 @@ async function renderHeatmap() {
       <h2>Spending Heatmap</h2>
       <span class="hm-month-label">${monthName}</span>
     </div>
-    <div class="hm-dow-row" aria-hidden="true">
+    <div class="hm-dow-row" style="justify-content:center;" aria-hidden="true">
       <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
     </div>
     <div class="hm-grid" role="grid" aria-label="Daily spending heatmap">${cells}</div>

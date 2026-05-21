@@ -2066,7 +2066,6 @@ body {
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   margin-bottom: 4px;
-  max-width: 340px;
 }
 .hm-dow-row span {
   text-align: center;
@@ -2078,9 +2077,9 @@ body {
 }
 .hm-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 52px));
   gap: 5px;
-  max-width: 340px;
+  justify-content: center;
 }
 .hm-cell {
   width: 100%;
