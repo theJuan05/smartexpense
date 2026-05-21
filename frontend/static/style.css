@@ -265,6 +265,9 @@ body {
   display: block;
 }
 
+/* Settings has theme picker — moon button not needed in navbar */
+#btn-dark-mode { display: none; }
+
 .status-badge {
   font-size: 0.72rem;
   font-weight: 600;
@@ -1799,8 +1802,22 @@ body {
     flex-shrink: 0;
   }
 
-  /* Bell lives in mobile-header; panel drops down from it */
+  /* Bell panel: fixed so sticky-header stacking context can't clip it */
+  #notif-panel-m {
+    position: fixed;
+    top: 53px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+    z-index: 600;
+  }
   .notif-panel { right: 0; width: min(280px, calc(100vw - 32px)); }
+
+  /* Mobile status badge — compact pill in the header */
+  #status-badge-m {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
 
   /* Hide top tab bar — bottom nav handles navigation */
   .tab-bar { display: none; }

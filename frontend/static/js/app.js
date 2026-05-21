@@ -928,11 +928,14 @@ async function checkBackendConnection() {
 
 // ── Online/Offline ─────────────────────────────────────────
 function updateOnlineStatus() {
-  const badge = document.getElementById('status-badge');
-  if (!badge) return;
-  badge.textContent = navigator.onLine ? 'Online' : 'Offline';
-  badge.className   = 'status-badge ' +
-    (navigator.onLine ? 'online' : 'offline');
+  const cls  = 'status-badge ' + (navigator.onLine ? 'online' : 'offline');
+  const text = navigator.onLine ? 'Online' : 'Offline';
+  ['status-badge', 'status-badge-m'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className   = cls;
+  });
 }
 
 // ── Service Worker ─────────────────────────────────────────
