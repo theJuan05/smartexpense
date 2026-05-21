@@ -265,9 +265,6 @@ body {
   display: block;
 }
 
-/* Settings has theme picker — moon button not needed in navbar */
-#btn-dark-mode { display: none; }
-
 .status-badge {
   font-size: 0.72rem;
   font-weight: 600;
