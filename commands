@@ -1,0 +1,2 @@
+cd ~/app/smartexpense && git pull && sudo systemctl restart smartexpense
+http://smartexpense.duckdns.org:8080

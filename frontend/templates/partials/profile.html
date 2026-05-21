@@ -453,6 +453,22 @@
               onclick="saveProfileField('password')">Update Password</button>
     </div>
   </div>
+
+  <!-- Sign Out (visible on mobile where top navbar logout is hidden) -->
+  <div class="card mobile-logout-card">
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" style="width:100%;justify-content:center;">
+      Sign Out
+    </a>
+  </div>
+
+  <!-- Privacy & Legal -->
+  <div style="text-align:center;padding:8px 0 16px;font-size:0.78rem;color:var(--text-muted);">
+    <a href="/privacy" target="_blank" style="color:var(--primary);text-decoration:none;font-weight:500;">
+      🔒 Privacy Policy &amp; Security
+    </a>
+    &nbsp;·&nbsp; SmartExpense &copy; 2026
+  </div>
+
 </div>
 
 <!-- Avatar Picker Modal -->
@@ -497,20 +513,6 @@
   </div>
 </div>
 
-<!-- Sign Out (visible on mobile where top navbar logout is hidden) -->
-<div class="card mobile-logout-card">
-  <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" style="width:100%;justify-content:center;">
-    Sign Out
-  </a>
-</div>
-
-<!-- Privacy & Legal -->
-<div style="text-align:center;padding:8px 0 16px;font-size:0.78rem;color:var(--text-muted);">
-  <a href="/privacy" target="_blank" style="color:var(--primary);text-decoration:none;font-weight:500;">
-    🔒 Privacy Policy &amp; Security
-  </a>
-  &nbsp;·&nbsp; SmartExpense &copy; 2026
-</div>
 
 <!-- Confirm Danger Modal -->
 <div id="modal-confirm-danger" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-danger-title">
