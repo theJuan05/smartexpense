@@ -379,19 +379,51 @@ async function loadExpenseList(filter = '') {
 // ── Onboarding wizard ──────────────────────────────────────
 (function () {
   // Slides: 0-2 = intro showcase, 3 = income, 4 = budget, 5 = done
+  // Each entry: { html, bg } — bg is the ob-icon-wrap gradient per slide
   const ICONS = [
     // 0 — Welcome: SmartExpense logo
-    `<img src="/static/icons/logo-icon.svg" style="width:36px;height:36px;">`,
-    // 1 — Expenses: receipt/list
-    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
-    // 2 — Goals: trophy
-    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 4 6 4 2 20 2 20 6 16 6"/><path d="M12 6v11"/><path d="M8 17H16"/><path d="M4 6c0 5 3 8 8 8s8-3 8-8"/></svg>`,
-    // 3 — Income: peso/wallet
-    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
-    // 4 — Budget: bar chart
-    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
-    // 5 — Done: checkmark circle
-    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    { bg: 'linear-gradient(145deg,#8b5cf6,#6c4fff)',
+      html: `<img src="/static/icons/logo-icon.svg" style="width:34px;height:34px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));">` },
+    // 1 — Expenses: receipt with sparkle
+    { bg: 'linear-gradient(145deg,#3b82f6,#2563eb)',
+      html: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="2" width="16" height="20" rx="2.5" fill="rgba(255,255,255,0.18)"/>
+        <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H17.5A2.5 2.5 0 0 1 20 4.5V21l-3-1.5L14 21l-2-1.5L10 21l-3 1.5L4 21V4.5Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.5"/>
+        <line x1="8" y1="9" x2="16" y2="9" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="8" y1="13" x2="16" y2="13" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="8" y1="17" x2="12" y2="17" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>` },
+    // 2 — Goals: trophy star
+    { bg: 'linear-gradient(145deg,#f59e0b,#d97706)',
+      html: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 3H18V8C18 11.3137 15.3137 14 12 14C8.68629 14 6 11.3137 6 8V3Z" fill="rgba(255,255,255,0.25)" stroke="white" stroke-width="1.5"/>
+        <path d="M4 3H6V7C4.89543 7 4 6.10457 4 5V3Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.5"/>
+        <path d="M18 3H20V5C20 6.10457 19.1046 7 18 7V3Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.5"/>
+        <path d="M12 14V17M9 20H15" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="12" cy="9" r="2" fill="white" opacity="0.9"/>
+      </svg>` },
+    // 3 — Income: wallet with coin
+    { bg: 'linear-gradient(145deg,#10b981,#059669)',
+      html: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="6" width="20" height="13" rx="2.5" fill="rgba(255,255,255,0.18)" stroke="white" stroke-width="1.5"/>
+        <path d="M2 10H22" stroke="white" stroke-width="1.5"/>
+        <circle cx="17" cy="14.5" r="2" fill="white" opacity="0.9"/>
+        <path d="M6 5.5C6 4.12 7.12 3 8.5 3H16" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>` },
+    // 4 — Budget: rising bar chart
+    { bg: 'linear-gradient(145deg,#f97316,#ea580c)',
+      html: `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="13" width="4" height="8" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+        <rect x="10" y="8" width="4" height="13" rx="1.5" fill="rgba(255,255,255,0.75)"/>
+        <rect x="17" y="4" width="4" height="17" rx="1.5" fill="white"/>
+        <line x1="2" y1="22" x2="22" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      </svg>` },
+    // 5 — Done: glowing checkmark
+    { bg: 'linear-gradient(145deg,#10b981,#059669)',
+      html: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1.5"/>
+        <path d="M7.5 12.5L10.5 15.5L16.5 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>` },
   ];
   let current = 0;
 
@@ -418,11 +450,13 @@ async function loadExpenseList(filter = '') {
     if (stepEl) stepEl.textContent   = isIntro ? `0${current + 1} / 03` : '';
     if (metaEl) metaEl.style.display = isIntro ? 'flex' : 'none';
 
-    if (iconEl) {
+    const wrapEl = document.querySelector('.ob-icon-wrap');
+    if (iconEl && ICONS[current]) {
       iconEl.style.opacity   = '0';
       iconEl.style.transform = 'scale(0.72) translateY(6px)';
       setTimeout(() => {
-        iconEl.innerHTML       = ICONS[current];
+        iconEl.innerHTML       = ICONS[current].html;
+        if (wrapEl) wrapEl.style.background = ICONS[current].bg;
         iconEl.style.opacity   = '1';
         iconEl.style.transform = 'scale(1) translateY(0)';
       }, 160);

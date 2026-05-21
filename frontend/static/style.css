@@ -2421,17 +2421,16 @@ body {
 }
 
 .ob-icon-wrap {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
-  border-radius: 16px;
-  background: linear-gradient(145deg, oklch(56% 0.22 290), oklch(43% 0.2 268));
+  border-radius: 18px;
+  background: linear-gradient(145deg, #8b5cf6, #6c4fff);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 0 0 1px oklch(70% 0.15 290 / 0.18),
-    0 4px 12px oklch(43% 0.2 268 / 0.4);
+  box-shadow: 0 6px 20px rgba(108,79,255,0.4);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .ob-visual-icon {
