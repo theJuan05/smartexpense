@@ -3513,6 +3513,21 @@ textarea:focus-visible {
 .notif-item:last-child { border-bottom: none; }
 .notif-item:hover { background: var(--bg); }
 
+.notif-dismiss-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  line-height: 1;
+  opacity: 0.5;
+  transition: opacity 0.15s, background 0.15s;
+}
+.notif-dismiss-btn:hover { opacity: 1; background: var(--border-light); }
+
 .notif-dot {
   width: 8px; height: 8px;
   border-radius: 50%;

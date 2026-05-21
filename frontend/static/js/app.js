@@ -102,7 +102,7 @@ function _setupBell(btnId, panelId, wrapId) {
     panel.style.display = open ? 'none' : 'block';
     btn.setAttribute('aria-expanded', open ? 'false' : 'true');
     if (!open) {
-      loadNotifications(true);
+      loadNotifications();
       requestAnimationFrame(() => panel.focus());
     }
   });
@@ -126,25 +126,18 @@ function setupNotificationBell() {
   _setupBell('btn-notif-bell-m', 'notif-panel-m', 'notif-bell-wrap-m');
 }
 
-function _notifFingerprint(alerts) {
-  return alerts.map(a => `${a.category}:${a.status}:${a.percentage}`).sort().join('|');
+function _notifKey(b)        { return `${b.category}:${b.status}`; }
+function _getDismissed()     { try { return new Set(JSON.parse(localStorage.getItem('se_notif_dismissed') || '[]')); } catch(_){ return new Set(); } }
+function _saveDismissed(set) { localStorage.setItem('se_notif_dismissed', JSON.stringify([...set])); }
+
+function _dismissNotif(key) {
+  const dismissed = _getDismissed();
+  dismissed.add(key);
+  _saveDismissed(dismissed);
+  loadNotifications();
 }
 
-function _markNotifsRead() {
-  const fp = localStorage.getItem('se_notif_pending');
-  if (fp) localStorage.setItem('se_notif_read', fp);
-  localStorage.removeItem('se_notif_pending');
-  // clear badges immediately
-  ['notif-badge', 'notif-badge-m'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  ['btn-notif-bell', 'btn-notif-bell-m'].forEach(id => {
-    document.getElementById(id)?.classList.remove('has-alerts');
-  });
-}
-
-async function loadNotifications(markRead = false) {
+async function loadNotifications() {
   const bells = [
     { list: 'notif-list',   badge: 'notif-badge',   btn: 'btn-notif-bell'   },
     { list: 'notif-list-m', badge: 'notif-badge-m', btn: 'btn-notif-bell-m' },
@@ -154,36 +147,22 @@ async function loadNotifications(markRead = false) {
     const res  = await fetch('/api/v1/budgets/summary');
     if (!res.ok) throw new Error();
     const data = (await res.json()).data || [];
-    const alerts = data.filter(b => b.status === 'danger' || b.status === 'warning');
+    const alerts    = data.filter(b => b.status === 'danger' || b.status === 'warning');
+    const dismissed = _getDismissed();
 
-    const fp      = _notifFingerprint(alerts);
-    const readFp  = localStorage.getItem('se_notif_read') || '';
-    const isRead  = alerts.length > 0 && fp === readFp;
+    // Remove stale dismissed keys (budget status changed or resolved)
+    const activeKeys = new Set(alerts.map(_notifKey));
+    let changed = false;
+    dismissed.forEach(k => { if (!activeKeys.has(k)) { dismissed.delete(k); changed = true; } });
+    if (changed) _saveDismissed(dismissed);
 
-    // If new alerts differ from last-read state, store them as pending
-    if (alerts.length > 0 && fp !== readFp) {
-      localStorage.setItem('se_notif_pending', fp);
-    }
+    const visible = alerts.filter(b => !dismissed.has(_notifKey(b)));
 
-    // If caller is opening the panel, mark as read now
-    if (markRead && alerts.length > 0) {
-      localStorage.setItem('se_notif_read', fp);
-      localStorage.removeItem('se_notif_pending');
-    }
-
-    const dismissBtn = alerts.length > 0 && !isRead
-      ? `<div style="padding:8px 16px;border-top:1px solid var(--border);">
-           <button onclick="_markNotifsRead()" style="width:100%;background:none;border:none;
-             font-size:0.78rem;color:var(--text-muted);cursor:pointer;padding:4px 0;">
-             Mark all as read
-           </button>
-         </div>`
-      : '';
-
-    const itemsHtml = alerts.length === 0 || isRead
+    const itemsHtml = visible.length === 0
       ? `<div class="notif-empty"><div class="notif-empty-icon">✅</div>All caught up</div>`
-      : alerts.map(b => {
+      : visible.map(b => {
           const isDanger = b.status === 'danger';
+          const key      = _esc(_notifKey(b));
           return `
             <div class="notif-item">
               <div class="notif-dot notif-dot--${b.status}"></div>
@@ -191,6 +170,7 @@ async function loadNotifications(markRead = false) {
                 <div class="notif-item-title">${isDanger ? 'Over budget' : 'Budget warning'}: ${_esc(b.category)}</div>
                 <div class="notif-item-desc">₱${Number(b.spent).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} spent — ${b.percentage}% of ₱${Number(b.amount_limit).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} limit</div>
               </div>
+              <button class="notif-dismiss-btn" onclick="_dismissNotif('${key}')" aria-label="Dismiss">✕</button>
             </div>`;
         }).join('');
 
@@ -199,12 +179,12 @@ async function loadNotifications(markRead = false) {
       const badgeEl = document.getElementById(badge);
       const btnEl   = document.getElementById(btn);
       if (!listEl || !badgeEl) return;
-      listEl.innerHTML = itemsHtml + dismissBtn;
-      if (alerts.length === 0 || isRead) {
+      listEl.innerHTML = itemsHtml;
+      if (visible.length === 0) {
         badgeEl.style.display = 'none';
         btnEl?.classList.remove('has-alerts');
       } else {
-        badgeEl.textContent   = alerts.length;
+        badgeEl.textContent   = visible.length;
         badgeEl.style.display = 'flex';
         btnEl?.classList.add('has-alerts');
       }

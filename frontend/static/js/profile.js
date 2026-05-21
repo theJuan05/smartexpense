@@ -402,38 +402,39 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('open-edit-password')
     ?.addEventListener('click', () => openProfileModal('modal-edit-password'));
 
-  document.getElementById('btn-pw-verify')
-    ?.addEventListener('click', async () => {
-      const pw    = document.getElementById('input-current-password')?.value;
-      const errEl = document.getElementById('pw-verify-error');
-      const btn   = document.getElementById('btn-pw-verify');
-      if (!pw) { errEl.textContent = 'Please enter your current password.'; errEl.style.display = 'block'; return; }
-      btn.disabled = true;
-      btn.textContent = 'Verifying…';
-      try {
-        const res  = await fetch('/api/v1/user/verify-password', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: pw }),
-        });
-        const data = await res.json();
-        if (data.status === 'success') {
-          document.getElementById('pw-step-1').style.display = 'none';
-          document.getElementById('pw-step-2').style.display = '';
-          document.getElementById('pw-step-label').textContent = 'Step 2 of 2';
-          document.getElementById('modal-edit-password-title').textContent = 'Set New Password';
-          document.getElementById('input-new-password')?.focus();
-        } else {
-          errEl.textContent   = data.message || 'Incorrect password.';
-          errEl.style.display = 'block';
-        }
-      } catch (_) {
-        errEl.textContent   = 'Verification failed. Try again.';
+  // Use delegation so it works on mobile where DOM order matters
+  document.addEventListener('click', async (e) => {
+    if (!e.target.closest('#btn-pw-verify')) return;
+    const pw    = document.getElementById('input-current-password')?.value;
+    const errEl = document.getElementById('pw-verify-error');
+    const btn   = document.getElementById('btn-pw-verify');
+    if (!pw) { errEl.textContent = 'Please enter your current password.'; errEl.style.display = 'block'; return; }
+    btn.disabled = true;
+    btn.textContent = 'Verifying…';
+    try {
+      const res  = await fetch('/api/v1/user/verify-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw }),
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        document.getElementById('pw-step-1').style.display = 'none';
+        document.getElementById('pw-step-2').style.display = '';
+        document.getElementById('pw-step-label').textContent = 'Step 2 of 2';
+        document.getElementById('modal-edit-password-title').textContent = 'Set New Password';
+        document.getElementById('input-new-password')?.focus();
+      } else {
+        errEl.textContent   = data.message || 'Incorrect password.';
         errEl.style.display = 'block';
-      } finally {
-        btn.disabled    = false;
-        btn.textContent = 'Verify & Continue';
       }
-    });
+    } catch (_) {
+      errEl.textContent   = 'Verification failed. Try again.';
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = 'Verify & Continue';
+    }
+  });
 
   document.getElementById('btn-change-avatar')
     ?.addEventListener('click', () => openProfileModal('modal-edit-avatar'));
