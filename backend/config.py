@@ -14,6 +14,9 @@ class Config:
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY') or 'change-me-jwt-in-production'
     CORS_ORIGINS   = "*"
 
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_HTTPONLY = True
+
     SQLALCHEMY_DATABASE_URI = (
         f"mysql+pymysql://{os.getenv('DB_USER', 'root')}:"
         f"{os.getenv('DB_PASSWORD', '')}@"
