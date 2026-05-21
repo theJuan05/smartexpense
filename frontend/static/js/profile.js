@@ -279,6 +279,56 @@ async function backupData() {
   }
 }
 
+async function importData(file) {
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    if (!data.expenses || !Array.isArray(data.expenses)) {
+      showToast('❌ Invalid backup file.', 'error');
+      return;
+    }
+
+    const total = data.expenses.length;
+    if (total === 0) {
+      showToast('No expenses found in backup file.', 'warning');
+      return;
+    }
+
+    showToast(`Importing ${total} expenses…`);
+
+    let imported = 0, skipped = 0;
+    for (const exp of data.expenses) {
+      try {
+        const res = await fetch('/api/v1/expenses', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title:          exp.title          || 'Imported expense',
+            amount:         parseFloat(exp.amount) || 0,
+            category:       exp.category       || 'Others',
+            expense_date:   exp.expense_date   || new Date().toISOString().split('T')[0],
+            notes:          exp.notes          || '',
+            payment_method: exp.payment_method || 'cash',
+          }),
+        });
+        if (res.ok) imported++;
+        else skipped++;
+      } catch (_) { skipped++; }
+    }
+
+    showToast(`✅ Imported ${imported} expenses${skipped ? `, ${skipped} skipped` : ''}.`, 'success');
+
+    // Refresh expense list and stats
+    if (typeof pullExpensesFromServer === 'function') await pullExpensesFromServer();
+    if (typeof loadExpenseList       === 'function') await loadExpenseList();
+    if (typeof refreshStats          === 'function') await refreshStats();
+
+  } catch (e) {
+    showToast('❌ Could not read backup file.', 'error');
+  }
+}
+
 // ── SYNC ACCOUNT EMAIL/NAME FROM SERVER ──────────────────────
 async function syncAccountFromServer() {
   try {
@@ -374,6 +424,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-backup-settings')
     ?.addEventListener('click', backupData);
+
+  document.getElementById('btn-import-settings')
+    ?.addEventListener('click', () => document.getElementById('import-file-input')?.click());
+
+  document.getElementById('import-file-input')
+    ?.addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        importData(this.files[0]);
+        this.value = '';
+      }
+    });
 
   // Danger zone
   document.getElementById('btn-clear-expenses')
