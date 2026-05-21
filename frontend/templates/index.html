@@ -40,7 +40,7 @@
   </script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=72">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=73">
   <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='pinlock.css') }}">
   <style>
@@ -125,6 +125,14 @@
 
   </aside>
   <!-- ──────────────────────────────────────────────────────────── -->
+
+  <!-- Mobile header — logo strip (bell floats fixed at same height) -->
+  <header class="mobile-header" aria-label="App header">
+    <span class="mobile-header-brand">
+      <img src="/static/icons/logo-icon.svg" alt="" class="mobile-header-icon" aria-hidden="true">
+      Smart<span>Expense</span>
+    </span>
+  </header>
 
   <!-- Navigation -->
   <nav class="navbar" aria-label="App navigation">
