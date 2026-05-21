@@ -192,13 +192,15 @@ async function loadMLForecast() {
     const res = await API.request('/analysis/ml-forecast');
 
     if (!res || res.status === 'insufficient_data') {
+      const n = res?.n_full_months ?? 0;
+      const msg = n >= 1
+        ? `You have ${n} full month${n > 1 ? 's' : ''} of data. Keep logging expenses — predictions will be ready once the current month ends.`
+        : `Start logging your daily expenses and the ML forecast will be ready after your first full month.`;
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🤖</div>
-          <p style="font-weight:600;margin-bottom:6px;">Not enough data yet.</p>
-          <p style="font-size:0.85rem;color:var(--text-muted);">
-            The ML model needs at least 2 full months of spending history to train.
-          </p>
+          <p style="font-weight:600;margin-bottom:6px;">Almost there!</p>
+          <p style="font-size:0.85rem;color:var(--text-muted);">${msg}</p>
         </div>`;
       return;
     }
