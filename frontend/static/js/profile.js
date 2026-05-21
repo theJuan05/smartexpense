@@ -229,12 +229,42 @@ function exportPDF() {
   showToast('📄 Export PDF coming soon!');
 }
 
-function backupData() {
+async function backupData() {
   try {
+    showToast('Preparing backup…');
+
+    // Fetch all expenses from server
+    let expenses = [];
+    try {
+      const res = await fetch('/api/v1/expenses');
+      if (res.ok) {
+        const json = await res.json();
+        expenses = json.data || [];
+      }
+    } catch (_) {}
+
+    // Fetch budgets
+    let budgets = [];
+    try {
+      const res = await fetch('/api/v1/budgets/summary');
+      if (res.ok) {
+        const json = await res.json();
+        budgets = json.data || [];
+      }
+    } catch (_) {}
+
     const data = {
+      version:  '1.0',
+      exported: new Date().toISOString(),
       profile:  JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'),
-      exported: new Date().toISOString()
+      settings: {
+        monthly_income: localStorage.getItem('se_income'),
+        theme:          localStorage.getItem('theme'),
+      },
+      expenses,
+      budgets,
     };
+
     const blob = new Blob([JSON.stringify(data, null, 2)],
                           { type: 'application/json' });
     const url  = URL.createObjectURL(blob);
@@ -243,7 +273,7 @@ function backupData() {
     a.download = `smartexpense-backup-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('✅ Backup downloaded!');
+    showToast(`✅ Backup downloaded! (${expenses.length} expenses)`);
   } catch (e) {
     showToast('❌ Backup failed.');
   }
