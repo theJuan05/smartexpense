@@ -3155,6 +3155,8 @@ textarea:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .sidebar-signout {
