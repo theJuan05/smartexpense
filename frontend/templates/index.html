@@ -40,7 +40,7 @@
   </script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=83">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=84">
   <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='pinlock.css') }}">
   <style>
@@ -144,7 +144,7 @@
   </header>
   <!-- Mobile notif panel — outside header so sticky stacking context doesn't trap it -->
   <div class="notif-panel" id="notif-panel-m" style="display:none">
-    <div class="notif-panel-header">Notifications</div>
+    <div class="notif-panel-header" id="notif-header-m"><span>Notifications</span></div>
     <div id="notif-list-m"><div class="notif-loading">Checking...</div></div>
   </div>
 
@@ -162,7 +162,7 @@
           <span class="notif-badge" id="notif-badge" style="display:none"></span>
         </button>
         <div class="notif-panel" id="notif-panel" style="display:none">
-          <div class="notif-panel-header">Notifications</div>
+          <div class="notif-panel-header" id="notif-header"><span>Notifications</span></div>
           <div id="notif-list"><div class="notif-loading">Checking...</div></div>
         </div>
       </div>
@@ -549,7 +549,7 @@
   <script defer src="{{ url_for('static', filename='js/firebase.js') }}?v=1"></script>
   <script defer src="{{ url_for('static', filename='js/templates.js') }}?v=1"></script>
   <script defer src="{{ url_for('static', filename='js/goals.js') }}?v=1"></script>
-  <script defer src="{{ url_for('static', filename='js/app.js') }}?v=5"></script>
+  <script defer src="{{ url_for('static', filename='js/app.js') }}?v=6"></script>
 
 
 </body>

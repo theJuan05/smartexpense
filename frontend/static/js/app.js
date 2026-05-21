@@ -130,17 +130,31 @@ function _notifKey(b)        { return `${b.category}:${b.status}`; }
 function _getDismissed()     { try { return new Set(JSON.parse(localStorage.getItem('se_notif_dismissed') || '[]')); } catch(_){ return new Set(); } }
 function _saveDismissed(set) { localStorage.setItem('se_notif_dismissed', JSON.stringify([...set])); }
 
-function _dismissNotif(key) {
-  const dismissed = _getDismissed();
-  dismissed.add(key);
-  _saveDismissed(dismissed);
-  loadNotifications();
-}
+// Stores all currently visible keys so mark-all can access them
+let _visibleNotifKeys = [];
+
+// Event delegation — handles both individual dismiss and mark-all
+document.addEventListener('click', e => {
+  const dismissBtn = e.target.closest('[data-notif-key]');
+  if (dismissBtn) {
+    const dismissed = _getDismissed();
+    dismissed.add(dismissBtn.dataset.notifKey);
+    _saveDismissed(dismissed);
+    loadNotifications();
+    return;
+  }
+  if (e.target.closest('.notif-mark-all-btn')) {
+    const dismissed = _getDismissed();
+    _visibleNotifKeys.forEach(k => dismissed.add(k));
+    _saveDismissed(dismissed);
+    loadNotifications();
+  }
+});
 
 async function loadNotifications() {
   const bells = [
-    { list: 'notif-list',   badge: 'notif-badge',   btn: 'btn-notif-bell'   },
-    { list: 'notif-list-m', badge: 'notif-badge-m', btn: 'btn-notif-bell-m' },
+    { list: 'notif-list',   badge: 'notif-badge',   btn: 'btn-notif-bell',   hdr: 'notif-header'   },
+    { list: 'notif-list-m', badge: 'notif-badge-m', btn: 'btn-notif-bell-m', hdr: 'notif-header-m' },
   ];
 
   try {
@@ -150,19 +164,20 @@ async function loadNotifications() {
     const alerts    = data.filter(b => b.status === 'danger' || b.status === 'warning');
     const dismissed = _getDismissed();
 
-    // Remove stale dismissed keys (budget status changed or resolved)
+    // Remove stale dismissed keys (budget resolved or status changed)
     const activeKeys = new Set(alerts.map(_notifKey));
     let changed = false;
     dismissed.forEach(k => { if (!activeKeys.has(k)) { dismissed.delete(k); changed = true; } });
     if (changed) _saveDismissed(dismissed);
 
     const visible = alerts.filter(b => !dismissed.has(_notifKey(b)));
+    _visibleNotifKeys = visible.map(_notifKey);
 
     const itemsHtml = visible.length === 0
       ? `<div class="notif-empty"><div class="notif-empty-icon">✅</div>All caught up</div>`
       : visible.map(b => {
           const isDanger = b.status === 'danger';
-          const key      = _esc(_notifKey(b));
+          const rawKey   = _notifKey(b);
           return `
             <div class="notif-item">
               <div class="notif-dot notif-dot--${b.status}"></div>
@@ -170,16 +185,22 @@ async function loadNotifications() {
                 <div class="notif-item-title">${isDanger ? 'Over budget' : 'Budget warning'}: ${_esc(b.category)}</div>
                 <div class="notif-item-desc">₱${Number(b.spent).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} spent — ${b.percentage}% of ₱${Number(b.amount_limit).toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} limit</div>
               </div>
-              <button class="notif-dismiss-btn" onclick="_dismissNotif('${key}')" aria-label="Dismiss">✕</button>
+              <button class="notif-dismiss-btn" data-notif-key="${_esc(rawKey)}" aria-label="Dismiss">✕</button>
             </div>`;
         }).join('');
 
-    bells.forEach(({ list, badge, btn }) => {
-      const listEl  = document.getElementById(list);
-      const badgeEl = document.getElementById(badge);
-      const btnEl   = document.getElementById(btn);
+    bells.forEach(({ list, badge, btn, hdr }) => {
+      const listEl   = document.getElementById(list);
+      const badgeEl  = document.getElementById(badge);
+      const btnEl    = document.getElementById(btn);
+      const headerEl = document.getElementById(hdr);
       if (!listEl || !badgeEl) return;
       listEl.innerHTML = itemsHtml;
+      if (headerEl) {
+        headerEl.innerHTML = visible.length > 0
+          ? `<span>Notifications</span><button class="notif-mark-all-btn">Mark all read</button>`
+          : `<span>Notifications</span>`;
+      }
       if (visible.length === 0) {
         badgeEl.style.display = 'none';
         btnEl?.classList.remove('has-alerts');

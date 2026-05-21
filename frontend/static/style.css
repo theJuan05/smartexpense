@@ -3486,14 +3486,32 @@ textarea:focus-visible {
 }
 
 .notif-panel-header {
-  padding: 12px 16px 10px;
+  padding: 10px 12px 10px 16px;
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
+.notif-mark-all-btn {
+  background: none;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--purple);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+.notif-mark-all-btn:hover { background: var(--purple-light); }
 
 .notif-loading {
   padding: 16px;
