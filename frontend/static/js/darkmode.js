@@ -16,7 +16,7 @@ function isDarkMode() {
 
 function _syncThemeColor() {
   const dark  = document.documentElement.getAttribute('data-theme') === 'dark';
-  const color = dark ? '#12122a' : '#ffffff';
+  const color = dark ? '#0d0d18' : '#ffffff';
   let meta = document.querySelector('meta[name="theme-color"]');
   if (!meta) {
     meta = document.createElement('meta');
