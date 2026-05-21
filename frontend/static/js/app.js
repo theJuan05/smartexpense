@@ -102,7 +102,7 @@ function _setupBell(btnId, panelId, wrapId) {
     panel.style.display = open ? 'none' : 'block';
     btn.setAttribute('aria-expanded', open ? 'false' : 'true');
     if (!open) {
-      loadNotifications();
+      loadNotifications(true);
       requestAnimationFrame(() => panel.focus());
     }
   });
@@ -126,7 +126,25 @@ function setupNotificationBell() {
   _setupBell('btn-notif-bell-m', 'notif-panel-m', 'notif-bell-wrap-m');
 }
 
-async function loadNotifications() {
+function _notifFingerprint(alerts) {
+  return alerts.map(a => `${a.category}:${a.status}:${a.percentage}`).sort().join('|');
+}
+
+function _markNotifsRead() {
+  const fp = localStorage.getItem('se_notif_pending');
+  if (fp) localStorage.setItem('se_notif_read', fp);
+  localStorage.removeItem('se_notif_pending');
+  // clear badges immediately
+  ['notif-badge', 'notif-badge-m'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  ['btn-notif-bell', 'btn-notif-bell-m'].forEach(id => {
+    document.getElementById(id)?.classList.remove('has-alerts');
+  });
+}
+
+async function loadNotifications(markRead = false) {
   const bells = [
     { list: 'notif-list',   badge: 'notif-badge',   btn: 'btn-notif-bell'   },
     { list: 'notif-list-m', badge: 'notif-badge-m', btn: 'btn-notif-bell-m' },
@@ -138,8 +156,32 @@ async function loadNotifications() {
     const data = (await res.json()).data || [];
     const alerts = data.filter(b => b.status === 'danger' || b.status === 'warning');
 
-    const itemsHtml = alerts.length === 0
-      ? `<div class="notif-empty"><div class="notif-empty-icon">✅</div>All budgets on track</div>`
+    const fp      = _notifFingerprint(alerts);
+    const readFp  = localStorage.getItem('se_notif_read') || '';
+    const isRead  = alerts.length > 0 && fp === readFp;
+
+    // If new alerts differ from last-read state, store them as pending
+    if (alerts.length > 0 && fp !== readFp) {
+      localStorage.setItem('se_notif_pending', fp);
+    }
+
+    // If caller is opening the panel, mark as read now
+    if (markRead && alerts.length > 0) {
+      localStorage.setItem('se_notif_read', fp);
+      localStorage.removeItem('se_notif_pending');
+    }
+
+    const dismissBtn = alerts.length > 0 && !isRead
+      ? `<div style="padding:8px 16px;border-top:1px solid var(--border);">
+           <button onclick="_markNotifsRead()" style="width:100%;background:none;border:none;
+             font-size:0.78rem;color:var(--text-muted);cursor:pointer;padding:4px 0;">
+             Mark all as read
+           </button>
+         </div>`
+      : '';
+
+    const itemsHtml = alerts.length === 0 || isRead
+      ? `<div class="notif-empty"><div class="notif-empty-icon">✅</div>All caught up</div>`
       : alerts.map(b => {
           const isDanger = b.status === 'danger';
           return `
@@ -157,8 +199,8 @@ async function loadNotifications() {
       const badgeEl = document.getElementById(badge);
       const btnEl   = document.getElementById(btn);
       if (!listEl || !badgeEl) return;
-      listEl.innerHTML = itemsHtml;
-      if (alerts.length === 0) {
+      listEl.innerHTML = itemsHtml + dismissBtn;
+      if (alerts.length === 0 || isRead) {
         badgeEl.style.display = 'none';
         btnEl?.classList.remove('has-alerts');
       } else {
