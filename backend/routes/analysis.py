@@ -274,10 +274,9 @@ def ml_forecast():
     expenses = get_user_expenses(user_id, months_back=12)
     monthly  = group_by_month(expenses)
 
-    # Sort full months oldest → newest, exclude current partial month
+    # Sort all months with data oldest → newest (include current month)
     today = date.today()
-    current_month_key = today.strftime('%Y-%m')
-    sorted_months  = sorted(k for k in monthly if k != current_month_key)
+    sorted_months  = sorted(monthly.keys())
     monthly_totals = [monthly[m] for m in sorted_months]
 
     result = train_and_predict(monthly_totals)
