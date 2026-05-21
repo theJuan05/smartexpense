@@ -14,5 +14,6 @@ google-genai
 scikit-learn
 joblib
 numpy
+pandas
 APScheduler
 prometheus-flask-exporter
