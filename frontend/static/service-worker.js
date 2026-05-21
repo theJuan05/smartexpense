@@ -3,7 +3,7 @@ const STATIC_ASSETS = [
   '/static/style.css?v=80',
   '/static/profile.css',
   '/static/pinlock.css',
-  '/static/js/darkmode.js?v=1',
+  '/static/js/darkmode.js?v=2',
   '/static/js/db.js?v=1',
   '/static/js/api.js?v=1',
   '/static/js/charts.js?v=1',

@@ -14,16 +14,30 @@ function isDarkMode() {
   return document.documentElement.getAttribute('data-theme') === 'dark';
 }
 
+function _syncThemeColor() {
+  const dark  = document.documentElement.getAttribute('data-theme') === 'dark';
+  const color = dark ? '#12122a' : '#ffffff';
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = 'theme-color';
+    document.head.appendChild(meta);
+  }
+  meta.content = color;
+}
+
 function enableDarkMode() {
   document.documentElement.setAttribute('data-theme', 'dark');
   localStorage.setItem(DARK_KEY, 'true');
   updateToggleButton();
+  _syncThemeColor();
 }
 
 function disableDarkMode() {
   document.documentElement.removeAttribute('data-theme');
   localStorage.setItem(DARK_KEY, 'false');
   updateToggleButton();
+  _syncThemeColor();
 }
 
 function toggleDarkMode() {
@@ -68,6 +82,7 @@ function updateThemePicker() {
 document.addEventListener('DOMContentLoaded', () => {
   updateToggleButton();
   updateThemePicker();
+  _syncThemeColor();
 
   // Navbar icon button
   const btn = document.getElementById('btn-dark-mode');
