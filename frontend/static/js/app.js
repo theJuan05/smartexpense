@@ -239,8 +239,8 @@ async function handleAddExpense() {
   const expense = { title, amount, category,
                     expense_date: date, payment_method: payment, notes };
 
-  // Check for anomaly before saving
-  await checkExpenseAnomaly(title, amount, category);
+  // Check for anomaly before saving — non-critical, must not block expense save
+  try { await checkExpenseAnomaly(title, amount, category); } catch (_) {}
 
   // Save locally first — instant feedback, no waiting for network
   const localId = await addExpenseLocal(expense);
@@ -461,7 +461,7 @@ function createExpenseItem(exp) {
     <div class="expense-info">
       <div class="expense-title">${escapeHtml(safeTitle(exp.title))}</div>
       <div class="expense-meta">
-        ${exp.category || 'Uncategorized'} &bull; ${dateStr}
+        ${escapeHtml(exp.category || 'Uncategorized')} &bull; ${dateStr}
       </div>
     </div>
     <div class="expense-right">

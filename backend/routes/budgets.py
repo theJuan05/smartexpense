@@ -111,7 +111,7 @@ def add_budget():
         start_date = date.today().replace(day=1).strftime('%Y-%m-%d')
         conn = get_connection()
         if not conn:
-            return jsonify({"status": "error", "message": "Database connection failed"}), 200
+            return jsonify({"status": "error", "message": "Database connection failed"}), 500
         try:
             cursor = conn.cursor()
             cursor.execute("""
@@ -123,7 +123,7 @@ def add_budget():
             new_id = cursor.lastrowid
         except mysql.connector.Error as err:
             conn.rollback()
-            return jsonify({"status": "error", "message": f"DB error: {err}"}), 200
+            return jsonify({"status": "error", "message": f"DB error: {err}"}), 500
         finally:
             cursor.close()
             conn.close()
