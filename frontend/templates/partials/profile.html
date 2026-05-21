@@ -490,9 +490,27 @@
       </div>
 
       <div style="text-align:center;padding:14px 0 2px;font-size:0.75rem;color:var(--text-muted);">
-        <a href="/privacy" style="color:var(--purple);text-decoration:none;font-weight:500;">🔒 Privacy &amp; Security</a>
+        <button type="button" onclick="document.getElementById('modal-privacy').classList.add('active')" style="background:none;border:none;color:var(--purple);font-size:inherit;font-weight:500;cursor:pointer;padding:0;">🔒 Privacy &amp; Security</button>
         &nbsp;·&nbsp; SmartExpense &copy; 2026
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy & Security Sheet -->
+<div id="modal-privacy" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Privacy and Security">
+  <div class="modal-box" style="max-width:500px;">
+    <div class="modal-header">
+      <h2>🔒 Privacy &amp; Security</h2>
+      <button class="modal-close" aria-label="Close" onclick="document.getElementById('modal-privacy').classList.remove('active')">✕</button>
+    </div>
+    <div class="modal-body" style="font-size:0.85rem;line-height:1.7;color:var(--text);">
+      <p><strong>Your data is yours.</strong> SmartExpense stores your expenses securely in an encrypted cloud database. Only you can access your account.</p>
+      <p style="margin-top:10px;"><strong>What we store:</strong> Expense records, budget limits, and account credentials. Expense titles and notes are encrypted at rest using AES-256.</p>
+      <p style="margin-top:10px;"><strong>What we never do:</strong> We never sell your data, share it with advertisers, or access it without your permission.</p>
+      <p style="margin-top:10px;"><strong>Passwords:</strong> Your password is hashed using bcrypt and never stored in plain text. Change it anytime in Settings.</p>
+      <p style="margin-top:10px;"><strong>Backups:</strong> Use the Backup Data feature in Settings to keep a local copy of your expenses at any time.</p>
+      <p style="margin-top:14px;font-size:0.78rem;color:var(--text-muted);">SmartExpense &copy; 2026 &nbsp;·&nbsp; Built for everyday Filipino spending.</p>
     </div>
   </div>
 </div>
