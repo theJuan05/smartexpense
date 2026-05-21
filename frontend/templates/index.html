@@ -413,7 +413,9 @@
     <div class="ob-card">
       <div class="ob-card-top">
         <div class="ob-icon-wrap">
-          <img src="/static/icons/logo-icon.svg" class="ob-visual-icon" id="ob-visual-icon" alt="SmartExpense" aria-hidden="true">
+          <span class="ob-visual-icon" id="ob-visual-icon" aria-hidden="true">
+            <img src="/static/icons/logo-icon.svg" style="width:36px;height:36px;">
+          </span>
         </div>
         <div class="ob-card-meta">
           <p class="ob-step-count" id="ob-step-count" aria-live="polite">01 / 03</p>
@@ -547,7 +549,7 @@
   <script defer src="{{ url_for('static', filename='js/firebase.js') }}?v=1"></script>
   <script defer src="{{ url_for('static', filename='js/templates.js') }}?v=1"></script>
   <script defer src="{{ url_for('static', filename='js/goals.js') }}?v=1"></script>
-  <script defer src="{{ url_for('static', filename='js/app.js') }}?v=2"></script>
+  <script defer src="{{ url_for('static', filename='js/app.js') }}?v=3"></script>
 
 
 </body>

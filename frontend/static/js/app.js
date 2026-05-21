@@ -379,7 +379,20 @@ async function loadExpenseList(filter = '') {
 // ── Onboarding wizard ──────────────────────────────────────
 (function () {
   // Slides: 0-2 = intro showcase, 3 = income, 4 = budget, 5 = done
-  const ICONS = ['💰', '📊', '🎯', '💵', '📋', '✅'];
+  const ICONS = [
+    // 0 — Welcome: SmartExpense logo
+    `<img src="/static/icons/logo-icon.svg" style="width:36px;height:36px;">`,
+    // 1 — Expenses: receipt/list
+    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+    // 2 — Goals: trophy
+    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 6 4 6 4 2 20 2 20 6 16 6"/><path d="M12 6v11"/><path d="M8 17H16"/><path d="M4 6c0 5 3 8 8 8s8-3 8-8"/></svg>`,
+    // 3 — Income: peso/wallet
+    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+    // 4 — Budget: bar chart
+    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+    // 5 — Done: checkmark circle
+    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+  ];
   let current = 0;
 
   function goTo(idx) {
@@ -409,7 +422,7 @@ async function loadExpenseList(filter = '') {
       iconEl.style.opacity   = '0';
       iconEl.style.transform = 'scale(0.72) translateY(6px)';
       setTimeout(() => {
-        iconEl.textContent     = ICONS[current];
+        iconEl.innerHTML       = ICONS[current];
         iconEl.style.opacity   = '1';
         iconEl.style.transform = 'scale(1) translateY(0)';
       }, 160);
@@ -480,7 +493,10 @@ async function loadExpenseList(filter = '') {
       closeOnboarding();
       document.querySelector('[data-tab=add]')?.click();
     }, { once: true });
-    document.getElementById('ob-go-dash')?.addEventListener('click', () => closeOnboarding(), { once: true });
+    document.getElementById('ob-go-dash')?.addEventListener('click', () => {
+      closeOnboarding();
+      document.querySelector('[data-tab=dashboard]')?.click();
+    }, { once: true });
   };
 }());
 
