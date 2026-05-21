@@ -219,6 +219,22 @@ def reset_password(token):
 
 
 # -----------------------------
+# VERIFY CURRENT PASSWORD (step 1)
+# -----------------------------
+@auth_bp.route('/api/v1/user/verify-password', methods=['POST'])
+def verify_password():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    data = request.get_json() or {}
+    from models.user import get_user_by_id
+    user = get_user_by_id(user_id)
+    if not user or not check_password(user, data.get('password', '')):
+        return jsonify({'status': 'error', 'message': 'Incorrect password'}), 400
+    return jsonify({'status': 'success'})
+
+
+# -----------------------------
 # CHANGE PASSWORD
 # -----------------------------
 @auth_bp.route('/api/v1/user/change-password', methods=['POST'])

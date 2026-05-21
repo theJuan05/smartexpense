@@ -450,37 +450,51 @@
 <div id="modal-edit-password" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-edit-password-title">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 id="modal-edit-password-title">Change Password</h2>
+      <div>
+        <p id="pw-step-label" style="font-size:0.72rem;font-weight:600;color:var(--purple);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px;">Step 1 of 2</p>
+        <h2 id="modal-edit-password-title">Verify Identity</h2>
+      </div>
       <button class="modal-close" aria-label="Close" onclick="closeProfileModal('modal-edit-password')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="form-group">
-        <label for="input-current-password">Current Password</label>
-        <input type="password" id="input-current-password" placeholder="Current password" />
+
+      <!-- Step 1: verify current password -->
+      <div id="pw-step-1">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;">
+          Enter your current password to continue. This confirms it's really you.
+        </p>
+        <div class="form-group">
+          <label for="input-current-password">Current Password</label>
+          <input type="password" id="input-current-password" placeholder="Enter current password" autocomplete="current-password"/>
+        </div>
+        <div id="pw-verify-error" style="display:none;color:var(--danger);font-size:0.83rem;margin-bottom:8px;"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:4px;" id="btn-pw-verify">Verify &amp; Continue</button>
       </div>
-      <div class="form-group">
-        <label for="input-new-password">New Password</label>
-        <input type="password" id="input-new-password" placeholder="New password" />
+
+      <!-- Step 2: set new password (hidden until step 1 passes) -->
+      <div id="pw-step-2" style="display:none;">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;">
+          Choose a strong password — at least 8 characters with one special character (!@#$%).
+        </p>
+        <div class="form-group">
+          <label for="input-new-password">New Password</label>
+          <input type="password" id="input-new-password" placeholder="New password" autocomplete="new-password"/>
+        </div>
+        <div class="form-group">
+          <label for="input-confirm-password">Confirm New Password</label>
+          <input type="password" id="input-confirm-password" placeholder="Confirm new password" autocomplete="new-password"/>
+        </div>
+        <div id="password-error" style="display:none;color:var(--danger);font-size:0.83rem;margin-bottom:8px;"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:4px;"
+                onclick="saveProfileField('password')">Update Password</button>
       </div>
-      <div class="form-group">
-        <label for="input-confirm-password">Confirm New Password</label>
-        <input type="password" id="input-confirm-password" placeholder="Confirm new password" />
+
+      <div style="text-align:center;padding:14px 0 2px;font-size:0.75rem;color:var(--text-muted);">
+        <a href="/privacy" target="_blank" style="color:var(--purple);text-decoration:none;font-weight:500;">🔒 Privacy &amp; Security</a>
+        &nbsp;·&nbsp; SmartExpense &copy; 2026
       </div>
-      <div id="password-error"
-           style="display:none;color:var(--danger);font-size:0.85rem;margin-top:4px;"></div>
-      <button class="btn btn-primary" style="width:100%;margin-top:8px;"
-              onclick="saveProfileField('password')">Update Password</button>
     </div>
   </div>
-
-  <!-- Privacy & Legal -->
-  <div style="text-align:center;padding:8px 0 16px;font-size:0.78rem;color:var(--text-muted);">
-    <a href="/privacy" target="_blank" style="color:var(--primary);text-decoration:none;font-weight:500;">
-      🔒 Privacy Policy &amp; Security
-    </a>
-    &nbsp;·&nbsp; SmartExpense &copy; 2026
-  </div>
-
 </div>
 
 <!-- Avatar Picker Modal -->
