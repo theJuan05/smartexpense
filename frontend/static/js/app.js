@@ -108,7 +108,9 @@ function _setupBell(btnId, panelId, wrapId) {
   });
 
   document.addEventListener('click', e => {
-    if (!document.getElementById(wrapId)?.contains(e.target)) closePanel();
+    const wrap = document.getElementById(wrapId);
+    const pnl  = document.getElementById(panelId);
+    if (!wrap?.contains(e.target) && !pnl?.contains(e.target)) closePanel();
   });
 
   document.addEventListener('keydown', e => {
