@@ -230,15 +230,22 @@ function shakePINDots() {
   setTimeout(() => dotsRow.classList.remove('shake'), 500);
 }
 
+// ── LOGOUT ────────────────────────────────────────────────────
+function handleLogout() {
+  // Flag so PIN overlay is skipped on the next app open (after re-login)
+  sessionStorage.setItem('se-skip-pin-once', '1');
+  window.location.href = '/logout';
+}
+
 // ── FORGOT PIN ────────────────────────────────────────────────
 function handleForgotPIN() {
-  if (!confirm('Reset PIN? You will need to set a new one.')) return;
+  if (!confirm('Reset your PIN?\nYou will be signed out and need to log in again.')) return;
   localStorage.removeItem(PIN_KEY);
   localStorage.removeItem(PIN_ENABLED);
   resetPinFails();
-  hidePINOverlay();
-  showToast('PIN has been reset.');
-  updatePINSettingsUI();
+  // Sign out so user must re-authenticate — don't just drop them on the dashboard
+  sessionStorage.setItem('se-skip-pin-once', '1');
+  window.location.href = '/logout';
 }
 
 // ── IDLE TIMER — mobile only ──────────────────────────────────
@@ -335,9 +342,19 @@ window.addEventListener('load', () => {
   updatePINSettingsUI();
 
   // Lock on app open — MOBILE ONLY
+  // Skip once after logout or forgot-PIN (user just re-authenticated with password)
   if (isPINEnabled() && isMobileDevice()) {
-    showPINOverlay('unlock');
+    if (sessionStorage.getItem('se-skip-pin-once')) {
+      sessionStorage.removeItem('se-skip-pin-once');
+    } else {
+      showPINOverlay('unlock');
+    }
   }
+
+  // Wire up logout buttons
+  document.querySelectorAll('[data-action="logout"]').forEach(btn => {
+    btn.addEventListener('click', e => { e.preventDefault(); handleLogout(); });
+  });
 
   // Start idle watcher
   startIdleWatcher();

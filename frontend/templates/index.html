@@ -40,7 +40,7 @@
   </script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=85">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=86">
   <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='pinlock.css') }}">
   <style>
@@ -117,10 +117,10 @@
 
     <!-- Bottom: sign out only -->
     <div class="sidebar-bottom">
-      <a href="{{ url_for('auth.logout') }}" class="sidebar-signout" title="Sign out">
+      <button data-action="logout" class="sidebar-signout" title="Sign out">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         <span>Sign out</span>
-      </a>
+      </button>
     </div>
 
   </aside>
@@ -172,7 +172,7 @@
       </button>
       <button id="btn-install" class="btn-install" style="display:none;" aria-label="Install app">Install App</button>
       <span class="status-badge" id="status-badge" role="status" aria-live="polite">Checking...</span>
-      <a href="{{ url_for('auth.logout') }}" class="btn-logout" aria-label="Sign out">Sign out</a>
+      <button data-action="logout" class="btn-logout" aria-label="Sign out">Sign out</button>
     </div>
   </nav>
 
@@ -545,7 +545,7 @@
   <script defer src="{{ url_for('static', filename='js/export.js') }}?v=1"></script>
   <script defer src="{{ url_for('static', filename='js/edit-expense.js') }}?v=1"></script>
   <script defer src="{{ url_for('static', filename='js/profile.js') }}?v=6"></script>
-  <script defer src="{{ url_for('static', filename='js/pinlock.js') }}?v=1"></script>
+  <script defer src="{{ url_for('static', filename='js/pinlock.js') }}?v=2"></script>
   <script defer src="{{ url_for('static', filename='js/firebase.js') }}?v=2"></script>
   <script defer src="{{ url_for('static', filename='js/templates.js') }}?v=1"></script>
   <script defer src="{{ url_for('static', filename='js/goals.js') }}?v=1"></script>
