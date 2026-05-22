@@ -324,7 +324,12 @@ async function _syncNewExpense(localId, expense) {
     if (result && result.status === 'success') {
       await markExpenseSynced(localId, result.id);
       await loadExpenseList();  // refresh to remove Pending badge
-      await checkBudgetAlerts(expense.category); // only toast the category just logged
+      // Fetch budget summary once — reuse for alerts + cache update (avoids double call)
+      const budgetResult = await API.request('/budgets/summary');
+      if (budgetResult) {
+        await saveSetting('budget_summary_cache', budgetResult);
+        await checkBudgetAlerts(expense.category, budgetResult);
+      }
     }
     fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
   } catch (_) {}

@@ -1,25 +1,54 @@
 // budget.js — Budget management logic
 
+// ── Shared renderer — used by instant cache render and background refresh ──
+function _renderBudgetFromData(container, data) {
+  const overall = data.find(b => b.category === 'Overall Budget');
+  renderBudgetHero(overall || null);
+  container.innerHTML = '';
+
+  const alerts = data.filter(b => b.status !== 'ok');
+  if (alerts.length > 0) {
+    const alertBox = document.createElement('div');
+    alertBox.style.marginBottom = '16px';
+    alerts.forEach(b => {
+      const type = b.status;
+      alertBox.innerHTML += `
+        <div class="budget-alert ${type}">
+          ${type === 'danger' ? 'OVER BUDGET' : 'WARNING'}: ${b.category} is at ${b.percentage}% of limit
+        </div>`;
+    });
+    container.appendChild(alertBox);
+  }
+
+  data.forEach(budget => container.appendChild(createBudgetCard(budget)));
+  renderBudgetProgress({ status: 'success', data });
+}
+
 // ── Load and display budget summary ───────────────────────
 async function loadBudgetSummary() {
   const container = document.getElementById('budget-summary-list');
   if (!container) return;
 
-  container.innerHTML = '<div class="spinner">Loading...</div>';
-
-  const result = await API.request('/budgets/summary');
-
-  if (!result) {
+  // Instant render from cache — no spinner, no waiting
+  const cached = await getSetting('budget_summary_cache');
+  if (cached && cached.data && cached.data.length) {
+    _renderBudgetFromData(container, cached.data);
+  } else {
+    // First ever load — compute from local expenses while server loads
     await renderBudgetOffline(container);
-    return;
   }
 
-  // Cache the budget definitions for offline use (amounts only, not computed spent)
-  const cacheable = (result.data || []).map(b => ({
+  // Fetch fresh data in background and update silently
+  if (!navigator.onLine) return;
+  const result = await API.request('/budgets/summary');
+  if (!result) return;
+
+  // Save full response to cache for next instant render
+  await saveSetting('budget_summary_cache', result);
+  await saveSetting('budget_cache', (result.data || []).map(b => ({
     id: b.id, category: b.category, category_icon: b.category_icon,
     amount_limit: b.amount_limit, period: b.period
-  }));
-  await saveSetting('budget_cache', cacheable);
+  })));
 
   if (result.status !== 'success' || !result.data.length) {
     renderBudgetHero(null);
@@ -34,37 +63,7 @@ async function loadBudgetSummary() {
     return;
   }
 
-  // Overall budget goes to hero; ALL budgets appear in the overview list
-  const overall    = result.data.find(b => b.category === 'Overall Budget');
-  const listBudgets = result.data;
-
-  renderBudgetHero(overall || null);
-
-  container.innerHTML = '';
-
-  // Alerts for budgets in warning/danger
-  const alerts = listBudgets.filter(b => b.status !== 'ok');
-  if (alerts.length > 0) {
-    const alertBox = document.createElement('div');
-    alertBox.style.marginBottom = '16px';
-    alerts.forEach(b => {
-      const type = b.status;
-      const msg  = type === 'danger'
-        ? `${b.category} is at ${b.percentage}% of limit`
-        : `${b.category} is at ${b.percentage}% of limit`;
-      alertBox.innerHTML += `
-        <div class="budget-alert ${type}">
-          ${type === 'danger' ? 'OVER BUDGET' : 'WARNING'}: ${msg}
-        </div>`;
-    });
-    container.appendChild(alertBox);
-  }
-
-  listBudgets.forEach(budget => {
-    container.appendChild(createBudgetCard(budget));
-  });
-
-  await renderBudgetProgress(result);
+  _renderBudgetFromData(container, result.data);
 }
 
 // ── Render overall budget as a hero card ──────────────────
@@ -276,10 +275,11 @@ async function renderBudgetOffline(container) {
 }
 
 // ── Check budgets after adding expense ────────────────────
-async function checkBudgetAlerts(triggeredCategory = null) {
+// prefetchedResult: pass the already-fetched summary to avoid a duplicate network call
+async function checkBudgetAlerts(triggeredCategory = null, prefetchedResult = null) {
   if (!navigator.onLine) return;
 
-  const result = await API.request('/budgets/summary');
+  const result = prefetchedResult || await API.request('/budgets/summary');
   if (!result || result.status !== 'success') return;
 
   const today   = new Date().toISOString().split('T')[0];
