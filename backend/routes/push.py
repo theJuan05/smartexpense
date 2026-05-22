@@ -241,22 +241,6 @@ def check_and_notify():
     return jsonify({'status': 'success', 'pushed': pushed})
 
 
-# ── POST /api/push/expense-saved ──────────────────────────────
-@push_bp.route('/push/expense-saved', methods=['POST'])
-def push_expense_saved():
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
-
-    data     = request.get_json() or {}
-    amount   = data.get('amount', '')
-    category = data.get('category', 'Uncategorized')
-
-    body = f'₱{amount} · {category} logged successfully!' if amount else f'{category} expense logged.'
-    sent = _send_to_all(user_id, 'Expense Saved ✓', body)
-    return jsonify({'status': 'success', 'devices': sent})
-
-
 # ── POST /api/send-reminders  (manual trigger / demo) ─────────
 @push_bp.route('/send-reminders', methods=['POST'])
 def trigger_reminders():

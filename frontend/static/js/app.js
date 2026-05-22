@@ -325,17 +325,6 @@ async function _syncNewExpense(localId, expense) {
       await markExpenseSynced(localId, result.id);
       await loadExpenseList();  // refresh to remove Pending badge
       await checkBudgetAlerts(expense.category); // only toast the category just logged
-      // FCM server push — reliable delivery even when app is in background/closed
-      const amt = parseFloat(expense.amount || 0)
-        .toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      fetch('/api/v1/push/expense-saved', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          amount:   amt,
-          category: expense.category || 'Uncategorized',
-        }),
-      }).catch(() => {});
     }
     fetch('/api/v1/budgets/notify', { method: 'POST' }).catch(() => {});
   } catch (_) {}
@@ -1147,11 +1136,10 @@ async function showPushNotification(title, body, tag) {
     if (!reg) return;
     reg.showNotification(title, {
       body,
-      icon:     '/static/icons/icon-192.png',
-      badge:    '/static/icons/icon-192.png',
-      vibrate:  [200, 100, 200],
-      tag:      tag || 'smartexpense',
-      renotify: true,
+      icon:      '/static/icons/logo-icon.svg',
+      badge:     '/static/icons/logo-icon.svg',
+      tag:       tag || 'smartexpense',
+      renotify:  true,
     });
   } catch (_) {}
 }
