@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v91';
+const CACHE_NAME = 'smartexpense-v92';
 const STATIC_ASSETS = [
   '/static/style.css?v=88',
   '/static/profile.css',
@@ -19,7 +19,7 @@ const STATIC_ASSETS = [
   '/static/js/pinlock.js?v=2',
   '/static/js/firebase.js?v=2',
   '/static/js/templates.js?v=1',
-  '/static/js/goals.js?v=1',
+  '/static/js/goals.js?v=2',
   '/static/js/app.js?v=16',
   '/static/manifest.json',
   '/static/icons/icon-192.png',
