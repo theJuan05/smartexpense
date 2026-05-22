@@ -93,21 +93,60 @@ function detectAnomaliesLocal(expenses) {
     });
   });
 
-  // Show worst first, cap at 20
-  return anomalies
-    .sort((a, b) => b.amount - a.amount)
-    .slice(0, 20);
+  // ── Duplicate monthly bill detection ──────────────────────
+  // Group expenses by YYYY-MM + normalized title
+  const monthTitleMap = {};
+  expenses.forEach(e => {
+    if (!e.expense_date || !e.title) return;
+    const key = e.expense_date.substring(0, 7) + '||' + e.title.toLowerCase().trim();
+    if (!monthTitleMap[key]) monthTitleMap[key] = [];
+    monthTitleMap[key].push(e);
+  });
+
+  const duplicates = [];
+  Object.values(monthTitleMap).forEach(group => {
+    if (group.length < 2) return;
+    const month = group[0].expense_date.substring(0, 7);
+    group.forEach(e => {
+      duplicates.push({
+        title:        e.title,
+        amount:       parseFloat(e.amount || 0),
+        category:     e.category || 'Others',
+        expense_date: e.expense_date || '',
+        severity:     'medium',
+        reasons:      [`Logged ${group.length}× in ${month} — possible duplicate monthly bill`],
+        your_average: 0,
+        isDuplicate:  true,
+      });
+    });
+  });
+
+  // Deduplicate (same title+month combo only listed once as a group)
+  const seenDup = new Set();
+  const dedupedDuplicates = duplicates.filter(d => {
+    const k = d.expense_date.substring(0, 7) + '||' + d.title.toLowerCase().trim();
+    if (seenDup.has(k)) return false;
+    seenDup.add(k);
+    return true;
+  });
+
+  // Duplicates first, then high-amount anomalies
+  return [
+    ...dedupedDuplicates,
+    ...anomalies.sort((a, b) => b.amount - a.amount).slice(0, 20)
+  ];
 }
 
 // ── Create anomaly card ────────────────────────────────────
 function createAnomalyCard(anomaly) {
   const div = document.createElement('div');
 
-  const severityClass = anomaly.severity === 'high' ? 'danger'
+  const severityClass = anomaly.isDuplicate ? 'duplicate'
+                      : anomaly.severity === 'high' ? 'danger'
                       : anomaly.severity === 'medium' ? 'warning' : 'info';
   div.className = `alert-card alert-card--${severityClass}`;
 
-  const badge = anomaly.severity.toUpperCase();
+  const badge = anomaly.isDuplicate ? 'DUPLICATE' : anomaly.severity.toUpperCase();
   const reasonsList = anomaly.reasons
     .map(r => `<li>${r}</li>`)
     .join('');

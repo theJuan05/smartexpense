@@ -1,6 +1,6 @@
-const CACHE_NAME = 'smartexpense-v90';
+const CACHE_NAME = 'smartexpense-v91';
 const STATIC_ASSETS = [
-  '/static/style.css?v=87',
+  '/static/style.css?v=88',
   '/static/profile.css',
   '/static/pinlock.css',
   '/static/js/darkmode.js?v=2',
@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   '/static/js/charts.js?v=2',
   '/static/js/budget.js?v=4',
   '/static/js/predict.js?v=6',
-  '/static/js/anomaly.js?v=2',
+  '/static/js/anomaly.js?v=3',
   '/static/js/advice.js?v=1',
   '/static/js/pwa.js?v=1',
   '/static/js/scanner.js?v=1',

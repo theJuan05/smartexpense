@@ -2938,10 +2938,11 @@ body {
   margin-bottom: 10px;
   border: 0.5px solid;
 }
-.alert-card--danger  { background: var(--red-light);    border-color: rgba(231,76,60,0.25);  }
-.alert-card--warning { background: var(--amber-light);  border-color: rgba(245,158,11,0.3);  }
-.alert-card--success { background: var(--green-light);  border-color: var(--green-border);   }
-.alert-card--info    { background: var(--purple-light); border-color: var(--purple-mid);     }
+.alert-card--danger    { background: var(--red-light);    border-color: rgba(231,76,60,0.25);  }
+.alert-card--warning   { background: var(--amber-light);  border-color: rgba(245,158,11,0.3);  }
+.alert-card--success   { background: var(--green-light);  border-color: var(--green-border);   }
+.alert-card--info      { background: var(--purple-light); border-color: var(--purple-mid);     }
+.alert-card--duplicate { background: rgba(14,165,233,0.08); border-color: rgba(14,165,233,0.25); }
 
 .alert-card-header {
   display: flex;
@@ -2972,9 +2973,10 @@ body {
   letter-spacing: 0.3px;
   display: inline-block;
 }
-.alert-card--danger  .alert-card-badge { background: var(--red);    }
-.alert-card--warning .alert-card-badge { background: var(--amber);  color: var(--text); }
-.alert-card--success .alert-card-badge { background: var(--green);  }
+.alert-card--danger    .alert-card-badge { background: var(--red);    }
+.alert-card--warning   .alert-card-badge { background: var(--amber);  color: var(--text); }
+.alert-card--success   .alert-card-badge { background: var(--green);  }
+.alert-card--duplicate .alert-card-badge { background: #0ea5e9; }
 .alert-card--info    .alert-card-badge { background: var(--purple); }
 .alert-card-body {
   font-size: var(--text-base);
