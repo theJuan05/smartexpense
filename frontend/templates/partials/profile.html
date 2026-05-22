@@ -30,7 +30,9 @@
 
       <button type="button" class="settings-item" id="open-edit-name" aria-label="Edit username">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">👤</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
           <div>
             <div class="settings-label">Username</div>
             <div class="settings-value" id="display-username">Not set</div>
@@ -41,7 +43,9 @@
 
       <button type="button" class="settings-item" id="open-edit-email" aria-label="Edit email address">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">✉️</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </span>
           <div>
             <div class="settings-label">Email Address</div>
             <div class="settings-value" id="display-email">Not set</div>
@@ -52,7 +56,9 @@
 
       <button type="button" class="settings-item" id="open-edit-password" aria-label="Change password">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🔒</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </span>
           <div>
             <div class="settings-label">Password</div>
             <div class="settings-value">••••••••</div>
@@ -72,7 +78,9 @@
       <!-- Appearance / Theme Picker -->
       <div class="settings-item settings-item--appearance">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🎨</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </span>
           <div>
             <div class="settings-label">Appearance</div>
             <div class="settings-value" id="theme-current-label">Light</div>
@@ -177,7 +185,9 @@
       <!-- Currency -->
       <button type="button" class="settings-item" id="open-edit-currency" aria-label="Change currency">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">💱</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </span>
           <div>
             <div class="settings-label">Currency</div>
             <div class="settings-value" id="display-currency">PHP (₱)</div>
@@ -189,7 +199,9 @@
       <!-- PIN Lock -->
       <div class="settings-item">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🔐</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </span>
           <div>
             <div class="settings-label">PIN Lock</div>
             <div class="settings-value" id="pin-status">PIN is disabled</div>
@@ -204,7 +216,9 @@
       <!-- Change PIN (hidden until PIN is enabled) -->
       <button type="button" class="settings-item" id="btn-change-pin" style="display:none;" aria-label="Change PIN">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🔑</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          </span>
           <div>
             <div class="settings-label">Change PIN</div>
             <div class="settings-value">Update your current PIN</div>
@@ -267,7 +281,9 @@
               onclick="sessionStorage.removeItem('ob_skipped'); window.showOnboarding && window.showOnboarding();"
               aria-label="Replay app tutorial">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🎓</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </span>
           <div>
             <div class="settings-label">App Tutorial</div>
             <div class="settings-value">Replay the getting started guide</div>
@@ -286,7 +302,9 @@
 
       <button type="button" class="settings-item" id="btn-export-csv-settings" aria-label="Export expenses to CSV">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">📊</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+          </span>
           <div>
             <div class="settings-label">Export to CSV</div>
             <div class="settings-value">Download all expenses</div>
@@ -297,7 +315,9 @@
 
       <button type="button" class="settings-item" id="btn-export-pdf-settings" aria-label="Export expense report to PDF">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">📄</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </span>
           <div>
             <div class="settings-label">Export to PDF</div>
             <div class="settings-value">Download expense report</div>
@@ -308,7 +328,9 @@
 
       <button type="button" class="settings-item" id="btn-backup-settings" aria-label="Backup data">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">☁️</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          </span>
           <div>
             <div class="settings-label">Backup Data</div>
             <div class="settings-value">Save a local backup file</div>
@@ -319,7 +341,9 @@
 
       <button type="button" class="settings-item" id="btn-import-settings" aria-label="Import data">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">📥</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </span>
           <div>
             <div class="settings-label">Import Data</div>
             <div class="settings-value">Restore from a backup file</div>
@@ -339,7 +363,9 @@
 
       <div class="settings-item">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">📱</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </span>
           <div>
             <div class="settings-label">App Version</div>
             <div class="settings-value">SmartExpense v1.0</div>
@@ -353,12 +379,14 @@
 
   <!-- Danger Zone -->
   <div class="card danger-zone-card">
-    <h2 style="color:var(--danger);"><span aria-hidden="true">⚠️ </span>Danger Zone</h2>
+    <h2 style="color:var(--danger);display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Danger Zone</h2>
     <div class="settings-group">
 
       <button type="button" class="settings-item danger-item" id="btn-clear-expenses" aria-label="Clear all expenses">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🗑️</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          </span>
           <div>
             <div class="settings-label" style="color:var(--danger);">Clear All Expenses</div>
             <div class="settings-value">Permanently delete all expense records</div>
@@ -369,7 +397,9 @@
 
       <button type="button" class="settings-item danger-item" id="btn-clear-budgets" aria-label="Clear all budgets">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">💸</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </span>
           <div>
             <div class="settings-label" style="color:var(--danger);">Clear All Budgets</div>
             <div class="settings-value">Permanently delete all budget settings</div>
@@ -380,7 +410,9 @@
 
       <button type="button" class="settings-item danger-item" id="btn-reset-app" aria-label="Reset everything">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🔄</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </span>
           <div>
             <div class="settings-label" style="color:var(--danger);">Reset Everything</div>
             <div class="settings-value">Wipe all data and start fresh</div>
@@ -391,7 +423,9 @@
 
       <button type="button" class="settings-item danger-item danger-item-top" id="btn-delete-account" aria-label="Delete account">
         <div class="settings-item-left">
-          <span class="settings-icon" aria-hidden="true">🚫</span>
+          <span class="settings-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+          </span>
           <div>
             <div class="settings-label" style="color:var(--danger);">Delete Account</div>
             <div class="settings-value">Permanently delete your account and all data</div>
@@ -488,7 +522,7 @@
       </div>
 
       <div style="text-align:center;padding:14px 0 2px;font-size:0.75rem;color:var(--text-muted);">
-        <button type="button" onclick="document.getElementById('modal-privacy').classList.add('active')" style="background:none;border:none;color:var(--purple);font-size:inherit;font-weight:500;cursor:pointer;padding:0;">🔒 Privacy &amp; Security</button>
+        <button type="button" onclick="document.getElementById('modal-privacy').classList.add('active')" style="background:none;border:none;color:var(--purple);font-size:inherit;font-weight:500;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Privacy &amp; Security</button>
         &nbsp;·&nbsp; SmartExpense &copy; 2026
       </div>
     </div>
@@ -499,7 +533,7 @@
 <div id="modal-privacy" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Privacy and Security">
   <div class="modal-box" style="max-width:500px;">
     <div class="modal-header">
-      <h2>🔒 Privacy &amp; Security</h2>
+      <h2 style="display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Privacy &amp; Security</h2>
       <button class="modal-close" aria-label="Close" onclick="document.getElementById('modal-privacy').classList.remove('active')">✕</button>
     </div>
     <div class="modal-body" style="font-size:0.85rem;line-height:1.7;color:var(--text);">
@@ -547,7 +581,7 @@
 <div id="modal-confirm-danger" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-danger-title">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 id="modal-confirm-danger-title" style="color:var(--danger);"><span aria-hidden="true">⚠️ </span>Are you sure?</h2>
+      <h2 id="modal-confirm-danger-title" style="color:var(--danger);display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Are you sure?</h2>
       <button class="modal-close" aria-label="Close" onclick="closeProfileModal('modal-confirm-danger')">✕</button>
     </div>
     <div class="modal-body">

@@ -399,10 +399,13 @@ button.settings-item:last-child {
 }
 
 .settings-icon {
-  font-size: 1.3rem;
   width: 32px;
-  text-align: center;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  color: var(--text-muted);
 }
 
 .settings-label {
