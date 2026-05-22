@@ -1,7 +1,5 @@
 // predict.js — Predictive spending (computed from local IndexedDB, no server call)
 
-let forecastChart = null;
-
 async function loadPrediction() {
   const container = document.getElementById('prediction-card');
   if (!container) return;
@@ -181,130 +179,8 @@ async function loadPrediction() {
       </div>` : ''}
   `;
 
-  // Build forecast chart from local data too
-  renderForecastChartLocal(expenses, curKey, today, daysInMonth, spentSoFar, dailyAvg);
 }
 
-// ── ML Forecast (server-side Linear Regression) ────────────
-async function loadMLForecast() {
-  const container = document.getElementById('ml-forecast-card');
-  if (!container) return;
-
-  try {
-    const res = await API.request('/analysis/ml-forecast');
-
-    if (!res || res.status === 'insufficient_data') {
-      const n = res?.n_full_months ?? 0;
-      const msg = n >= 1
-        ? `You have ${n} full month${n > 1 ? 's' : ''} of data. Keep logging expenses — predictions will be ready once the current month ends.`
-        : `Start logging your daily expenses and the ML forecast will be ready after your first full month.`;
-      container.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">🤖</div>
-          <p style="font-weight:600;margin-bottom:6px;">Almost there!</p>
-          <p style="font-size:0.85rem;color:var(--text-muted);">${msg}</p>
-        </div>`;
-      return;
-    }
-
-    if (res.status !== 'success') throw new Error('API error');
-
-    const fmt = v => '₱' + (Math.round(v * 100) / 100).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const trendIcon  = res.trend === 'up' ? '📈 Increasing' : res.trend === 'down' ? '📉 Decreasing' : '➡️ Stable';
-    const confidence = res.r2_score >= 0.8 ? 'High' : res.r2_score >= 0.5 ? 'Moderate' : 'Low';
-    const confColor  = res.r2_score >= 0.8 ? 'var(--success)' : res.r2_score >= 0.5 ? 'var(--warning)' : 'var(--text-muted)';
-
-    container.innerHTML = `
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-        <div class="predict-stat" style="grid-column:1/-1;">
-          <div class="predict-label">Predicted Spending for ${res.next_month_label}</div>
-          <div class="predict-value" style="font-size:2rem;color:var(--purple)">${fmt(res.predicted)}</div>
-          <div class="predict-sub">Based on ${res.n_months} month${res.n_months !== 1 ? 's' : ''} of training data</div>
-        </div>
-        <div class="predict-stat">
-          <div class="predict-label">Model Confidence</div>
-          <div class="predict-value" style="color:${confColor}">${confidence}</div>
-          <div class="predict-sub">R² = ${res.r2_score}</div>
-        </div>
-        <div class="predict-stat">
-          <div class="predict-label">Spending Trend</div>
-          <div class="predict-value" style="font-size:1rem;">${trendIcon}</div>
-          <div class="predict-sub">₱${Math.abs(res.slope).toLocaleString()} / month slope</div>
-        </div>
-      </div>
-      `;
-  } catch (_) {
-    container.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;">Could not load ML forecast.</p>`;
-  }
-}
-
-function renderForecastChartLocal(expenses, curKey, today, daysInMonth, spentSoFar, dailyAvg) {
-  const ctx = document.getElementById('chart-forecast');
-  if (!ctx) return;
-
-  if (forecastChart) { forecastChart.destroy(); forecastChart = null; }
-
-  // Daily totals for current month
-  const dailyMap = {};
-  expenses.forEach(e => {
-    if (e.expense_date && e.expense_date.startsWith(curKey)) {
-      dailyMap[e.expense_date] = (dailyMap[e.expense_date] || 0) + parseFloat(e.amount || 0);
-    }
-  });
-
-  const labels = [], actual = [], projected = [];
-  let cumulative = 0;
-  const yr = today.getFullYear(), mo = today.getMonth();
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const date = new Date(yr, mo, d);
-    const key  = date.toISOString().split('T')[0];
-    const lbl  = date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
-    labels.push(lbl);
-
-    if (d <= today.getDate()) {
-      cumulative += dailyMap[key] || 0;
-      actual.push(parseFloat(cumulative.toFixed(2)));
-      projected.push(null);
-    } else {
-      actual.push(null);
-      projected.push(parseFloat((spentSoFar + dailyAvg * (d - today.getDate())).toFixed(2)));
-    }
-  }
-
-  forecastChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Actual Spending', data: actual,
-          borderColor: '#6c63ff', backgroundColor: 'rgba(108,99,255,0.08)',
-          borderWidth: 3, pointRadius: 3, fill: true, tension: 0.3, spanGaps: false,
-        },
-        {
-          label: 'Projected', data: projected,
-          borderColor: '#e17055', backgroundColor: 'rgba(225,112,85,0.06)',
-          borderWidth: 2, borderDash: [6, 4],
-          pointRadius: 2, fill: true, tension: 0.3, spanGaps: false,
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      devicePixelRatio: window.devicePixelRatio || 2,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { position: 'top', labels: { usePointStyle: true, font: { size: 12 } } },
-        tooltip: { callbacks: { label: c => c.parsed.y !== null ? ` ₱${c.parsed.y.toLocaleString()}` : null } }
-      },
-      scales: {
-        y: { beginAtZero: true, ticks: { callback: v => `₱${v.toLocaleString()}` }, grid: { color: 'rgba(0,0,0,0.04)' } },
-        x: { ticks: { maxTicksLimit: 10, maxRotation: 0 }, grid: { display: false } }
-      }
-    }
-  });
-}
 
 // ── FIES Benchmark ─────────────────────────────────────────
 let fiesChart = null;

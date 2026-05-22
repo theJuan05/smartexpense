@@ -271,7 +271,7 @@ function setupTabs() {
       if (target === 'goals')     { await pullGoalsFromServer(); await loadGoals(); }
       if (target === 'profile')   { if (typeof updateNotifPermissionStatus === 'function') updateNotifPermissionStatus(); }
       if (target === 'insights') {
-        await Promise.all([loadFIESBenchmark(), loadPrediction(), loadAnomalies(), loadMLForecast()]);
+        await Promise.all([loadFIESBenchmark(), loadPrediction(), loadAnomalies()]);
       }
     });
   });
