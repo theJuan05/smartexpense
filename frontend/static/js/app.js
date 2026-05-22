@@ -232,7 +232,7 @@ const TAB_TITLES = {
 
 function setPageTitle(tab) {
   const label = TAB_TITLES[tab] || tab;
-  document.title = `${label} | SmartExpense`;
+  document.title = label;
 }
 
 function setupTabs() {
