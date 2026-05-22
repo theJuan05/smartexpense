@@ -8,8 +8,6 @@
       <button class="profile-avatar-edit" id="btn-change-avatar" aria-label="Change profile photo">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
       </button>
-      <!-- Hidden file input -->
-      <input type="file" id="profile-pic-input" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" aria-label="Upload profile photo">
     </div>
     <div class="profile-info">
       <div class="profile-name" id="profile-name-display">Your Name</div>
@@ -519,24 +517,11 @@
 <div id="modal-edit-avatar" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-edit-avatar-title">
   <div class="modal-box">
     <div class="modal-header">
-      <h2 id="modal-edit-avatar-title">Profile Photo</h2>
+      <h2 id="modal-edit-avatar-title">Choose Avatar</h2>
       <button class="modal-close" aria-label="Close" onclick="closeProfileModal('modal-edit-avatar')">✕</button>
     </div>
     <div class="modal-body">
 
-      <!-- Upload photo section -->
-      <div class="avatar-upload-section">
-        <label for="profile-pic-input" class="avatar-upload-btn" role="button" tabindex="0">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Upload a photo
-        </label>
-        <p class="avatar-upload-hint">JPG, PNG, WebP up to 5 MB</p>
-        <button id="btn-remove-photo" class="avatar-remove-btn" style="display:none" onclick="removeProfilePhoto()">Remove photo</button>
-      </div>
-
-      <div class="avatar-section-divider">
-        <span>or choose an emoji</span>
-      </div>
 
       <div class="avatar-grid">
         <button type="button" class="avatar-option" onclick="selectAvatar('👤')" aria-label="Select person silhouette avatar">👤</button>
