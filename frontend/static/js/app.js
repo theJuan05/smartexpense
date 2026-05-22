@@ -266,7 +266,7 @@ function setupTabs() {
 
       if (target === 'dashboard') { await renderAllCharts(); await renderHeatmap(); await renderGoalsSummary(); }
       if (target === 'expenses')  { await pullExpensesFromServer(); await loadExpenseList(); }
-      if (target === 'budget')    await loadBudgetSummary();
+      if (target === 'budget')    { await loadBudgetSummary(); if (typeof initBudgetHint === 'function') initBudgetHint(); }
       if (target === 'advice')    await loadAdvice();
       if (target === 'goals')     { await pullGoalsFromServer(); await loadGoals(); }
       if (target === 'profile')   { if (typeof updateNotifPermissionStatus === 'function') updateNotifPermissionStatus(); }

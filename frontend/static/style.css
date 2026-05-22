@@ -1247,6 +1247,19 @@ body {
   border: 0.5px solid rgba(231,76,60,0.3);
 }
 
+/* ── Budget allocation hint ──────────────────────────────────── */
+.budget-alloc-hint {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 0.5px solid transparent;
+}
+.budget-alloc-hint--ok      { background: var(--green-light);  color: var(--success);  border-color: rgba(0,184,148,0.25); }
+.budget-alloc-hint--warning { background: var(--amber-light);  color: #92600a;         border-color: rgba(245,158,11,0.3); }
+.budget-alloc-hint--danger  { background: var(--red-light);    color: var(--alert-danger-text); border-color: rgba(231,76,60,0.3); }
+
 /* ── Predict ─────────────────────────────────────────────────── */
 .predict-stat {
   background: var(--bg);

@@ -169,6 +169,55 @@ function createBudgetCard(budget) {
 }
 
 // ── Add new budget ─────────────────────────────────────────
+// ── Budget allocation hint ────────────────────────────────
+async function updateBudgetAllocHint() {
+  const hint     = document.getElementById('budget-alloc-hint');
+  if (!hint) return;
+
+  const category = document.getElementById('budget-category')?.value;
+  const amount   = parseFloat(document.getElementById('budget-amount')?.value || '0');
+
+  if (!category || category === 'Overall Budget' || !(amount > 0)) {
+    hint.style.display = 'none';
+    return;
+  }
+
+  const cache = await getSetting('budget_summary_cache');
+  if (!cache || !cache.data) { hint.style.display = 'none'; return; }
+
+  const overall = cache.data.find(b => b.category === 'Overall Budget');
+  if (!overall) { hint.style.display = 'none'; return; }
+
+  const overallLimit = parseFloat(overall.amount_limit);
+  // Sum all OTHER category budgets (exclude overall and the one being set — it's being replaced)
+  const otherAllocated = cache.data
+    .filter(b => b.category !== 'Overall Budget' && b.category !== category)
+    .reduce((s, b) => s + parseFloat(b.amount_limit), 0);
+
+  const total     = otherAllocated + amount;
+  const pct       = Math.round(total / overallLimit * 100);
+  const remaining = overallLimit - total;
+  const fmt = v => '₱' + Math.abs(v).toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+  hint.style.display = 'block';
+  if (pct > 100) {
+    hint.className = 'budget-alloc-hint budget-alloc-hint--danger';
+    hint.textContent = `✗ Exceeds overall budget by ${fmt(remaining)} — ${pct}% allocated`;
+  } else if (pct >= 80) {
+    hint.className = 'budget-alloc-hint budget-alloc-hint--warning';
+    hint.textContent = `⚠ ${pct}% of overall budget allocated — ${fmt(remaining)} remaining`;
+  } else {
+    hint.className = 'budget-alloc-hint budget-alloc-hint--ok';
+    hint.textContent = `✓ ${fmt(remaining)} of overall budget still free after this`;
+  }
+}
+
+// Wire up hint on budget form inputs — called once when budget tab loads
+function initBudgetHint() {
+  document.getElementById('budget-amount')  ?.addEventListener('input',  updateBudgetAllocHint);
+  document.getElementById('budget-category')?.addEventListener('change', updateBudgetAllocHint);
+}
+
 async function handleAddBudget() {
   const category = document.getElementById('budget-category').value;
   const amount   = parseFloat(document.getElementById('budget-amount').value);
