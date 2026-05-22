@@ -43,9 +43,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState === 'visible') {
       await syncIncomeFromServer();
-      await renderBalance();
+      await pullExpensesFromServer();
       await pullGoalsFromServer();
-      if (document.querySelector('#tab-goals.active')) await loadGoals();
+      await renderBalance();
+      await refreshStats();
+      if (document.querySelector('#tab-expenses.active')) await loadExpenseList();
+      if (document.querySelector('#tab-goals.active'))    await loadGoals();
     }
   });
 
