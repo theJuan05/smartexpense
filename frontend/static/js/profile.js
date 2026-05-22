@@ -46,8 +46,6 @@ function renderProfile() {
   // Account fields
   document.getElementById('display-username').textContent = p.username || 'Not set';
   document.getElementById('display-email').textContent    = p.email    || 'Not set';
-  document.getElementById('display-currency').textContent = p.currency || 'PHP (₱)';
-
   // Dark mode toggle sync
   const darkToggle = document.getElementById('settings-dark-toggle');
   if (darkToggle) {
@@ -567,11 +565,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-enable-notifications')
     ?.addEventListener('click', () => requestNotificationPermission(true));
 
-  // Trigger budget reminders now
-  document.getElementById('btn-trigger-reminders')
-    ?.addEventListener('click', triggerRemindersNow);
-
 });
+
 
 // ── PUSH NOTIFICATION PERMISSION ─────────────────────────────
 function _isIOS() {
@@ -651,27 +646,3 @@ async function sendTestNotification() {
   if (btn && origText) btn.querySelector('.settings-value').textContent = origText;
 }
 
-async function triggerRemindersNow() {
-  if (!('Notification' in window) || Notification.permission !== 'granted') {
-    alert('Notifications are not enabled yet.\n\nTap "Push Notifications" above first, then allow when prompted.');
-    return;
-  }
-
-  const btn      = document.getElementById('btn-trigger-reminders');
-  const valueEl  = btn?.querySelector('.settings-value');
-  if (valueEl) valueEl.textContent = 'Sending…';
-
-  try {
-    const res  = await fetch('/api/v1/send-reminders', { method: 'POST' });
-    const data = await res.json();
-    if (data.status === 'success') {
-      showToast('Budget reminders sent to all your devices!', 'success');
-    } else {
-      alert('Server error: ' + (data.message || 'unknown error'));
-    }
-  } catch (_) {
-    alert('Failed to reach server — make sure you are online.');
-  }
-
-  if (valueEl) valueEl.textContent = 'Trigger all budget notifications instantly';
-}
