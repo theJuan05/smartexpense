@@ -300,9 +300,7 @@ async function handleAddExpense() {
   const localId = await addExpenseLocal(expense);
 
   const catLabel = category || 'Uncategorized';
-  const savedMsg = `₱${amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} · ${catLabel} saved!`;
-  showToast(savedMsg);
-  showPushNotification('Expense Saved', savedMsg, 'expense-saved');
+  showToast(`₱${amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} · ${catLabel} saved!`);
   clearForm();
 
   await loadExpenseList();
