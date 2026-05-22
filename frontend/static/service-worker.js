@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v86';
+const CACHE_NAME = 'smartexpense-v87';
 const STATIC_ASSETS = [
   '/static/style.css?v=87',
   '/static/profile.css',
@@ -15,7 +15,7 @@ const STATIC_ASSETS = [
   '/static/js/scanner.js?v=1',
   '/static/js/export.js?v=1',
   '/static/js/edit-expense.js?v=1',
-  '/static/js/profile.js?v=7',
+  '/static/js/profile.js?v=8',
   '/static/js/pinlock.js?v=2',
   '/static/js/firebase.js?v=2',
   '/static/js/templates.js?v=1',

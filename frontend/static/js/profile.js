@@ -515,7 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
       async () => {
         await Promise.allSettled([
           API.request('/expenses', 'DELETE'),
-          API.request('/budgets', 'DELETE')
+          API.request('/budgets', 'DELETE'),
+          API.request('/user/income', 'POST', { monthly_income: 0 })
         ]);
         await clearAllExpensesLocal();
         localStorage.clear();
