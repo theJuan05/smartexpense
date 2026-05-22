@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState === 'visible') {
+      await runSync();
       await syncIncomeFromServer();
       await pullExpensesFromServer();
       await pullGoalsFromServer();
