@@ -35,20 +35,22 @@ async function loadPrediction() {
 
   const spentSoFar = currentExp.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
 
-  let dailyAvg;
+  // Always use current month's own pace for the projection — past months are only
+  // used by the ML forecast card. Using a low-spending prior month (e.g. April ₱57K)
+  // to project a high-spending current month (e.g. May ₱460K) produces a flat line.
+  const dailyAvg = spentSoFar / Math.max(daysElapsed, 1);
+
+  // Historical daily average — used only for trend direction calculation below
+  let historicalDailyAvg = dailyAvg;
   if (pastExp.length > 0) {
     const pastTotal = pastExp.reduce((s, e) => s + parseFloat(e.amount || 0), 0);
-    // Divide by days in months that actually have data, not the full calendar window.
-    // e.g. if only April has data, use 30 days — not 109 days since Feb 1.
     const pastMonthSet = new Set(pastExp.map(e => e.expense_date.substring(0, 7)));
     let dataDays = 0;
     pastMonthSet.forEach(k => {
       const [y, m] = k.split('-').map(Number);
       dataDays += new Date(y, m, 0).getDate();
     });
-    dailyAvg = pastTotal / Math.max(dataDays, 1);
-  } else {
-    dailyAvg = spentSoFar / Math.max(daysElapsed, 1);
+    historicalDailyAvg = pastTotal / Math.max(dataDays, 1);
   }
 
   const predictedTotal = spentSoFar + dailyAvg * daysRemaining;
