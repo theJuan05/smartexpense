@@ -784,13 +784,6 @@ async function renderMonthComparison() {
   const thisName = now.toLocaleDateString('en-PH', { month: 'short' });
   const lastName = lastMonthDate.toLocaleDateString('en-PH', { month: 'short' });
 
-  let badgeHtml = '';
-  if (lastTotal > 0) {
-    const pct  = ((thisTotal - lastTotal) / lastTotal * 100).toFixed(0);
-    const isUp = thisTotal > lastTotal;
-    badgeHtml  = `<span class="mcmp-badge ${isUp ? 'up' : 'down'}">${isUp ? '▲' : '▼'} ${Math.abs(pct)}%</span>`;
-  }
-
   card.innerHTML = `
     <div class="mcmp-row">
       <div class="mcmp-col">
@@ -802,7 +795,6 @@ async function renderMonthComparison() {
         <div class="mcmp-label">${lastName}</div>
         <div class="mcmp-val mcmp-muted">${fmt(lastTotal)}</div>
       </div>
-      ${badgeHtml}
     </div>`;
 }
 
