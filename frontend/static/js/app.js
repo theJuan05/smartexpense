@@ -328,15 +328,22 @@ async function _syncNewExpense(localId, expense) {
   } catch (_) {}
 }
 
-// ── Expense List ───────────────────────────────────────────
-async function loadExpenseList(filter = '') {
+// ── Expense List with Pagination ───────────────────────────
+const PAGE_SIZE = 10;
+let _expPage    = 0;
+let _expFilter  = '';
+
+async function loadExpenseList(filter = '', page = null) {
   const listEl  = document.getElementById('expense-list');
   const countEl = document.getElementById('expense-count-badge');
   if (!listEl) return;
 
+  // Reset to page 0 when filter changes
+  if (filter !== _expFilter) { _expPage = 0; _expFilter = filter; }
+  if (page !== null) _expPage = page;
+
   let expenses = await getAllExpensesLocal();
 
-  // Apply search filter
   if (filter) {
     const q = filter.toLowerCase();
     expenses = expenses.filter(e =>
@@ -370,11 +377,30 @@ async function loadExpenseList(filter = '') {
   }
 
   if (onboardingEl) onboardingEl.style.display = 'none';
+
+  const totalPages = Math.ceil(expenses.length / PAGE_SIZE);
+  _expPage = Math.max(0, Math.min(_expPage, totalPages - 1));
+  const pageExp = expenses.slice(_expPage * PAGE_SIZE, (_expPage + 1) * PAGE_SIZE);
+
   listEl.innerHTML = '';
   const container = document.createElement('div');
   container.className = 'expense-list';
-  expenses.forEach(exp => container.appendChild(createExpenseItem(exp)));
+  pageExp.forEach(exp => container.appendChild(createExpenseItem(exp)));
   listEl.appendChild(container);
+
+  // Pagination controls
+  if (totalPages > 1) {
+    const pag = document.createElement('div');
+    pag.className = 'expense-pagination';
+    pag.innerHTML = `
+      <button class="pag-btn" id="pag-prev" ${_expPage === 0 ? 'disabled' : ''}>← Prev</button>
+      <span class="pag-info">Page ${_expPage + 1} of ${totalPages}</span>
+      <button class="pag-btn" id="pag-next" ${_expPage >= totalPages - 1 ? 'disabled' : ''}>Next →</button>
+    `;
+    pag.querySelector('#pag-prev')?.addEventListener('click', () => loadExpenseList(_expFilter, _expPage - 1));
+    pag.querySelector('#pag-next')?.addEventListener('click', () => loadExpenseList(_expFilter, _expPage + 1));
+    listEl.appendChild(pag);
+  }
 }
 
 // ── Onboarding wizard ──────────────────────────────────────
@@ -544,7 +570,7 @@ async function renderExpenses() {
 
 // ── Search ─────────────────────────────────────────────────
 async function handleSearch(e) {
-  await loadExpenseList(e.target.value);
+  await loadExpenseList(document.getElementById('search-expenses')?.value || '');
 }
 
 // ── Expense Item ───────────────────────────────────────────

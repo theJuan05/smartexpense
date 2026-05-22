@@ -797,6 +797,29 @@ body {
 .ai-hint-apply:hover  { background: var(--purple-dark); }
 .ai-hint-apply:active { transform: scale(0.97); }
 
+/* ── Expense Pagination ──────────────────────────────────────── */
+.expense-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 0 4px;
+}
+.pag-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.pag-btn:hover:not(:disabled) { background: var(--purple-light); border-color: var(--purple); color: var(--purple); }
+.pag-btn:disabled { opacity: 0.35; cursor: default; }
+.pag-info { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; }
+
 /* ── Expense List ────────────────────────────────────────────── */
 .expense-list {
   display: flex;
