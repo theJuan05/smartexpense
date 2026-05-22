@@ -228,6 +228,32 @@ async function handleAddBudget() {
     return;
   }
 
+  // Block if it would exceed the overall budget
+  if (category !== 'Overall Budget') {
+    const cache = await getSetting('budget_summary_cache');
+    if (cache && cache.data) {
+      const overall = cache.data.find(b => b.category === 'Overall Budget');
+      if (overall) {
+        const overallLimit   = parseFloat(overall.amount_limit);
+        const otherAllocated = cache.data
+          .filter(b => b.category !== 'Overall Budget' && b.category !== category)
+          .reduce((s, b) => s + parseFloat(b.amount_limit), 0);
+        if (otherAllocated + amount > overallLimit) {
+          const fmt = v => '₱' + v.toLocaleString('en-PH', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+          const maxAllowed = overallLimit - otherAllocated;
+          const hint = document.getElementById('budget-alloc-hint');
+          if (hint) {
+            hint.style.display = 'block';
+            hint.className = 'budget-alloc-hint budget-alloc-hint--danger';
+            hint.textContent = `✗ Cannot save — exceeds overall budget. Max allowed for this category: ${fmt(Math.max(0, maxAllowed))}. Increase your Overall Budget first to continue.`;
+          }
+          showToast('Exceeds overall budget — increase your Overall Budget first.', 'warning');
+          return;
+        }
+      }
+    }
+  }
+
   const btn = document.getElementById('btn-add-budget');
   btn.textContent = 'Saving...';
   btn.disabled    = true;
