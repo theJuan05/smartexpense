@@ -503,6 +503,15 @@ async function loadExpenseList(filter = '', page = null) {
     sessionStorage.setItem('ob_skipped', '1');
   }
 
+  let _ob_wired = false;
+
+  function _afterOnboarding() {
+    // Force budget and income to refresh from server after onboarding saves
+    saveSetting('budget_summary_cache', null).catch(() => {});
+    if (typeof renderBalance    === 'function') renderBalance();
+    if (typeof loadBudgetSummary === 'function') loadBudgetSummary();
+  }
+
   window.showOnboarding = function () {
     const el = document.getElementById('onboarding-overlay');
     if (!el) return;
@@ -522,73 +531,69 @@ async function loadExpenseList(filter = '', page = null) {
       if (inp) inp.value = savedIncome;
     }
 
-    // Intro slide CTAs
-    document.getElementById('ob-next-0')?.addEventListener('click', () => goTo(1), { once: true });
-    document.getElementById('ob-next-1')?.addEventListener('click', () => goTo(2), { once: true });
-    document.getElementById('ob-next-2')?.addEventListener('click', () => goTo(3), { once: true });
+    // Guard: only wire listeners once — loadExpenseList() can call showOnboarding()
+    // multiple times, stacking duplicate { once: true } listeners that burn through
+    // before the user reaches the income/budget steps.
+    if (_ob_wired) return;
+    _ob_wired = true;
 
-    // Skip
-    document.getElementById('ob-skip-all')?.addEventListener('click', () => closeOnboarding(), { once: true });
+    // Intro slide CTAs
+    document.getElementById('ob-next-0')?.addEventListener('click', () => goTo(1));
+    document.getElementById('ob-next-1')?.addEventListener('click', () => goTo(2));
+    document.getElementById('ob-next-2')?.addEventListener('click', () => goTo(3));
+
+    // Skip all
+    document.getElementById('ob-skip-all')?.addEventListener('click', () => closeOnboarding());
 
     // Income step
     document.getElementById('ob-income-next')?.addEventListener('click', async () => {
-      const val    = parseFloat(document.getElementById('ob-income-val')?.value);
-      const btn    = document.getElementById('ob-income-next');
+      const val = parseFloat(document.getElementById('ob-income-val')?.value);
       if (val > 0) {
         localStorage.setItem('se_income', val.toString());
-        if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
         try {
           const res  = await fetch('/api/v1/user/income', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ monthly_income: val }),
           });
-          const data = await res.json();
-          if (data.status !== 'success') throw new Error(data.message || 'failed');
-        } catch (_) {
-          // Income is already in localStorage — will sync on next connection
-        }
-        if (btn) { btn.textContent = 'Next →'; btn.disabled = false; }
+          await res.json();
+        } catch (_) {}
         const hint = document.getElementById('ob-budget-hint');
         if (hint) hint.textContent = `Based on your ₱${val.toLocaleString()} income, a common rule is to budget 80%.`;
         const budgetInp = document.getElementById('ob-budget-val');
         if (budgetInp && !budgetInp.value) budgetInp.value = Math.round(val * 0.8);
       }
       goTo(4);
-    }, { once: true });
-    document.getElementById('ob-income-skip')?.addEventListener('click', () => goTo(4), { once: true });
+    });
+    document.getElementById('ob-income-skip')?.addEventListener('click', () => goTo(4));
 
     // Budget step
     document.getElementById('ob-budget-next')?.addEventListener('click', async () => {
       const val = parseFloat(document.getElementById('ob-budget-val')?.value);
-      const btn = document.getElementById('ob-budget-next');
       if (val > 0) {
         localStorage.setItem('se_total_budget', val.toString());
-        if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
         try {
           const res  = await fetch('/api/v1/budgets', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ category: 'Overall Budget', amount_limit: val, period: 'monthly' }),
           });
-          const data = await res.json();
-          if (data.status !== 'success') throw new Error(data.message || 'failed');
-        } catch (_) {
-          // Will be visible when user opens Budget tab and can add manually
-        }
-        if (btn) { btn.textContent = 'Next →'; btn.disabled = false; }
+          await res.json();
+        } catch (_) {}
       }
       goTo(5);
-    }, { once: true });
-    document.getElementById('ob-budget-skip')?.addEventListener('click', () => goTo(5), { once: true });
+    });
+    document.getElementById('ob-budget-skip')?.addEventListener('click', () => goTo(5));
 
-    // Done step
+    // Done step — refresh income + budget after onboarding
     document.getElementById('ob-go-add')?.addEventListener('click', () => {
       closeOnboarding();
+      _afterOnboarding();
       document.querySelector('[data-tab=add]')?.click();
-    }, { once: true });
+    });
     document.getElementById('ob-go-dash')?.addEventListener('click', () => {
       closeOnboarding();
+      _afterOnboarding();
       document.querySelector('[data-tab=dashboard]')?.click();
-    }, { once: true });
+    });
   };
 }());
 
