@@ -94,10 +94,14 @@ function detectAnomaliesLocal(expenses) {
   });
 
   // ── Duplicate monthly bill detection ──────────────────────
-  // Group expenses by YYYY-MM + normalized title
+  // Only check categories that are genuinely once-a-month bills.
+  // Skip Food, Transport, Shopping etc. — those are legitimately logged many times.
+  const BILL_CATEGORIES = new Set(['Utilities & Bills', 'Housing & Rent', 'Savings']);
+
   const monthTitleMap = {};
   expenses.forEach(e => {
     if (!e.expense_date || !e.title) return;
+    if (!BILL_CATEGORIES.has(e.category)) return;
     const key = e.expense_date.substring(0, 7) + '||' + e.title.toLowerCase().trim();
     if (!monthTitleMap[key]) monthTitleMap[key] = [];
     monthTitleMap[key].push(e);
