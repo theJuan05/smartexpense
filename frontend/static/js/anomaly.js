@@ -146,11 +146,15 @@ async function checkExpenseAnomaly(title, amount, category) {
   const z = (amount - avg) / std;
   if (z > 2) {
     const severity = z > 3 ? 'high' : 'medium';
-    showAnomalyWarning(
-      severity,
-      `This is unusually high for ${category || 'this category'}`,
-      avg
-    );
+    const reason = `This is unusually high for ${category || 'this category'}`;
+    showAnomalyWarning(severity, reason, avg);
+    if (typeof showPushNotification === 'function') {
+      showPushNotification(
+        severity === 'high' ? 'Unusual Expense Detected' : 'Spending Warning',
+        `${reason} (your avg: ₱${Number(avg).toLocaleString('en-PH', {minimumFractionDigits: 2})})`,
+        'anomaly-warning'
+      );
+    }
   }
 }
 

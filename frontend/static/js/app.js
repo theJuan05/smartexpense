@@ -300,7 +300,9 @@ async function handleAddExpense() {
   const localId = await addExpenseLocal(expense);
 
   const catLabel = category || 'Uncategorized';
-  showToast(`₱${amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} · ${catLabel} saved!`);
+  const savedMsg = `₱${amount.toLocaleString('en-PH', {minimumFractionDigits: 2, maximumFractionDigits: 2})} · ${catLabel} saved!`;
+  showToast(savedMsg);
+  showPushNotification('Expense Saved', savedMsg, 'expense-saved');
   clearForm();
 
   await loadExpenseList();
@@ -625,7 +627,9 @@ function createExpenseItem(exp) {
 async function runSync() {
   const result = await syncToServer();
   if (result.synced > 0) {
-    showToast(`Synced ${result.synced} expense(s)`);
+    const syncMsg = `Synced ${result.synced} expense(s) to server`;
+    showToast(syncMsg);
+    showPushNotification('SmartExpense Synced', syncMsg, 'expense-sync');
     await loadExpenseList();
   }
 }
@@ -966,7 +970,10 @@ function setupIncomeModal() {
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ monthly_income: val }),
     }).then(r => r.json()).then(d => {
-      if (d.status === 'success') showToast('Income updated! Synced to all devices.');
+      if (d.status === 'success') {
+        showToast('Income updated! Synced to all devices.');
+        showPushNotification('Income Updated', 'Monthly income updated and synced to all devices.', 'income-updated');
+      }
       else showToast('Income saved locally — sync failed', 'warning');
     }).catch(() => showToast('Income saved locally — check connection', 'warning'));
   });
