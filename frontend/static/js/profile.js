@@ -533,11 +533,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-reset-app')
     ?.addEventListener('click', () => confirmDanger(
-      'This will wipe ALL data including expenses, budgets, and your profile. This cannot be undone.',
+      'This will wipe ALL data including expenses, budgets, goals, and your profile. This cannot be undone.',
       async () => {
         await Promise.allSettled([
           API.request('/expenses', 'DELETE'),
           API.request('/budgets', 'DELETE'),
+          API.request('/goals', 'DELETE'),
           API.request('/user/income', 'POST', { monthly_income: 0 })
         ]);
         await clearAllExpensesLocal();

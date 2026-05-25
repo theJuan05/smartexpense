@@ -147,3 +147,12 @@ def delete_goal(goal_id):
         return jsonify({'status': 'error'}), 401
     execute("DELETE FROM goals WHERE id = %s AND user_id = %s", (goal_id, uid))
     return jsonify({'status': 'success'})
+
+
+@goals_api_bp.route('/goals', methods=['DELETE'])
+def delete_all_goals():
+    uid = _uid()
+    if not uid:
+        return jsonify({'status': 'error'}), 401
+    execute("DELETE FROM goals WHERE user_id = %s", (uid,))
+    return jsonify({'status': 'success'})
