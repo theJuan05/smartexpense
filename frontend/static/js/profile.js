@@ -241,49 +241,47 @@ async function backupData() {
   try {
     showToast('Preparing backup…');
 
-    // Fetch all expenses from server
-    let expenses = [];
+    let expenses = [], budgets = [], goals = [], monthly_income = 0;
+
     try {
       const res = await fetch('/api/v1/expenses');
-      if (res.ok) {
-        const json = await res.json();
-        expenses = json.data || [];
-      }
+      if (res.ok) expenses = (await res.json()).data || [];
     } catch (_) {}
 
-    // Fetch budgets
-    let budgets = [];
     try {
       const res = await fetch('/api/v1/budgets/summary');
-      if (res.ok) {
-        const json = await res.json();
-        budgets = json.data || [];
-      }
+      if (res.ok) budgets = (await res.json()).data || [];
+    } catch (_) {}
+
+    try {
+      const res = await fetch('/api/v1/goals');
+      if (res.ok) goals = (await res.json()).goals || [];
+    } catch (_) {}
+
+    try {
+      const res = await fetch('/api/v1/auth/status');
+      if (res.ok) monthly_income = (await res.json()).monthly_income || 0;
     } catch (_) {}
 
     const data = {
-      version:  '1.0',
-      exported: new Date().toISOString(),
-      profile:  JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}'),
-      settings: {
-        monthly_income: localStorage.getItem('se_income'),
-        theme:          localStorage.getItem('theme'),
-      },
+      version:        '1.0',
+      exported:       new Date().toISOString(),
+      monthly_income,
       expenses,
       budgets,
+      goals,
     };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)],
-                          { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;
     a.download = `smartexpense-backup-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast(`✅ Backup downloaded! (${expenses.length} expenses)`);
+    showToast(`Backup downloaded! (${expenses.length} expenses)`);
   } catch (e) {
-    showToast('❌ Backup failed.');
+    showToast('Backup failed.');
   }
 }
 
@@ -293,18 +291,25 @@ async function importData(file) {
     const data = JSON.parse(text);
 
     if (!data.expenses || !Array.isArray(data.expenses)) {
-      showToast('❌ Invalid backup file.', 'error');
+      showToast('Invalid backup file.', 'error');
       return;
     }
 
-    const total = data.expenses.length;
-    if (total === 0) {
-      showToast('No expenses found in backup file.', 'warning');
-      return;
+    showToast('Restoring backup…');
+
+    // 1. Restore monthly income to the server
+    const income = parseFloat(data.monthly_income) || 0;
+    if (income > 0) {
+      try {
+        await fetch('/api/v1/user/income', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ monthly_income: income }),
+        });
+      } catch (_) {}
     }
 
-    showToast(`Importing ${total} expenses…`);
-
+    // 2. Restore expenses
     let imported = 0, skipped = 0;
     for (const exp of data.expenses) {
       try {
@@ -325,15 +330,32 @@ async function importData(file) {
       } catch (_) { skipped++; }
     }
 
-    showToast(`✅ Imported ${imported} expenses${skipped ? `, ${skipped} skipped` : ''}.`, 'success');
+    // 3. Restore goals
+    if (Array.isArray(data.goals)) {
+      for (const g of data.goals) {
+        try {
+          await fetch('/api/v1/goals', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name:          g.name          || 'Goal',
+              icon:          g.icon          || '',
+              target_amount: parseFloat(g.target_amount) || 0,
+              saved_amount:  parseFloat(g.saved_amount)  || 0,
+              deadline:      g.deadline      || null,
+            }),
+          });
+        } catch (_) {}
+      }
+    }
 
-    // Refresh expense list and stats
-    if (typeof pullExpensesFromServer === 'function') await pullExpensesFromServer();
-    if (typeof loadExpenseList       === 'function') await loadExpenseList();
-    if (typeof refreshStats          === 'function') await refreshStats();
+    showToast(`Restored! ${imported} expenses imported${skipped ? `, ${skipped} skipped` : ''}.`, 'success');
+
+    // Reload page so everything reflects the restored data
+    setTimeout(() => window.location.reload(), 1500);
 
   } catch (e) {
-    showToast('❌ Could not read backup file.', 'error');
+    showToast('Could not read backup file.', 'error');
   }
 }
 
