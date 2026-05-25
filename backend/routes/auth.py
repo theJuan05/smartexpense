@@ -4,7 +4,7 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, jsonify
 from models.user import create_user, get_user_by_email, get_user_by_token, verify_user, check_password
-from models.db import execute, query_one
+from models.db import execute, query_one, log_audit
 from security.jwt_auth import generate_token
 from config import Config
 from functools import wraps
@@ -55,8 +55,10 @@ def login():
             session['user_email'] = user['email']
             session['jwt']        = generate_token(user['id'], user['name'])
             session.permanent     = True
+            log_audit(user['id'], 'login', f'email={email}', request.remote_addr)
             return redirect(url_for('index'))
 
+        log_audit(None, 'login_failed', f'email={email}', request.remote_addr)
         flash('Invalid email or password. Please try again.', 'error')
 
     return render_template('auth/login.html')
@@ -95,6 +97,11 @@ def register():
         password = request.form.get('password', '')
         confirm  = request.form.get('confirm_password', '')
 
+        privacy_consent = request.form.get('privacy_consent')
+        if not privacy_consent:
+            flash('You must agree to the Privacy Policy to create an account.', 'error')
+            return render_template('auth/register.html')
+
         if not name or not email or not password:
             flash('All fields are required.', 'error')
             return render_template('auth/register.html')
@@ -118,6 +125,7 @@ def register():
         token   = secrets.token_urlsafe(32)
         user_id = create_user(name, email, password, token)
         if user_id:
+            log_audit(user_id, 'register', f'email={email}; privacy_consent=yes', request.remote_addr)
             verify_url = f"{Config.APP_URL}/verify-email/{token}"
             import threading
             from routes.email_alert import send_verification_email
@@ -333,10 +341,31 @@ def delete_account():
 
 
 # -----------------------------
+# AUDIT LOGS
+# -----------------------------
+@auth_bp.route('/api/v1/audit-logs')
+def get_audit_logs():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    from models.db import query_all
+    logs = query_all(
+        "SELECT id, action, details, ip_address, created_at FROM audit_logs "
+        "WHERE user_id = %s ORDER BY created_at DESC LIMIT 100",
+        (user_id,)
+    )
+    for row in logs:
+        if row.get('created_at'):
+            row['created_at'] = row['created_at'].isoformat()
+    return jsonify({'status': 'success', 'logs': logs})
+
+
+# -----------------------------
 # LOGOUT
 # -----------------------------
 @auth_bp.route('/logout')
 def logout():
+    log_audit(session.get('user_id'), 'logout', None, request.remote_addr)
     session.clear()
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))

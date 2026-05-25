@@ -104,6 +104,17 @@ def execute(sql, params=None):
         conn.close()
 
 
+def log_audit(user_id, action, details=None, ip_address=None):
+    """Insert a row into audit_logs. Fire-and-forget — never raises."""
+    try:
+        execute(
+            "INSERT INTO audit_logs (user_id, action, details, ip_address) VALUES (%s, %s, %s, %s)",
+            (user_id, action, details, ip_address)
+        )
+    except Exception as err:
+        logger.error("[AUDIT LOG ERROR] %s", err)
+
+
 def ensure_schema():
     """Add any columns or tables that may be missing from older deployments."""
     col = query_one("SHOW COLUMNS FROM users LIKE 'monthly_income'")
@@ -144,3 +155,15 @@ def ensure_schema():
         execute("ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(100) NULL")
         execute("ALTER TABLE users ADD COLUMN password_reset_expires DATETIME NULL")
         logger.info("[DB SCHEMA] Added password reset columns to users table")
+
+    execute("""
+        CREATE TABLE IF NOT EXISTS audit_logs (
+            id         INT AUTO_INCREMENT PRIMARY KEY,
+            user_id    INT NULL,
+            action     VARCHAR(100) NOT NULL,
+            details    TEXT NULL,
+            ip_address VARCHAR(45) NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    """)
+    logger.info("[DB SCHEMA] audit_logs table ensured")
