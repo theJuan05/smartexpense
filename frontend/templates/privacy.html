@@ -332,7 +332,7 @@
     <div class="section">
       <h2><span class="s-num">3</span> Encryption Details</h2>
       <p><strong>Data at Rest:</strong> Sensitive expense fields (title, notes) are encrypted using AES-256-GCM via Python's <code>cryptography</code> library. A 256-bit key is derived from a server-side secret using SHA-256. Each value is encrypted with a unique 96-bit random nonce, making ciphertexts non-deterministic.</p>
-      <p><strong>Data in Transit:</strong> All API communication is secured with TLS 1.2+ (HTTPS). The app is deployed on Render, which enforces HTTPS on all endpoints.</p>
+      <p><strong>Data in Transit:</strong> All API communication is secured with TLS 1.2+ (HTTPS). The app is deployed on AWS EC2 with Let's Encrypt SSL, enforcing HTTPS on all endpoints.</p>
       <p><strong>Passwords:</strong> User passwords are never stored in plaintext. They are hashed using a secure one-way algorithm (bcrypt/PBKDF2) before storage.</p>
       <p><strong>Authentication:</strong> Sessions are protected with signed JWT tokens (algorithm: HS256). Tokens carry an expiry and are verified on every authenticated request.</p>
     </div>
