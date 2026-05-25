@@ -92,6 +92,18 @@ def start_scheduler(app):
         misfire_grace_time=3600,
     )
 
+    # 2:00 AM PHT daily (18:00 UTC)
+    from utils.backup import run_server_backup
+    scheduler.add_job(
+        func=run_server_backup,
+        args=[app],
+        trigger=CronTrigger(hour=18, minute=0, timezone='UTC'),
+        id='daily_backup',
+        name='Daily Database Backup',
+        replace_existing=True,
+        misfire_grace_time=3600,
+    )
+
     scheduler.start()
-    logger.info('[Scheduler] Started — daily budget reminders at 8:00 PM PHT')
+    logger.info('[Scheduler] Started — budget reminders at 8 PM PHT, backup at 2 AM PHT')
     return scheduler
