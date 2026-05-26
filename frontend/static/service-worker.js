@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smartexpense-v94';
+const CACHE_NAME = 'smartexpense-v95';
 const STATIC_ASSETS = [
   '/static/style.css?v=88',
   '/static/profile.css',
@@ -76,6 +76,7 @@ self.addEventListener('fetch', function(event) {
       path === '/login' ||
       path === '/register' ||
       path === '/logout' ||
+      path === '/privacy' ||
       path.startsWith('/verify-email') ||
       path.startsWith('/forgot-password') ||
       path.startsWith('/reset-password')) {
