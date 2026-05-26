@@ -347,21 +347,34 @@ async function importData(file) {
       }
     }
 
-    // 4. Restore goals
+    // 4. Restore goals (POST creates with 0 saved, then PUT restores saved amount)
     if (Array.isArray(data.goals)) {
       for (const g of data.goals) {
         try {
-          await fetch('/api/v1/goals', {
+          const res = await fetch('/api/v1/goals', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              name:          g.name          || 'Goal',
-              icon:          g.icon          || '',
-              target_amount: parseFloat(g.target_amount) || 0,
-              saved_amount:  parseFloat(g.saved_amount)  || 0,
-              deadline:      g.deadline      || null,
+              name:         g.name || 'Goal',
+              icon:         g.icon || '',
+              targetAmount: parseFloat(g.targetAmount || g.target_amount) || 0,
+              deadline:     g.deadline || null,
             }),
           });
+          if (res.ok) {
+            const created = await res.json();
+            const savedAmount = parseFloat(g.savedAmount || g.saved_amount) || 0;
+            if (created.id && savedAmount > 0) {
+              await fetch(`/api/v1/goals/${created.id}`, {
+                method:  'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  savedAmount:   savedAmount,
+                  contributions: g.contributions || [],
+                }),
+              });
+            }
+          }
         } catch (_) {}
       }
     }
