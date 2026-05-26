@@ -60,6 +60,20 @@ def restore_backup():
         return jsonify({'status': 'error', 'message': 'Restore failed'}), 500
 
 
+@backup_bp.route('/backup/trigger', methods=['POST'])
+def trigger_backup():
+    """Manually trigger a server-side backup right now."""
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+
+    from flask import current_app
+    from utils.backup import run_server_backup
+    import threading
+    threading.Thread(target=run_server_backup, args=[current_app._get_current_object()], daemon=True).start()
+    return jsonify({'status': 'success', 'message': 'Backup started — check /api/v1/backup/history in a few seconds'})
+
+
 @backup_bp.route('/backup/history')
 def backup_history():
     """List available server-side backup files (for demo/admin purposes)."""
