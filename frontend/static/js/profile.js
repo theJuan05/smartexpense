@@ -330,7 +330,24 @@ async function importData(file) {
       } catch (_) { skipped++; }
     }
 
-    // 3. Restore goals
+    // 3. Restore budgets
+    if (Array.isArray(data.budgets)) {
+      for (const b of data.budgets) {
+        try {
+          await fetch('/api/v1/budgets', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              category:     b.category     || 'Overall Budget',
+              amount_limit: parseFloat(b.amount_limit) || 0,
+              period:       b.period       || 'monthly',
+            }),
+          });
+        } catch (_) {}
+      }
+    }
+
+    // 4. Restore goals
     if (Array.isArray(data.goals)) {
       for (const g of data.goals) {
         try {
