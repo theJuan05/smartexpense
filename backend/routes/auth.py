@@ -367,5 +367,7 @@ def get_audit_logs():
 def logout():
     log_audit(session.get('user_id'), 'logout', None, request.remote_addr)
     session.clear()
+    response = redirect(url_for('auth.login'))
+    response.delete_cookie('session')
     flash('You have been logged out.', 'info')
-    return redirect(url_for('auth.login'))
+    return response
