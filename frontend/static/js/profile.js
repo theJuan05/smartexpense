@@ -255,7 +255,10 @@ async function backupData() {
 
     try {
       const res = await fetch('/api/v1/goals');
-      if (res.ok) goals = (await res.json()).goals || [];
+      if (res.ok) {
+        const json = await res.json();
+        goals = Array.isArray(json) ? json : [];
+      }
     } catch (_) {}
 
     try {
@@ -379,7 +382,9 @@ async function importData(file) {
       }
     }
 
-    showToast(`Restored! ${imported} expenses imported${skipped ? `, ${skipped} skipped` : ''}.`, 'success');
+    const budgetCount = Array.isArray(data.budgets) ? data.budgets.length : 0;
+    const goalCount   = Array.isArray(data.goals)   ? data.goals.length   : 0;
+    showToast(`Restored: ${imported} expenses, ${budgetCount} budgets, ${goalCount} goals.`, 'success');
 
     // Reload page so everything reflects the restored data
     setTimeout(() => window.location.reload(), 1500);
